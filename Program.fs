@@ -7,25 +7,31 @@ open Utils
 let main argv =
     print "Advent of code - Day 1"
 
+    let input = readNumberLine "./data/day1.txt"
+
+    let requiredFuel mass = ( mass / 3 ) - 2
+
     // Part 1
 
-    let numbers = readNumberLine "./data/day1.txt"
-                  |> Seq.sumBy (fun x -> (x / 3) - 2)
+    let moduleFuel = input
+                     |> Seq.sumBy requiredFuel
 
-    printn numbers // 3394689
-    
     // Part 2
 
     let rec fuelreq mass = seq {
-        let c = (mass / 3) - 2
-        match c with
-        | n when n < 1 -> ()
-        | _ -> yield c
-               yield! fuelreq c }
+        let fuel = requiredFuel mass
+        match fuel with
+        | x when x < 1 -> ()
+        | _ -> yield fuel
+               yield! fuelreq fuel
+    }
 
-    let massAndFuel = readNumberLine "./data/day1.txt"
-                       |> Seq.sumBy (fun x -> (fuelreq x |> Seq.sum) )
+    let totalFuel = input
+                    |> Seq.sumBy (fun x -> (fuelreq x |> Seq.sum) )
 
-    printn massAndFuel // 5089160
+    // Output
+
+    printn moduleFuel
+    printn totalFuel
 
     0 // return an integer exit code
