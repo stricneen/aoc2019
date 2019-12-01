@@ -5,18 +5,27 @@ open Utils
 
 [<EntryPoint>]
 let main argv =
-    print "Advent of code"
+    print "Advent of code - Day 1"
 
-
-    // (mass / 3) - 2
-    // let numbers = readNumberLine "./data/day1.txt"
-    //                 |> Seq.map (fun x -> (x / 3) - 2)
-    //                 |> Seq.sum
+    // Part 1
 
     let numbers = readNumberLine "./data/day1.txt"
-                    |> Seq.sumBy (fun x -> (x / 3) - 2)
-    
+                  |> Seq.sumBy (fun x -> (x / 3) - 2)
 
-    printn numbers
+    printn numbers // 3394689
+    
+    // Part 2
+
+    let rec fuelreq mass = seq {
+        let c = (mass / 3) - 2
+        match c with
+        | n when n < 1 -> ()
+        | _ -> yield c
+               yield! fuelreq c }
+
+    let massAndFuel = readNumberLine "./data/day1.txt"
+                       |> Seq.sumBy (fun x -> (fuelreq x |> Seq.sum) )
+
+    printn massAndFuel // 5089160
 
     0 // return an integer exit code
