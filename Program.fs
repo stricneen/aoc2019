@@ -7,7 +7,7 @@ open Utils
 let main argv =
     print "Advent of code - Day 1"
 
-    let input = readNumberLine "./data/day1.txt"
+    let input = readLineInt "./data/day1.txt"
 
     let requiredFuel mass = ( mass / 3 ) - 2
 

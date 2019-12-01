@@ -1,11 +1,12 @@
 module Utils
 
+open System
 
 let readLines filePath = System.IO.File.ReadLines(filePath)
 
 let readNumberLine filePath = 
-    System.IO.File.ReadLines(filePath)
-    |> Seq.map System.Int32.Parse
+    readLines filePath
+    |> Seq.map Int32.Parse
                      
 let print text = printf  "%s\n" text
 
