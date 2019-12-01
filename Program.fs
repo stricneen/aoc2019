@@ -9,9 +9,13 @@ let main argv =
 
 
     // (mass / 3) - 2
+    // let numbers = readNumberLine "./data/day1.txt"
+    //                 |> Seq.map (fun x -> (x / 3) - 2)
+    //                 |> Seq.sum
+
     let numbers = readNumberLine "./data/day1.txt"
-                    |> Seq.map (fun x -> (x / 3) - 2)
-                    |> Seq.sum
+                    |> Seq.sumBy (fun x -> (x / 3) - 2)
+    
 
     printn numbers
 
