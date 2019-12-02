@@ -17,8 +17,8 @@ let day2 =
     printfn "Out: %A" prog   
 
     // Fix
-    // Array.set prog 1 12
-    // Array.set prog 2 2
+    Array.set prog 1 12
+    Array.set prog 2 2
 
 
     printfn "Out: %A" prog   

@@ -17,4 +17,6 @@ let printn text = printf  "%i\n" text
 let readCSV filePath = 
     let line = readLines filePath
                |> Seq.head
-    line.Split [|','|] |> Array.map Int32.Parse |> Seq.toArray
+    line.Split [|','|] 
+    |> Array.map Int32.Parse 
+    |> Seq.toArray
