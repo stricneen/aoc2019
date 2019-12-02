@@ -14,3 +14,7 @@ let printn text = printf  "%i\n" text
 
 
 
+let readCSV filePath = 
+    let line = readLines filePath
+               |> Seq.head
+    line.Split [|','|] |> Array.toSeq |> Seq.map Int32.Parse

@@ -3,7 +3,7 @@
 [<EntryPoint>]
 let main argv =
 
-    Day1.day1 |> ignore
+    //Day1.day1 |> ignore
 
     Day2.day2 |> ignore
 
