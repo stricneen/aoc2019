@@ -6,3 +6,4 @@ total fuel   : 5089160
 day 2
 
 output : 6568671
+ouput  : 3951
