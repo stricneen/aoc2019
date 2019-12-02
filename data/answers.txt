@@ -3,3 +3,6 @@ day 1
 fuel required: 3394689
 total fuel   : 5089160
 
+day 2
+
+output : 6568671
