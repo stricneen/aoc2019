@@ -15,9 +15,18 @@ let day3 =
 
     let splitv (dir:string) = 
         (dir.[0], dir.[1..] |> System.Int32.Parse)
+
         //        (340, 430)  L43
     let route start vector = 
         let inst = splitv vector
+
+      //  printn (fst start)
+      //  printn (snd start)
+        print ((fst inst).ToString())
+        print ((snd inst).ToString())
+
+        print (((fst start - snd inst)).ToString())
+
         match fst inst with
         | 'U' -> seq { for v in snd start .. (snd start + snd inst) do  (fst start, v) }
         | 'D' -> seq { for v in snd start .. (snd start - snd inst) do  (fst start, v) }
@@ -31,12 +40,13 @@ let day3 =
     //     |> Seq.windowed 2
     //     |> Seq.fold (fun acc elem -> printf elem.[0]) (0,0)
 
-    let x = route (0,0) "L43"
+    let y = route (0,0) "L43"
     
+    y |> Seq.iter (fun x -> printn (fst x))
     
+    printn (y |> Seq.length)
 
-
-
+    print "end"
 
     //let coords1 = coords wire1
     //let coords1 = coords wire1
