@@ -13,8 +13,8 @@ let day3 =
     let test1 = "R5,U5"  //,D30,R83,U83,L12,D49,R71,U7,L72"
     let test2 = "U62,R66,U55,R34,D71,R55,D58,R83"
     
-    let wire1 = test1 |> Utils.split
-    let wire2 = test2 |> Utils.split
+    let wire1x = test1 |> Utils.split
+    let wire2x = test2 |> Utils.split
 
         //        (340, 430)  L43
     let route start vector = 
@@ -38,19 +38,17 @@ let day3 =
     let folder acc elem = 
         let start = acc |> Seq.last
 
-        printf "acc %A\n" (acc |> Seq.toList)
+        //printf "acc %A\n" (acc |> Seq.toList)
         
         let r = route start elem
         
         let rr = r |> Seq.skip 1
 
-        printf "r %A\n" (r |> Seq.toList)
+        //printf "r %A\n" (r |> Seq.toList)
 
        // printf "out %A\n" (acc |> Seq.toList)
 
         Seq.append acc rr
-    
-        
 
     let coords wire =
         wire
@@ -59,13 +57,20 @@ let day3 =
     //let y = route (0,0) "L43"
     
     let x = coords wire1 |> Seq.toList
-    printf "%A" x
+    // printf "%A" x
     
-    // let y = coords wire2
+    let y = coords wire2
 
-    // let cross = intersect x y
-    // printf "%A" cross
+    let cross = intersect x y
+    printf "%A" (cross |> Seq.toList)
+
+
+    let manhatten = cross   
+                    |> Seq.skip 1
+                    |> Seq.map (fun x -> abs (fst x) + abs (snd x))
+                    |> Seq.min
     
+    printf "%A" manhatten
     //y |> Seq.iter (fun x -> printf "%a , %a" (fst x) (snd x))
     
     //printn (y |> Seq.length)
