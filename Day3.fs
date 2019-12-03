@@ -42,12 +42,15 @@ let day3 =
         
         let r = route start elem
         
+        let rr = r |> Seq.skip 1
+
         printf "r %A\n" (r |> Seq.toList)
 
-        printf "out %A\n" (acc |> Seq.toList)
+       // printf "out %A\n" (acc |> Seq.toList)
 
-        acc 
+        Seq.append acc rr
     
+        
 
     let coords wire =
         wire
