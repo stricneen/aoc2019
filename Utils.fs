@@ -20,3 +20,7 @@ let readCSV filePath =
     line.Split [|','|] 
     |> Array.map Int32.Parse 
     |> Seq.toArray
+
+let split (input: string) = 
+    input.Split [|','|] 
+    |> Seq.toArray
