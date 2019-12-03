@@ -10,7 +10,7 @@ let day3 =
     let wire1 = input |> Seq.head |> Utils.split
     let wire2 = input |> Seq.skip 1 |> Seq.head |> Utils.split
 
-    let route start vector = 
+    let addlength start vector = 
         let splitv (dir:string) = 
             (dir.[0], dir.[1..] |> System.Int32.Parse)
         let inst = splitv vector
@@ -21,23 +21,27 @@ let day3 =
         | 'R' -> seq { for v in fst start .. (fst start + snd inst) do  (v, snd start) }
         | _ -> Seq.empty
 
-    let s = seq { yield (0,0)}
 
-    let folder acc elem = 
+    let iter acc elem = 
         let start = acc |> Seq.last
-        let r = route start elem
+        let r = addlength start elem
         Seq.append acc (r |> Seq.skip 1)
 
-    let coords wire =
+    let origin = seq { yield (0,0) }
+
+    let route wire =
         wire
-        |> Seq.fold folder s
+        |> Seq.fold iter origin
 
     
-    let x = coords wire1
-    let y = coords wire2
+    let wire1Route = route wire1
+    let wire2Route = route wire2
 
-    let cross = intersect x y
-   
+    let cross = intersect wire1Route wire2Route
+
+    printf "Intersections : %A\n" (cross |> Seq.toList)
+    printf "Length       : %A\n" (cross |> Seq.length)
+    
 
     let manhatten = cross   
                     |> Seq.skip 1
@@ -45,5 +49,30 @@ let day3 =
                     |> Seq.min
     
     printf "%A\n" manhatten
+
+
+    print "Part 2"
+    
+    printf "W1 : %A\n" (wire1Route |> Seq.length)
+    printf "W2 : %A\n" (wire1Route |> Seq.length)
+
+    let cross1 = cross
+                 |> Seq.skip 1
+                 |> Seq.map (fun x -> wire1Route |> Seq.findIndex (fun y -> y = x ))
+    let cross2 = cross
+                 |> Seq.skip 1
+                 |> Seq.map (fun x -> wire2Route |> Seq.findIndex (fun y -> y = x ))
+
+    printf "W1 : %A\n" (cross1 |> Seq.toList)
+    printf "W2 : %A\n" (cross2 |> Seq.toList)
+
+    let zip = Seq.zip cross1 cross2 |> Seq.map (fun (x, y) -> x + y)
+
+    let min = Seq.min zip
+    printf "min : %A\n" min
+    
+    
+    printf "%A\n" (cross |> Seq.skip 1 |> Seq.head)
+
 
     ()
