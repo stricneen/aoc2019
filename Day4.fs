@@ -6,37 +6,33 @@ let day4 =
     print "Advent of code - Day 4"
 
     let haspair number =
-        let s  = number.ToString()
-        s 
+        number.ToString() 
         |> Seq.windowed 2
         |> Seq.exists (fun x -> x.[0] = x.[1])
 
-
     let inc number =
-        let s  = number.ToString()
-        s 
+        number.ToString()
         |> Seq.windowed 2
         |> Seq.forall (fun x -> x.[0] <= x.[1])
 
+    let singlepair number =
+        "x" + number.ToString() + "x"
+        |> Seq.windowed 4
+        |> Seq.exists (fun x -> x.[0] <> x.[1] && x.[1] = x.[2] && x.[2] <> x.[3] )
 
-    let count = seq {367479 .. 893698}
+    let valid = seq {367479 .. 893698}
                 |> Seq.filter haspair
                 |> Seq.filter inc
-                |> Seq.length
-
-    printn count
+                
+    printn (valid |> Seq.length)
 
     print "Part 2"
 
-    let count2 = seq {367479 .. 893698}
-                |> Seq.filter haspair
-                |> Seq.filter inc
-                |> Seq.length
+    let valid2 = valid
+                 |> Seq.filter singlepair
 
-    printn count2
-    // for n in 367479 .. 893698 do
-    //     if haspair n && inc n then 
-    //         printn n
+    printn (valid2 |> Seq.length)
+
 
 
 
