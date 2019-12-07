@@ -2,6 +2,8 @@ module Day3
 
 open Utils
 
+// Wires
+
 let day3 = 
     print "Advent of code - Day 3"
 
