@@ -15,27 +15,33 @@ let day6 =
     
     printf "%A\n" (Seq.length orbits) 
 
+    let total =  ResizeArray<int32>()
 
-    let seqin planets = 
+
+
+    let seqin planets level = 
         print "a"
         let moons = planets |> Seq.map snd |> Seq.toList
         printf "moons: %A\n" moons
         let xx = orbits
                  |> List.filter (fun x -> List.contains (fst x) moons)
-        printf "orbits : %A\n" (xx)  
-     //   let temp = System.Console.ReadKey()
+        
+        total.Add (level * (List.length moons)) // **
+        printf "%A\n" (total |> Seq.toList)
+       // let temp = System.Console.ReadKey()
         xx
 
-    let rec al planets =
+    let rec al planets level =
         match planets with 
         | sequence when Seq.isEmpty sequence -> Seq.empty
-        | _ ->  al (seqin planets)
+        | _ ->  let x = seqin planets level
+                al x (level + 1)
 
+    let origin = seqin com 1
 
-    let origin = seqin com
+    let y = al origin 2
 
-    let y = al origin
-
+    printf "total%A\n" (Seq.sum total)
 
     // let extract orbits root =
     //     let planets = root |> Seq.map snd
