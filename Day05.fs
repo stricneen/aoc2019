@@ -7,13 +7,19 @@ let day5 =
 
     let prog = readCSV "./data/day5.txt"
 
-    let opcodes prog = 
+    let decom prog = 
+        
+
+
+    let extract prog = 
         match Seq.head prog with
               | 1 -> Seq.take 4 prog, prog |> Seq.skip 4
               | 2 -> Seq.take 4 prog, prog |> Seq.skip 4
               | 3 -> Seq.take 2 prog, prog |> Seq.skip 2
               | 4 -> Seq.take 2 prog, prog |> Seq.skip 2
               | _ -> Seq.empty, Seq.empty
+    
+
         
 
 
