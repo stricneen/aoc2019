@@ -6,27 +6,81 @@ let day6 =
     print "Advent of code - Day 6"
 
     let input = readLines "./data/day6.txt"
-
-    let data = input
-               |> Seq.map(fun x -> x.[0..2], x.[4..6])
-
-    let com = data |> Seq.filter(fun x -> fst x = "COM")
-
-    printf "%A\n" com
-    printf "%A\n" data
-
-
+    
+    let orbits = input
+                 |> Seq.map(fun x -> x.[0..2], x.[4..6])
+                 |> Seq.toList
+    
+    let com = orbits |> Seq.filter(fun x -> fst x = "COM")
+    
+    printf "%A\n" (Seq.length orbits) 
 
 
+    let seqin planets = 
+        print "a"
+        let moons = planets |> Seq.map snd |> Seq.toList
+        printf "moons: %A\n" moons
+        let xx = orbits
+                 |> List.filter (fun x -> List.contains (fst x) moons)
+        printf "orbits : %A\n" (xx)  
+     //   let temp = System.Console.ReadKey()
+        xx
+
+    let rec al planets =
+        match planets with 
+        | sequence when Seq.isEmpty sequence -> Seq.empty
+        | _ ->  al (seqin planets)
 
 
+    let origin = seqin com
+
+    let y = al origin
 
 
+    // let extract orbits root =
+    //     let planets = root |> Seq.map snd
+        
+    //     printf "planets : %A\n" planets
+
+    //     orbits 
+    //     |> Seq.where (fun x -> Seq.contains (fst x) planets)
+    //     |> printf "%A"
+
+    //     let moons = orbits 
+    //                 |> Seq.where (fun x -> Seq.contains (fst x) planets)
+                  
+                    
+    //     printf "moons: %A\n" moons
+
+    //     let s = set moons
+    //     let rem =  orbits |> Seq.filter(fun x -> not ((s).Contains x)) //*
+    //     rem, moons
+
+// 2QB)M99
+// WZ9)XC9
+// COM)RR1
+// F3J)G1X
+// SCR)L66
+// 46X)QT3
+// RR1)233
+// RR1)3FR
 
 
+// root : COM)RR1
+
+        
+    // let x = extract orbits com
+    // // print "@"
 
 
+    // let rem = fst x
+    // let moons = snd x
+    
+    // printf "%A\n" (rem |> Seq.length)
 
-
+    // printf "%A\n" moons
+ 
+    // let y = extract (fst x) (snd x)
+ 
 
     0

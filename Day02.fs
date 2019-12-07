@@ -2,6 +2,8 @@ module Day2
 
 open Utils
 
+// Op codes
+
 let day2 =
 
     print "Advent of code - Day 2"

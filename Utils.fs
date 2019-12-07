@@ -3,7 +3,7 @@ module Utils
 open System
 open System.Linq
 
-let readLines filePath = System.IO.File.ReadLines(filePath)
+let readLines filePath = System.IO.File.ReadAllLines(filePath)
 
 let readLineInt filePath = 
     readLines filePath
