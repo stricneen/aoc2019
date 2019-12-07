@@ -20,14 +20,13 @@ let day6 =
 
 
     let seqin planets level = 
-        print "a"
         let moons = planets |> Seq.map snd |> Seq.toList
-        printf "moons: %A\n" moons
+        //printf "moons: %A\n" moons
         let xx = orbits
                  |> List.filter (fun x -> List.contains (fst x) moons)
         
         total.Add (level * (List.length moons)) // **
-        printf "%A\n" (total |> Seq.toList)
+        //printf "%A\n" (total |> Seq.toList)
        // let temp = System.Console.ReadKey()
         xx
 
@@ -41,8 +40,32 @@ let day6 =
 
     let y = al origin 2
 
-    printf "total%A\n" (Seq.sum total)
+    printf "total  %A\n" (Seq.sum total)
 
+
+
+    let rec routeToCom node lst =
+        let node = orbits |> List.where (fun x -> snd x = node) |> List.head
+        // print (fst node)
+        
+        match node with
+        | (x,y) when x = "COM" -> lst
+        | _ -> routeToCom (fst node) (fst node :: lst)
+
+    let y = routeToCom "YOU" []
+    print ""
+    let s = routeToCom "SAN" []
+
+
+    let y' = y |> List.where (fun x -> not (List.contains x s))
+    let s' = s |> List.where (fun x -> not (List.contains x y))
+    
+    
+
+    printf "y   %A\n" (y' |> List.length)
+    printf "s   %A\n" (s' |> List.length)
+
+    printf "%A\n"  ((y' |> List.length) + (s' |> List.length) )
     // let extract orbits root =
     //     let planets = root |> Seq.map snd
         
