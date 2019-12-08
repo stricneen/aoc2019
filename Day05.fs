@@ -17,27 +17,48 @@ let day5 =
         else op
 
     // 4 array - will resolve to immediate
-    let resolve (opcode: int[]) prog =
-        // what is the op
-        let op = getOpCode opcode.[0] // 1001
+    let resolve (opcode: int[]) (prog: int[]) =
+        let op = getOpCode opcode.[0] 
         printf "opcode : %A\n" op
 
-        Array.append [|op|] opcode.[1..]
+// [|1; 225; 6; 6|]
+
+        let def = if op > 2 then '1' else '0'
+        let l = opcode.[0].ToString()
+
+        let ops = l.PadLeft(4, def)
+  
+        printf "ops : %A\n" ops
+        
 
 
-    // Input  --   inst ptr        prog
-    // Output --   new inst ptr    updated prog    last run op
+        let p =  ops |> Seq.toArray |> Array.rev |> Array.skip 2
+               
+        printf "modes : %A\n" p
+
+        let p1 = if p.[0] = '0' then prog.[opcode.[1]] else opcode.[1]
+        let p2 = if p.[1] = '0' then prog.[opcode.[2]] else opcode.[2]
+
+        printf "p1 : %A\n" p1
+        printf "p2 : %A\n" p2
+
+        [| op; p1; p2; opcode.[3] |]
+
+
+    // Input  --   inst ptr      --  prog
+    // Output --   new inst ptr  --  updated prog  --  last run op
     let tick ptr prog = 
         let opcode = prog |> Array.skip ptr |> Array.take 4
         printf "inst:  %A\n" opcode
         let resolved = resolve opcode prog
         let op = 
-            match resolved with
-            | [| 1; x; y; z |] -> Array.set prog z (prog.[x] + prog.[y])
+            match resolved with // all ops here are immediate
+            | [| 1; x; y; z |] -> Array.set prog z (x + y)
                                   [|1; x; y; z|] //Add
-            | [| 2; x; y; z |] -> Array.set prog z (prog.[x] * prog.[y])
+            | [| 2; x; y; z |] -> Array.set prog z (x * y)
                                   [|2; x; y; z|] //Mul
             | [| 3; x; _; _ |] -> Array.set prog x input
+                                  printf "write %A to %A" input x
                                   [|3; x|]       //In
             | [| 4; x; _; _ |] -> printf "%A\n" prog.[x]
                                   [|4; x|]       //Out
