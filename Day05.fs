@@ -23,23 +23,26 @@ let day5 =
 
 // [|1; 225; 6; 6|]
 
-        let def = if op > 2 then '1' else '0'
+        let def = if op = 3 then '1' else '0'
         let l = opcode.[0].ToString()
 
         let ops = l.PadLeft(4, def)
   
-        printf "ops : %A\n" ops
+        //printf "ops : %A\n" ops
+        
+        let modes =  ops |> Seq.toArray |> Array.rev |> Array.skip 2
+               
+        printf "modes : %A\n" modes
+
+        let p1 = if modes.[0] = '0' then prog.[opcode.[1]] else opcode.[1]
+        printf "p1 : %A\n" p1
         
 
-
-        let p =  ops |> Seq.toArray |> Array.rev |> Array.skip 2
-               
-        printf "modes : %A\n" p
-
-        let p1 = if p.[0] = '0' then prog.[opcode.[1]] else opcode.[1]
-        let p2 = if p.[1] = '0' then prog.[opcode.[2]] else opcode.[2]
-
-        printf "p1 : %A\n" p1
+        let p2 = 
+            if op < 3 then
+                if modes.[1] = '0' then prog.[opcode.[2]] else opcode.[2]
+            else
+                0
         printf "p2 : %A\n" p2
 
         [| op; p1; p2; opcode.[3] |]
