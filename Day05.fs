@@ -57,20 +57,20 @@ let day5 =
         let op = 
             match resolved with // all ops here are immediate
             | [| 1; x; y; z |] -> Array.set prog z (x + y)
-                                  [|1; x; y; z|] //Add
+                                  [|1; x; y; z|], ptr + 4 //Add
             | [| 2; x; y; z |] -> Array.set prog z (x * y)
-                                  [|2; x; y; z|] //Mul
+                                  [|2; x; y; z|], ptr + 4 //Mul
             | [| 3; x; _; _ |] -> Array.set prog x input
                                   printf "write %A to %A" input x
-                                  [|3; x|]       //In
+                                  [|3; x|], ptr + 2       //In
             | [| 4; x; _; _ |] -> print "================"
                                   printf "%A\n" x
                                   print "================"
-                                  [|4; x|]       //Out
-            | [| 99; _; _; _|] -> [|99|]
-            | _ -> [||]
+                                  [|4; x|], ptr + 2       //Out
+            | [| 99; _; _; _|] -> [|99|], 0
+            | _ -> [||], 0
         
-        ptr + Array.length op, prog, op
+        snd op, prog, op
     
     let mutable ptr = 0
     while true do
