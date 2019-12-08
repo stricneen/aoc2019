@@ -8,7 +8,7 @@ let day5 =
     
     let prog = readCSV "./data/day5.txt"
 
-    let input = 1
+    let input = 5
 
     let getOpCode op =
         let s = op.ToString()
@@ -39,7 +39,7 @@ let day5 =
         
 
         let p2 = 
-            if op < 3 then
+            if op < 3 || op > 4 then
                 if modes.[1] = '0' then prog.[opcode.[2]] else opcode.[2]
             else
                 0
@@ -67,6 +67,23 @@ let day5 =
                                   printf "%A\n" x
                                   print "================"
                                   [|4; x|], ptr + 2       //Out
+            
+            | [| 5; x; y; _ |] -> if x <> 0 then
+                                    [| 5; x; y|], y
+                                  else 
+                                    [| 5; x; y|], ptr + 3
+                                 
+            | [| 6; x; y; _ |] -> if x = 0 then
+                                    [| 6; x; y|], y
+                                  else 
+                                    [| 6; x; y|], ptr + 3
+
+            | [| 7; x; y; z |] -> Array.set prog z (if x < y then 1 else 0)
+                                  [|7; x; y; z|], ptr + 4 //Lt
+
+            | [| 8; x; y; z |] -> Array.set prog z (if x = y then 1 else 0)
+                                  [|8; x; y; z|], ptr + 4 //Lt
+
             | [| 99; _; _; _|] -> [|99|], 0
             | _ -> [||], 0
         
