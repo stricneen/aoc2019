@@ -11,6 +11,10 @@ let main argv =
 
     //Day5.day5 |> ignore
 
-    Day6.day6 |> ignore
+    //Day6.day6 |> ignore
+
+    //Day7.day7 |> ignore
+
+    Day8.day8 |> ignore
 
     0 // return an integer exit code
