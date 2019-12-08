@@ -1,12 +1,18 @@
 module Day7
 
 open Utils
+open IntCode
 
 let day7 = 
     print "Advent of code - Day 7 - Amplification Circuit"
 
-    let input = readLines "./data/day8.txt"
+    let prog7 = readCSV "./data/day7.txt"
+    let prog5 = readCSV "./data/day5.txt"
+    
 
 
+    let output = IntCode.execute prog5 [| 1 |]
+
+  
 
     0
