@@ -1,7 +1,6 @@
 module Day7
 
 open Utils
-open IntCode
 
 let day7 = 
     print "Advent of code - Day 7 - Amplification Circuit"
@@ -13,6 +12,8 @@ let day7 =
 
     let output = IntCode.execute prog5 [| 1 |]
 
-  
+    print "***********"
+    printn output
+    print "***********"
 
     0
