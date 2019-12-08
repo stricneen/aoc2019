@@ -60,7 +60,9 @@ let day5 =
             | [| 3; x; _; _ |] -> Array.set prog x input
                                   printf "write %A to %A" input x
                                   [|3; x|]       //In
-            | [| 4; x; _; _ |] -> printf "%A\n" prog.[x]
+            | [| 4; x; _; _ |] -> print "================"
+                                  printf "%A\n" x
+                                  print "================"
                                   [|4; x|]       //Out
             | [| 99; _; _; _|] -> [|99|]
             | _ -> [||]
