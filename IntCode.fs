@@ -45,7 +45,7 @@ module IntCode
     // Input  --   inst ptr      --  prog
     // Output --   new inst ptr  --  updated prog  --  last run op
     let tick ptr prog input= 
-        let opcode = prog |> Array.skip ptr |> Array.take 4
+        let opcode = prog |> Array.skip ptr |> Array.truncate 4
         printf "inst:  %A\n" opcode
         let resolved = resolve opcode prog
         let op = 
@@ -55,7 +55,7 @@ module IntCode
             | [| 2; x; y; z |] -> Array.set prog z (x * y)
                                   [|2; x; y; z|], ptr + 4 //Mul
             | [| 3; x; _; _ |] -> Array.set prog x input
-                                  printf "write %A to %A" input x
+                                  printf "write %A to %A\n" input x
                                   [|3; x|], ptr + 2       //In
             | [| 4; x; _; _ |] -> print "================"
                                   printf "%A\n" x
@@ -91,7 +91,7 @@ module IntCode
         let mutable cond = true
         let mutable out = 0
         while cond do
-            print ""
+            // print ""
             let nptr, prog, op = tick ptr prog inputs.[inputPtr]
 
             if (fst op).[0] = 3 then

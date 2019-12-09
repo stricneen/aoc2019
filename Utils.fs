@@ -15,6 +15,11 @@ let printn text = printf  "%i\n" text
 
 let intersect (xs:'a seq) (ys: 'a seq) = xs.Intersect(ys)
 
+let toSeq (str: string) =
+    str.Split [|','|] 
+    |> Array.map Int32.Parse 
+    |> Seq.toArray
+
 let readCSV filePath = 
     let line = readLines filePath
                |> Seq.head
