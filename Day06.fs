@@ -3,7 +3,7 @@ module Day6
 open Utils
 
 let day6 = 
-    print "Advent of code - Day 6"
+    print "Advent of code - Day 6 - Universal Orbit Map"
 
     let input = readLines "./data/day6.txt"
     

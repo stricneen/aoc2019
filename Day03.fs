@@ -5,7 +5,7 @@ open Utils
 // Wires
 
 let day3 = 
-    print "Advent of code - Day 3"
+    print "Advent of code - Day 3 - Crossed Wires"
 
     let input = readLines "./data/day3.txt"
 

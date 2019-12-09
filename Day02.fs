@@ -6,7 +6,7 @@ open Utils
 
 let day2 =
 
-    print "Advent of code - Day 2"
+    print "Advent of code - Day 2 - 1202 Program Alarm"
 
     let execute prog noun verb =     
     

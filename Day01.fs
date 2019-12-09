@@ -4,7 +4,7 @@ open Utils
 
 let day1 =
 
-    print "Advent of code - Day 1"
+    print "Advent of code - Day 1 - The Tyranny of the Rocket Equation"
 
     let input = readLineInt "./data/day1.txt"
 
