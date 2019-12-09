@@ -10,6 +10,8 @@ module IntCode
         else op
 
     let resolve (opcode: int[]) (prog: int[]) =
+        
+        let rb = 0
         let op = getOpCode opcode.[0] 
 
         if op = 99 then
@@ -21,13 +23,33 @@ module IntCode
 
             let ops = l.PadLeft(4, def)
             let modes =  ops |> Seq.toArray |> Array.rev |> Array.skip 2
-            let p1 = if modes.[0] = '0' then prog.[opcode.[1]] else opcode.[1]
+
+
+            // let p1 = if modes.[0] = '0' then prog.[opcode.[1]] else opcode.[1]
+
+            let p1 = 
+                match modes.[0] with
+                | '0' -> prog.[opcode.[1]]
+                | '1' -> opcode.[1]
+                | '2' -> prog.[rb + opcode.[1]]
+                | _ -> failwith "Invalid opcode"
 
             let p2 = 
                 if op <> 3 && op <> 4 then
-                    if modes.[1] = '0' then prog.[opcode.[2]] else opcode.[2]
+                    match modes.[1] with
+                    | '0' -> prog.[opcode.[2]]
+                    | '1' -> opcode.[2]
+                    | '2' -> prog.[rb + opcode.[2]]
+                    | _ -> failwith "Invalid opcode"
                 else
                     0
+
+
+            // let p2 = 
+            //     if op <> 3 && op <> 4 then
+            //         if modes.[1] = '0' then prog.[opcode.[2]] else opcode.[2]
+            //     else
+            //         0
 
             [| op; p1; p2; opcode.[3] |]
 

@@ -7,29 +7,29 @@ let day7 =
 
 
 
-    let amplify prog (phases: int[]) = 
-        let o1 = IntCode.execute prog [| phases.[0]; 0 |]
-        let o2 = IntCode.execute prog [| phases.[1]; o1 |]
-        let o3 = IntCode.execute prog [| phases.[2]; o2 |]
-        let o4 = IntCode.execute prog [| phases.[3]; o3 |]
-        let o5 = IntCode.execute prog [| phases.[4]; o4 |]
-        o5
+    // let amplify prog (phases: int[]) = 
+    //     let o1 = IntCode.execute prog [| phases.[0]; 0 |]
+    //     let o2 = IntCode.execute prog [| phases.[1]; o1 |]
+    //     let o3 = IntCode.execute prog [| phases.[2]; o2 |]
+    //     let o4 = IntCode.execute prog [| phases.[3]; o3 |]
+    //     let o5 = IntCode.execute prog [| phases.[4]; o4 |]
+    //     o5
 
-    let tryPhases prog = 
-        let phases = perms [0;1;2;3;4] 
-        let timings  = phases
-                       |> Seq.map (fun x -> x, amplify prog (x |> Seq.toArray))
-        timings
+    // let tryPhases prog = 
+    //     let phases = perms [0;1;2;3;4] 
+    //     let timings  = phases
+    //                    |> Seq.map (fun x -> x, amplify prog (x |> Seq.toArray))
+    //     timings
 
 
-    let prog7 = readCSV "./data/day7.txt" 
+    // let prog7 = readCSV "./data/day7.txt" 
 
-    let output = tryPhases prog7 
-                  |> Seq.maxBy snd
+    // let output = tryPhases prog7 
+    //               |> Seq.maxBy snd
 
-    print "***********"
-    printf "%A\n" output
-    print "***********"
+    // print "***********"
+    // printf "%A\n" output
+    // print "***********"
 
 
 
@@ -133,10 +133,10 @@ let day7 =
 
 
     // DAY 5
-    // let prog5 = readCSV "./data/day5.txt"
-    // let output = IntCode.execute prog5 [| 1 |]
-    // print "***********"
-    // printn output
-    // print "***********"
+    let prog5 = readCSV "./data/day5.txt"
+    let output = IntCode.execute prog5 [| 1 |]
+    print "***********"
+    printn output
+    print "***********"
 
     0
