@@ -25,3 +25,20 @@ let readCSV filePath =
 let split (input: string) = 
     input.Split [|','|] 
     |> Seq.toArray
+
+
+
+
+let distrib e L = // ** 1526046
+    let rec aux pre post = 
+        seq {
+            match post with
+            | [] -> yield (L @ [e])
+            | h::t -> yield (List.rev pre @ [e] @ post)
+                      yield! aux (h::pre) t 
+        }
+    aux [] L
+
+let rec perms = function 
+    | [] -> Seq.singleton []
+    | h::t -> Seq.collect (distrib h) (perms t)
