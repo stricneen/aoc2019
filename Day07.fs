@@ -22,10 +22,10 @@ let day7 =
         timings
 
 
-
-
-
     let prog7 = readCSV "./data/day7.txt" 
+
+
+
     let output = tryPhases prog7 
                   |> Seq.maxBy snd
 
@@ -33,7 +33,7 @@ let day7 =
     printf "%A\n" output
     print "***********"
 
-    // let output = amplify prog7 [|0; 1; 2; 3; 4; |]
+    // let output = IntCode.execute prog7 [|1; 3 |]
     // print "***********"
     // printn output
     // print "***********"  

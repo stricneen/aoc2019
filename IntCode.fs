@@ -26,7 +26,7 @@ module IntCode
             
             let modes =  ops |> Seq.toArray |> Array.rev |> Array.skip 2
                    
-            printf "modes : %A\n" modes
+            //printf "modes : %A\n" modes
 
             let p1 = if modes.[0] = '0' then prog.[opcode.[1]] else opcode.[1]
             // printf "p1 : %A\n" p1
@@ -81,8 +81,8 @@ module IntCode
             | [| 8; x; y; z |] -> Array.set prog z (if x = y then 1 else 0)
                                   [|8; x; y; z|], ptr + 4 //Eq
 
-            | [| 99; x; _; _|] -> printf "FINISHED :: %A\n" x
-                                  [|99; x|], 0
+            | [| 99; x; _; _|] -> [|99; x|], 0
+                                  
             | _ -> [||], 0
         
         snd op, prog, op
@@ -93,6 +93,7 @@ module IntCode
         let mutable inputPtr = 0
         let mutable cond = true
         let mutable out = 0
+        
         while cond do
             // print ""
             let nptr, prog, op = tick ptr prog inputs.[inputPtr]
@@ -100,9 +101,13 @@ module IntCode
             if (fst op).[0] = 3 then
                 inputPtr <- (inputPtr + 1) % Array.length inputs
 
+            if (fst op).[0] = 4 then
+                out <- (fst op).[1]
+            
+
             if (fst op).[0] = 99 then // END
                 cond <- false
-                out <- (fst op).[1]
+                // out <- (fst op).[1]
             //let t = System.Console.ReadKey()
             ptr <- nptr
 
