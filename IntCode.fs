@@ -48,7 +48,7 @@ module IntCode
         let opcode = prog |> Array.skip ptr |> Array.truncate 4
         printf "inst:  %A\n" opcode
         let resolved = resolve opcode prog
-        printf "resv:  %A\n" resolved
+        // printf "resv:  %A\n" resolved
 
         let op = 
             match resolved with // all ops here are immediate
@@ -59,13 +59,11 @@ module IntCode
             | [| 3; x; _; _ |] -> Array.set prog x input
                                   printf "write %A to %A\n" input x
                                   [|3; x|], ptr + 2       //In
-            | [| 4; x; _; _ |] -> print "================"
-                                  printf "%A\n" x
-                                  print "================"
+            | [| 4; x; _; _ |] -> printf "==========%A\n" x
                                   [|4; x|], ptr + 2       //Out
             
             | [| 5; x; y; _ |] -> if x <> 0 then
-                                    printf "Jump to %A\n" y
+                                    printf "Jump to %A  (%A <> 0)\n" y x 
                                     [| 5; x; y|], y
                                   else 
                                     [| 5; x; y|], ptr + 3  // JNZ
@@ -104,11 +102,13 @@ module IntCode
             if (fst op).[0] = 4 then
                 out <- (fst op).[1]
             
-
             if (fst op).[0] = 99 then // END
                 cond <- false
                 // out <- (fst op).[1]
             //let t = System.Console.ReadKey()
             ptr <- nptr
 
+
+        printf "************** exec complete: %A\n" out
+        let t' = System.Console.ReadKey()
         out

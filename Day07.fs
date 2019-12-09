@@ -7,31 +7,72 @@ let day7 =
 
 
 
-    let amplify prog (phases: int[]) = 
-        let o1 = IntCode.execute prog [| phases.[0]; 0 |]
-        let o2 = IntCode.execute prog [| phases.[1]; o1 |]
-        let o3 = IntCode.execute prog [| phases.[2]; o2 |]
-        let o4 = IntCode.execute prog [| phases.[3]; o3 |]
-        let o5 = IntCode.execute prog [| phases.[4]; o4 |]
-        o5
+    // let amplify prog (phases: int[]) = 
+    //     let o1 = IntCode.execute prog [| phases.[0]; 0 |]
+    //     let o2 = IntCode.execute prog [| phases.[1]; o1 |]
+    //     let o3 = IntCode.execute prog [| phases.[2]; o2 |]
+    //     let o4 = IntCode.execute prog [| phases.[3]; o3 |]
+    //     let o5 = IntCode.execute prog [| phases.[4]; o4 |]
+    //     o5
 
-    let tryPhases prog = 
-        let phases = perms [0;1;2;3;4] 
+    // let tryPhases prog = 
+    //     let phases = perms [0;1;2;3;4] 
+    //     let timings  = phases
+    //                    |> Seq.map (fun x -> x, amplify prog (x |> Seq.toArray))
+    //     timings
+
+
+    // let prog7 = readCSV "./data/day7.txt" 
+
+    // let output = tryPhases prog7 
+    //               |> Seq.maxBy snd
+
+    // print "***********"
+    // printf "%A\n" output
+    // print "***********"
+
+
+
+    print "Part 2"
+
+    let rec feedback prog (phases: int[]) init = 
+        let o1 = IntCode.execute (prog |> List.toArray) [| phases.[0]; init |]
+        let o2 = IntCode.execute (prog |> List.toArray) [| phases.[1]; o1 |]
+        let o3 = IntCode.execute (prog |> List.toArray) [| phases.[2]; o2 |]
+        let o4 = IntCode.execute (prog |> List.toArray) [| phases.[3]; o3 |]
+        let o5 = IntCode.execute (prog |> List.toArray) [| phases.[4]; o4 |]
+        feedback prog phases o5
+
+        
+    let tryFeeback prog = 
+        let phases = perms [9; 8; 7; 6; 5;] 
         let timings  = phases
-                       |> Seq.map (fun x -> x, amplify prog (x |> Seq.toArray))
+                       |> Seq.map (fun x -> x, feedback prog (x |> Seq.toArray))
         timings
 
 
-    let prog7 = readCSV "./data/day7.txt" 
 
+    let input = toSeq "3,26,1001,26,-4,26,3,27,1002,27,2,27,1,27,26,27,4,27,1001,28,-1,28,1005,28,6,99,0,0,5"
+                |> Seq.toList
+                      
+    let output = feedback input [|9; 8; 7; 6; 5|] 0
 
-
-    let output = tryPhases prog7 
-                  |> Seq.maxBy snd
+    // let output = tryFeeback input 
+    //               |> Seq.maxBy snd
 
     print "***********"
     printf "%A\n" output
     print "***********"
+
+
+
+
+
+
+
+
+
+
 
     // let output = IntCode.execute prog7 [|1; 3 |]
     // print "***********"
