@@ -9,13 +9,13 @@ let day7 =
     let prog5 = readCSV "./data/day5.txt"
     
 
-    let x = perms [0;1;2;3;4] 
-    printf "%A\n" (x |> Seq.toList)
+    // let x = perms [0;1;2;3;4] 
+    // printf "%A\n" (x |> Seq.toList)
 
 
-   // let output = IntCode.execute prog5 [| 1 |]
-    // print "***********"
-    // printn output
-    // print "***********"
+    let output = IntCode.execute prog5 [| 1 |]
+    print "***********"
+    printn output
+    print "***********"
 
     0

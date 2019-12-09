@@ -85,15 +85,19 @@ module IntCode
         snd op, prog, op
     
 
-    let execute prog inputs =
+    let execute prog (inputs: int[]) =
         let mutable ptr = 0
+        let mutable inputPtr = 0
         let mutable cond = true
         let mutable out = 0
         while cond do
             print ""
-            let nptr, prog, op = tick ptr prog 1
+            let nptr, prog, op = tick ptr prog inputs.[inputPtr]
 
-            if (fst op).[0] = 99 then 
+            if (fst op).[0] = 3 then
+                inputPtr <- (inputPtr + 1) % Array.length inputs
+
+            if (fst op).[0] = 99 then // END
                 cond <- false
                 out <- (fst op).[1]
             //let t = System.Console.ReadKey()
