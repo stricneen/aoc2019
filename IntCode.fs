@@ -26,14 +26,14 @@ module IntCode
             
             let modes =  ops |> Seq.toArray |> Array.rev |> Array.skip 2
                    
-            //printf "modes : %A\n" modes
+            printf "modes : %A\n" modes
 
             let p1 = if modes.[0] = '0' then prog.[opcode.[1]] else opcode.[1]
             // printf "p1 : %A\n" p1
             
 
             let p2 = 
-                if op < 3 || op > 4 then
+                if op <> 3 && op <> 4 then
                     if modes.[1] = '0' then prog.[opcode.[2]] else opcode.[2]
                 else
                     0
@@ -48,6 +48,8 @@ module IntCode
         let opcode = prog |> Array.skip ptr |> Array.truncate 4
         printf "inst:  %A\n" opcode
         let resolved = resolve opcode prog
+        printf "resv:  %A\n" resolved
+
         let op = 
             match resolved with // all ops here are immediate
             | [| 1; x; y; z |] -> Array.set prog z (x + y)
@@ -63,14 +65,15 @@ module IntCode
                                   [|4; x|], ptr + 2       //Out
             
             | [| 5; x; y; _ |] -> if x <> 0 then
+                                    printf "Jump to %A\n" y
                                     [| 5; x; y|], y
                                   else 
-                                    [| 5; x; y|], ptr + 3
+                                    [| 5; x; y|], ptr + 3  // JNZ
                                  
             | [| 6; x; y; _ |] -> if x = 0 then
                                     [| 6; x; y|], y
                                   else 
-                                    [| 6; x; y|], ptr + 3
+                                    [| 6; x; y|], ptr + 3  // JEZ
 
             | [| 7; x; y; z |] -> Array.set prog z (if x < y then 1 else 0)
                                   [|7; x; y; z|], ptr + 4 //Lt
