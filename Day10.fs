@@ -108,10 +108,10 @@ let day10 =
         |> Seq.maxBy snd
 
 
-    printf "x : %A\n" (visible |> Seq.where (fun x -> let a = fst x
-                                                      fst a = {X=1;Y=4}) 
-                               |> Seq.toList
-    )
+    // printf "x : %A\n" (visible |> Seq.where (fun x -> let a = fst x
+    //                                                   fst a = {X=1;Y=4}) 
+    //                            |> Seq.toList
+    // )
 
 
     //printf "%A\n" (totalVis |> Seq.toList)
@@ -119,6 +119,11 @@ let day10 =
     printf "winner : %A\n" best
 
 
+    print "Part 2"
+
+    printf "winner : %A\n" totalVis
+
+    // { X = 30, Y = 34 }   can see 344
 
 
 
