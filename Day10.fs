@@ -2,39 +2,130 @@ module Day10
 
 open Utils
 
+type Point = { X:int; Y: int }
+
 let day10 = 
     // print "Advent of code - Day 10 - Monitoring Station"
 
     let test =
         [|
-        ".#..##";
-        "......";
-        "#####.";
-        "....#.";
-        "...##."       
+        ".#..#";
+        ".....";
+        "#####";
+        "....#";
+        "...##"       
         |]
 
+    let test2 = 
+        [|
+        "......#.#.";
+        "#..#.#....";
+        "..#######.";
+        ".#.#.###..";
+        ".#..#.....";
+        "..#....#.#";
+        "#..#....#.";
+        ".##.#..###";
+        "##...#..#.";
+        ".#....####"
+        |]
+
+    let test3 = 
+        [|
+            "#.#...#.#.";
+            ".###....#.";
+            ".#....#...";
+            "##.#.#.#.#";
+            "....#.#.#.";
+            ".##..###.#";
+            "..#...##..";
+            "..##....##";
+            "......#...";
+            ".####.###.";
+        |]
+
+    // Get locations of all asteroids
     let locations (matrix: string[]) =
         let w = String.length matrix.[0] - 1 
         let h = Array.length matrix - 1
 
         seq {
-            for x in 0 .. h do
-                for y in 0 .. w do
+            for x in 0 .. w do
+                for y in 0 .. h do
                     if matrix.[x].[y] = '#' then
-                        yield (x, y)
+                        yield { X=y; Y=x }
         }
-        
+
+    // let locs = locations test
     let locs = locations test
+    // let locs = locations (readLines "./data/day10.txt")
 
-    for v in locs do
-        printf "%A\n" v
+    let inside a b c = // c falls inside a and b
+        if (c.X > a.X && c.X > b.X) || (c.X < a.X && c.X < b.X)
+            then false
+        else if (c.Y > a.Y && c.Y > b.Y) || (c.Y < a.Y && c.Y < b.Y)
+            then false
+        else if a.X = c.X then 
+            b.X = c.X
+        else if a.Y = c.Y then
+            b.Y = c.Y
+        else
+            (a.X - c.X) * (a.Y - c.Y) = (c.X - b.X) * (c.Y - b.Y)
+
+        
+    let pairs =
+        seq {
+        for loc1 in (locs |> Seq.toList) do
+            for loc2 in (locs |> Seq.where(fun x -> x <> loc1) |> Seq.toList) do
+                yield loc1, loc2
+        }
+
+    let los pair =
+        let a, b = pair
+        locs 
+        |> Seq.where(fun c -> c <> a && c <> b)
+        |> Seq.exists(fun c -> inside a b c) 
+   
+    let visible = 
+        pairs
+        |> Seq.map (fun x -> x, not (los x))
+
+    let totalVis = 
+        visible
+        |> Seq.where snd
+        |> Seq.groupBy (fun x -> fst(fst x))
+        |> Seq.map (fun x -> fst x, snd x |> Seq.length)
+
+    let best =
+        totalVis
+        |> Seq.maxBy snd
 
 
-   //printf "%A\n" test
+    printf "%A\n" (totalVis |> Seq.toList)
 
-    // let input = readLines "./data/day10.txt" 
-    // printf "%A\n" input
+    printf "winner : %A\n" best
+
+    // let canSee location =
+    //     for pair in pairs do
+    //             let vis = all
+    //                         |> Seq.where (fun x -> not (online x loc loc2) )
+    //                         |> Seq.length
+    //             vis, location
+
+
+    //let locs = locations test
+
+
+    // let los = locations
+    //           |> Seq.map canSee
+
+
+
+
+    //printf "%A\n" test
+
+    //let input = readLines "./data/day10.txt" 
+    //printf "%A\n" (locations input |> Seq.toList)
 
 
 
