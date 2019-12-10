@@ -59,8 +59,8 @@ let day10 =
         }
 
     // let locs = locations test
-    let locs = locations test2
-    // let locs = locations (readLines "./data/day10.txt")
+    //let locs = (locations test2) |> Seq.toList
+    let locs = locations (readLines "./data/day10.txt")
 
     let inside a b c = // c falls inside a and b
         // printf "%A %A %A \n" a b c 
@@ -73,8 +73,8 @@ let day10 =
         else if a.Y = c.Y then
             b.Y = c.Y
         else
-            (a.X - c.X) * (a.Y - c.Y) = (c.X - b.X) * (c.Y - b.Y)
-
+            (c.Y - a.Y) * (b.X - a.X) = (c.X - a.X) * (b.Y - a.Y)
+ 
         
     let pairs =
         seq {
