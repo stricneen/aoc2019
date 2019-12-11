@@ -134,6 +134,9 @@ let day10 =
         // atan2 (float center.Y) (float center.X) - atan2 (float x.Y) (float x.X) 
   //      atan ( float(x.Y - center.Y) / float(x.X - center.X) ) / 180. * System.Math.PI
           
+    let angle2 x y = 
+        (atan2  (float (y.Y - x.Y)) (float (y.X - x.X))) * 180. / Math.PI;
+
 
     let mutable c = 0
 
@@ -143,7 +146,7 @@ let day10 =
                    // |> Seq.map (fun x -> { X=x.X - 30;Y=x.Y-34  })
                     |> Seq.where (fun x -> x <> center)
                     |> Seq.where (fun x -> not (los (center, x)))
-                    |> Seq.map (fun x -> x, angle center x)
+                    |> Seq.map (fun x -> x, angle2 center x)
                     |> Seq.sortBy snd
                     |> Seq.map (fun x -> c <- c + 1
                                          c, x)
