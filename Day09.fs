@@ -14,12 +14,12 @@ let day9 =
     // printf "%A\n" o1
 
     let t2 = toSeq "1102,34915192,34915192,7,4,7,99,0"
-    let o2 = IntCode.execute t2 [| 1 |]
+    let o2 = IntCode.execute t2 [| 1L |]
     printf "%A\n" o2
     
-    let t3 = toSeq "104,1125899906842624,99" 
-    let o3 = IntCode.execute t3 [| 1 |]
-    printf "%A\n" o3
+    // let t3 = toSeq "104,1125899906842624,99" 
+    // let o3 = IntCode.execute t3 [| 1L |]
+    // printf "%A\n" o3
 
 
 

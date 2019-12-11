@@ -17,14 +17,14 @@ let intersect (xs:'a seq) (ys: 'a seq) = xs.Intersect(ys)
 
 let toSeq (str: string) =
     str.Split [|','|] 
-    |> Array.map Int32.Parse 
+    |> Array.map Int64.Parse 
     |> Seq.toArray
 
 let readCSV filePath = 
     let line = readLines filePath
                |> Seq.head
     line.Split [|','|] 
-    |> Array.map Int32.Parse 
+    |> Array.map Int64.Parse 
     |> Seq.toArray
 
 let split (input: string) = 
