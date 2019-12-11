@@ -1,5 +1,6 @@
 module Day10
 
+open System
 open Utils
 
 type Point = { X:int; Y: int }
@@ -83,6 +84,7 @@ let day10 =
                 yield loc1, loc2
         }
 
+    // can A see B using locs
     let los pair =
         let a, b = pair
         locs 
@@ -116,20 +118,52 @@ let day10 =
 
     //printf "%A\n" (totalVis |> Seq.toList)
 
-    printf "winner : %A\n" best
+    // printf "winner : %A\n" best
 
 
     print "Part 2"
 
-    printf "winner : %A\n" totalVis
+ 
 
-    // { X = 30, Y = 34 }   can see 344
 
+    let center = { X=30; Y=34 }
+//    let center = { X=0; Y=0 }
+
+    let angle center x =
+            (atan ( abs(float(x.Y - center.Y)) / abs(float(x.X - center.X )))) 
+        // atan2 (float center.Y) (float center.X) - atan2 (float x.Y) (float x.X) 
+  //      atan ( float(x.Y - center.Y) / float(x.X - center.X) ) / 180. * System.Math.PI
+          
+    let angle2 x y = 
+        let  z = (atan2  (float (y.Y - x.Y)) (float (y.X - x.X))) //* 180. / Math.PI;
+        let t = if z > 0. then  z else  (2.* Math.PI + z) * 360. / (2.* Math.PI)
+        ((t + 90.) % 360.)
+
+    let mutable c = 0
+
+    // printf "locations : %A\n" (locs |> Seq.length)
+    
+    let angles = locs
+                   // |> Seq.map (fun x -> { X=x.X - 30;Y=x.Y-34  })
+                    |> Seq.where (fun x -> x <> center)
+                    |> Seq.where (fun x -> not (los (center, x)))
+                    |> Seq.map (fun x -> x, angle2 center x)
+                    |> Seq.sortBy snd
+                    |> Seq.map (fun x -> c <- c + 1
+                                         c, x)
+                    // |> Seq.where (fun x -> let a,b = x 
+                    //                        (fst b) = { X=30;Y=33 } )
+                                            
+
+    for x in angles do
+        printf "%A\n" x
+            // { X = 30, Y = 34 }   can see 344
 
 
 
 // https://stackoverflow.com/questions/1311049/how-to-map-atan2-to-degrees-0-360
 
+// 2641
 
 
 

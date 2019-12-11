@@ -1,4 +1,7 @@
-﻿[<EntryPoint>]
+﻿
+type Point = { X:int; Y: int }
+
+[<EntryPoint>]
 let main argv =
 
     //Day1.day1 |> ignore
@@ -20,5 +23,8 @@ let main argv =
     //Day9.day9 |> ignore
 
     Day10.day10 |> ignore
+
+   // let center = { X=30; Y=34 }
+
 
     0 // return an integer exit code
