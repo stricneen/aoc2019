@@ -9,9 +9,8 @@ module IntCode
             s.[2..] |> Int32.Parse
         else op
 
-    let resolve (opcode: int[]) (prog: int[]) =
+    let resolve (opcode: int[]) (prog: int[]) rb =
         
-        let rb = 0
         let op = getOpCode opcode.[0] 
 
         if op = 99 then
@@ -35,7 +34,7 @@ module IntCode
                 | _ -> failwith "Invalid opcode"
 
             let p2 = 
-                if op <> 3 && op <> 4 then
+                if op <> 3 && op <> 4 && op <> 9 then
                     match modes.[1] with
                     | '0' -> prog.[opcode.[2]]
                     | '1' -> opcode.[2]
@@ -56,11 +55,11 @@ module IntCode
 
     // Input  --   inst ptr      --  prog
     // Output --   new inst ptr  --  updated prog  --  last run op
-    let tick ptr prog input= 
+    let tick ptr prog input rb = 
         let opcode = prog |> Array.skip ptr |> Array.truncate 4
         printf "inst:  %A\n" opcode
-        let resolved = resolve opcode prog
-        // printf "resv:  %A\n" resolved
+        let resolved = resolve opcode prog rb
+        printf "resv:  %A\n" resolved
 
         let op = 
             match resolved with // all ops here are immediate
@@ -85,6 +84,8 @@ module IntCode
             | [| 8; x; y; z |] -> Array.set prog z (if x = y then 1 else 0)
                                   [|8; x; y; z|], ptr + 4 //Eq
 
+            | [| 9; x; _; _ |] -> [|9; x|], ptr + 2 // Relative
+
             | [| 99; x; _; _|] -> [|99; x|], 0
                                   
             | _ -> [||], 0
@@ -97,10 +98,16 @@ module IntCode
         let mutable inputPtr = 0
         let mutable cond = true
         let mutable out = 0
+        let mutable rb = 0
         
         while cond do
             // print ""
-            let nptr, prog, op = tick ptr prog inputs.[inputPtr]
+            let inp = if Array.length inputs > inputPtr then
+                            inputs.[inputPtr]
+                        else 
+                            0
+
+            let nptr, prog, op = tick ptr prog inp rb
 
             if (fst op).[0] = 3 then
                 inputPtr <- (inputPtr + 1) % Array.length inputs
@@ -108,9 +115,13 @@ module IntCode
             if (fst op).[0] = 4 then
                 out <- (fst op).[1]
             
+            if (fst op).[0] = 9 then
+                printf "Relavitve : %A\n" (fst op).[1]
+                rb <- (fst op).[1]
+
             if (fst op).[0] = 99 then // END
                 cond <- false
-                // out <- (fst op).[1]
+              
             //let t = System.Console.ReadKey()
             ptr <- nptr
 
