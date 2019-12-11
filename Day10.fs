@@ -137,7 +137,7 @@ let day10 =
     let angle2 x y = 
         let  z = (atan2  (float (y.Y - x.Y)) (float (y.X - x.X))) //* 180. / Math.PI;
         let t = if z > 0. then  z else  (2.* Math.PI + z) * 360. / (2.* Math.PI)
-        (t - 90.) % 360.
+        ((t + 90.) % 360.)
 
     let mutable c = 0
 
@@ -151,6 +151,9 @@ let day10 =
                     |> Seq.sortBy snd
                     |> Seq.map (fun x -> c <- c + 1
                                          c, x)
+                    // |> Seq.where (fun x -> let a,b = x 
+                    //                        (fst b) = { X=30;Y=33 } )
+                                            
 
     for x in angles do
         printf "%A\n" x
@@ -160,7 +163,7 @@ let day10 =
 
 
 
-
+// 2641
 
 
 
