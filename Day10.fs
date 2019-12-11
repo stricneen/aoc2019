@@ -130,10 +130,11 @@ let day10 =
 //    let center = { X=0; Y=0 }
 
     let angle center x =
+            (atan ( abs(float(x.Y - center.Y)) / abs(float(x.X - center.X )))) 
         // atan2 (float center.Y) (float center.X) - atan2 (float x.Y) (float x.X) 
   //      atan ( float(x.Y - center.Y) / float(x.X - center.X) ) / 180. * System.Math.PI
-          0
           
+
     let mutable c = 0
 
     // printf "locations : %A\n" (locs |> Seq.length)
