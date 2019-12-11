@@ -1,5 +1,6 @@
 module Day10
 
+open System
 open Utils
 
 type Point = { X:int; Y: int }
@@ -83,6 +84,7 @@ let day10 =
                 yield loc1, loc2
         }
 
+    // can A see B using locs
     let los pair =
         let a, b = pair
         locs 
@@ -116,14 +118,38 @@ let day10 =
 
     //printf "%A\n" (totalVis |> Seq.toList)
 
-    printf "winner : %A\n" best
+    // printf "winner : %A\n" best
 
 
     print "Part 2"
 
-    printf "winner : %A\n" totalVis
+ 
 
-    // { X = 30, Y = 34 }   can see 344
+
+    let center = { X=30; Y=34 }
+//    let center = { X=0; Y=0 }
+
+    let angle center x =
+        // atan2 (float center.Y) (float center.X) - atan2 (float x.Y) (float x.X) 
+  //      atan ( float(x.Y - center.Y) / float(x.X - center.X) ) / 180. * System.Math.PI
+          0
+          
+    let mutable c = 0
+
+    // printf "locations : %A\n" (locs |> Seq.length)
+    
+    let angles = locs
+                   // |> Seq.map (fun x -> { X=x.X - 30;Y=x.Y-34  })
+                    |> Seq.where (fun x -> x <> center)
+                    |> Seq.where (fun x -> not (los (center, x)))
+                    |> Seq.map (fun x -> x, angle center x)
+                    |> Seq.sortBy snd
+                    |> Seq.map (fun x -> c <- c + 1
+                                         c, x)
+
+    for x in angles do
+        printf "%A\n" x
+            // { X = 30, Y = 34 }   can see 344
 
 
 
