@@ -128,7 +128,7 @@ let day10 =
 
 
 
-
+// https://stackoverflow.com/questions/1311049/how-to-map-atan2-to-degrees-0-360
 
 
 
