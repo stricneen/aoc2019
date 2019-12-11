@@ -135,8 +135,9 @@ let day10 =
   //      atan ( float(x.Y - center.Y) / float(x.X - center.X) ) / 180. * System.Math.PI
           
     let angle2 x y = 
-        (atan2  (float (y.Y - x.Y)) (float (y.X - x.X))) * 180. / Math.PI;
-
+        let  z = (atan2  (float (y.Y - x.Y)) (float (y.X - x.X))) //* 180. / Math.PI;
+        let t = if z > 0. then  z else  (2.* Math.PI + z) * 360. / (2.* Math.PI)
+        (t - 90.) % 360.
 
     let mutable c = 0
 
