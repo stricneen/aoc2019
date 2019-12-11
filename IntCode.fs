@@ -55,11 +55,15 @@ module IntCode
 
     // Input  --   inst ptr      --  prog
     // Output --   new inst ptr  --  updated prog  --  last run op
-    let tick ptr prog input rb = 
+    let tick ptr progin input rb = 
+        
+        // temp
+        let prog = Array.append progin (Array.create 100 0)
+        
         let opcode = prog |> Array.skip ptr |> Array.truncate 4
         printf "inst:  %A\n" opcode
         let resolved = resolve opcode prog rb
-        printf "resv:  %A\n" resolved
+        // printf "resv:  %A\n" resolved
 
         let op = 
             match resolved with // all ops here are immediate
@@ -116,16 +120,16 @@ module IntCode
                 out <- (fst op).[1]
             
             if (fst op).[0] = 9 then
-                printf "Relavitve : %A\n" (fst op).[1]
-                rb <- (fst op).[1]
+                // printf "Relavitve : %A\n" (fst op).[1]
+                rb <- rb + (fst op).[1]
 
             if (fst op).[0] = 99 then // END
                 cond <- false
               
-            //let t = System.Console.ReadKey()
+            let t = System.Console.ReadKey()
             ptr <- nptr
 
 
         printf "************** exec complete: %A\n" out
-        //let t' = System.Console.ReadKey()
+        let t' = System.Console.ReadKey()
         out
