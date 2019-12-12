@@ -53,6 +53,9 @@ let day12 =
            (b, {X=n b.X a.X b'.X ;Y=n b.Y a.Y b'.Y;Z=n b.Z a.Z b'.Z})
        ]
         
+    let unwrapPairs acc ele =
+        let acc1 = fst ele :: acc
+        snd ele :: acc1
 
     //let pairs =
     //let x = 
@@ -61,6 +64,8 @@ let day12 =
     let y = comb 2 s
             |> List.map applyVelocity
             |> List.concat
+            |> List.fold unwrapPairs []
+            
             
          //   |> List.sumBy fst
 
