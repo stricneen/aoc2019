@@ -5,7 +5,7 @@ open Utils
 let day9 = 
     print "Advent of code - Day 9 - Sensor Boost"
 
-    let prog8 = readCSV "./data/day9.txt" 
+    let prog9 = readCSV "./data/day9.txt" 
 
     // let x = 34915192 * 34915192
 
@@ -13,14 +13,17 @@ let day9 =
     // let o1 = IntCode.execute t1 [| |]
     // printf "%A\n" o1
 
-    let t2 = toSeq "1102,34915192,34915192,7,4,7,99,0"
-    let o2 = IntCode.execute t2 [| 1L |]
-    printf "%A\n" o2
+    // let t2 = toSeq "1102,34915192,34915192,7,4,7,99,0"
+    // let o2 = IntCode.execute t2 [| 1L |]
+    // printf "%A\n" o2
     
     // let t3 = toSeq "104,1125899906842624,99" 
     // let o3 = IntCode.execute t3 [| 1L |]
     // printf "%A\n" o3
 
+    
+    let o = IntCode.execute prog9 [| 1L |]
+    printf "%A\n" o
 
 
 

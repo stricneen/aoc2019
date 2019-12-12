@@ -30,13 +30,17 @@ module IntCode
                 match modes.[0] with
                 | '0' -> prog.[int(opcode.[1])]
                 | '1' -> opcode.[1]
-                | '2' -> prog.[int(rb) + int(opcode.[1])]
+                | '2' -> printf "cont : %A\n" prog.[int(rb) + int(opcode.[1])]
+                         prog.[int(rb) + int(opcode.[1])]
                 | _ -> failwith "Invalid opcode"
 
-            printf "p1 : %A\n" prog
+
+            printf "rb   : %A\n" rb
+            printf "indx : %A\n" (int(rb) + int(opcode.[1])) 
+            printf "prog : %A\n" prog
 
             let p2 = 
-                if op <> 3L && op <> 4L && op <> 9L then
+                if op <> 3L || op <> 4L || op <> 9L then
                     match modes.[1] with
                     | '0' -> prog.[int(opcode.[2])]
                     | '1' -> opcode.[2]
@@ -45,25 +49,16 @@ module IntCode
                 else
                     0L
 
-
-            // let p2 = 
-            //     if op <> 3 && op <> 4 then
-            //         if modes.[1] = '0' then prog.[opcode.[2]] else opcode.[2]
-            //     else
-            //         0
-
             [| op; p1; p2; opcode.[3] |]
-
+//1008
 
     // Input  --   inst ptr      --  prog
     // Output --   new inst ptr  --  updated prog  --  last run op
     let tick ptr prog input rb = 
          
         let opcode = prog |> Array.skip ptr |> Array.truncate 4
-        printf "inst:  %A\n" opcode
+        printf "\ninst:  %A\n" opcode
         let resolved = resolve opcode prog rb
-        // 
-        
         printf "resv:  %A\n" resolved
 
         let op = 
@@ -78,7 +73,7 @@ module IntCode
             | [| 4L; x; _; _ |] -> printf " ==========%A\n" x
                                    [|4L; x|], ptr + 2       //Out
 
-            | [| 5L; x; y; _ |] -> printf "Jump to %A  (%A <> 0)\n" y x 
+            | [| 5L; x; y; _ |] -> printf "Jump to %A  if (%A <> 0L)\n" y x 
                                    [| 5L; x; y|], if x <> 0L then (int y) else ptr + 3  // JNZ
                                     
             | [| 6L; x; y; _ |] -> [| 6L; x; y|], if x = 0L then (int y) else ptr + 3  // JEZ
