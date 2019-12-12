@@ -73,18 +73,25 @@ let day12 =
         { X = pos.X + vel.X; Y = pos.Y + vel.Y; Z = pos.Z + vel.Z }, vel
 
     //for x in 1 .. 10 do 
-    let y = comb 2 s
-            |> List.map applyVelocity
-            |> List.concat
-            |> List.fold unwrapPairs []
-            |> List.fold sumVelocity []
-            |> List.map applyGravity
+    let tick state =
+        comb 2 state
+                |> List.map applyVelocity
+                |> List.concat
+                |> List.fold unwrapPairs []
+                |> List.fold sumVelocity []
+                |> List.map applyGravity
+
+    let y = tick s
+    let z = tick y
 
             
             
-         //   |> List.sumBy fst
+         //   |> List.sumBy fst 
 
     printf "%A\n\n" y
+
+    printf "%A\n\n" z
+    
         
 
 
