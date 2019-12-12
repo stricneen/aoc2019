@@ -44,7 +44,7 @@ let day12 =
           
 
     let applyVelocity (l: (Pos * Pos) list) =
-      // printf "A : %A\n\n" l
+       printf "A : %A\n\n" l
        let a  = fst l.[0]
        let a' = snd l.[0]
        let b  = fst l.[1]
@@ -53,7 +53,7 @@ let day12 =
            (a, {X = n a.X b.X a'.X; Y = n a.Y b.Y a'.Y; Z = n a.Z b.Z a'.Z}),
            (b, {X = n b.X a.X b'.X; Y = n b.Y a.Y b'.Y; Z = n b.Z a.Z b'.Z})
        ]
-      //printf "B : %A\n\n" v
+       printf "B : %A\n\n" v
        v
         
     let unwrapPairs acc ele =
@@ -87,6 +87,9 @@ let day12 =
                 |> List.map applyGravity
 
     let y = tick s
+    print "------------------------------------------------------"
+
+
     let z = tick y
 
     printf "%A\n\n" s
