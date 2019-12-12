@@ -57,11 +57,7 @@ let day12 =
         let acc1 = fst ele :: acc
         snd ele :: acc1
 
-    let sumup acc ele = 
-        // printf "acc : %A\n\n" acc
-        // printf "ele : %A\n\n" ele
-        
-
+    let sumVelocity acc ele = 
         let x = acc |> List.where (fun x -> fst x = fst ele)
         if List.isEmpty x then 
             ele :: acc
@@ -70,18 +66,20 @@ let day12 =
             
             let hd = snd(x |> List.head)
             let sum = { X = (snd ele).X + hd.X; Y = (snd ele).Y + hd.Y; Z = (snd ele).Z + hd.Z}
-            // (fst x, sum) :: nw
             (fst ele,sum) :: nw
 
-    //let pairs =
-    //let x = 
+    let applyGravity data =
+        let pos, vel = data
+        { X = pos.X + vel.X; Y = pos.Y + vel.Y; Z = pos.Z + vel.Z }, vel
 
     //for x in 1 .. 10 do 
     let y = comb 2 s
             |> List.map applyVelocity
             |> List.concat
             |> List.fold unwrapPairs []
-            |> List.fold sumup []
+            |> List.fold sumVelocity []
+            |> List.map applyGravity
+
             
             
          //   |> List.sumBy fst
