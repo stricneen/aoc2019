@@ -54,3 +54,16 @@ let rec comb n l =   // ** 1222185
     | 0, _ -> [[]]
     | _, [] -> []
     | k, (x::xs) -> List.map ((@) [x]) (comb (k-1) xs) @ comb k xs
+
+
+let fst3 x =
+    let y,_,_ = x
+    y
+
+let snd3 x =
+    let _,y,_ = x
+    y
+
+let trd3 x =
+    let _,_,y = x
+    y
