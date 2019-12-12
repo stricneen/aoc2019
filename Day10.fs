@@ -6,7 +6,7 @@ open Utils
 type Point = { X:int; Y: int }
 
 let day10 = 
-    // print "Advent of code - Day 10 - Monitoring Station"
+    print "Advent of code - Day 10 - Monitoring Station"
 
     let test =
         [|
