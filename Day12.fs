@@ -32,7 +32,7 @@ let day12 =
         d, {X=0;Y=0;Z=0} ;
     ]
 
-    let pairs = comb 2 s
+    // let pairs = comb 2 s
 
     let n a b c =
         if a < b then
@@ -57,6 +57,22 @@ let day12 =
         let acc1 = fst ele :: acc
         snd ele :: acc1
 
+    let sumup acc ele = 
+        // printf "acc : %A\n\n" acc
+        // printf "ele : %A\n\n" ele
+        
+
+        let x = acc |> List.where (fun x -> fst x = fst ele)
+        if List.isEmpty x then 
+            ele :: acc
+        else 
+            let nw = acc |> List.where (fun x -> fst x <> fst ele)
+            
+            let hd = snd(x |> List.head)
+            let sum = { X = (snd ele).X + hd.X; Y = (snd ele).Y + hd.Y; Z = (snd ele).Z + hd.Z}
+            // (fst x, sum) :: nw
+            (fst ele,sum) :: nw
+
     //let pairs =
     //let x = 
 
@@ -65,6 +81,7 @@ let day12 =
             |> List.map applyVelocity
             |> List.concat
             |> List.fold unwrapPairs []
+            |> List.fold sumup []
             
             
          //   |> List.sumBy fst
