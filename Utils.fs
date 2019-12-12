@@ -47,3 +47,10 @@ let distrib e L = // ** 1526046
 let rec perms = function 
     | [] -> Seq.singleton []
     | h::t -> Seq.collect (distrib h) (perms t)
+
+
+let rec comb n l =   // ** 1222185
+    match n, l with
+    | 0, _ -> [[]]
+    | _, [] -> []
+    | k, (x::xs) -> List.map ((@) [x]) (comb (k-1) xs) @ comb k xs
