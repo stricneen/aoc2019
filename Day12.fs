@@ -36,25 +36,21 @@ let day12 =
 
     let n a b c =
         if a < b then
-            c - 1
-        else if a > b then
             c + 1
+        else if a > b then
+            c - 1
         else 
             c
           
 
     let applyVelocity (l: (Pos * Pos) list) =
-       // let posa, vela = a.[0]
-       // let posb, velb = b.[0]
-        //printf "%A\n\n" a
        let a  = fst l.[0]
        let a' = snd l.[0]
        let b  = fst l.[1]
        let b' = snd l.[1]
-       
        [ 
            (a, {X=n a.X b.X a'.X ;Y=n a.Y b.Y a'.Y;Z=n a.Z b.Z a'.Z}),
-           (b, {X=n a.X b.X b'.X ;Y=n a.Y b.Y b'.Y;Z=n a.Z b.Z b'.Z})
+           (b, {X=n b.X a.X b'.X ;Y=n b.Y a.Y b'.Y;Z=n b.Z a.Z b'.Z})
        ]
         
 
@@ -64,6 +60,9 @@ let day12 =
     //for x in 1 .. 10 do 
     let y = comb 2 s
             |> List.map applyVelocity
+            |> List.concat
+            
+         //   |> List.sumBy fst
 
     printf "%A\n\n" y
         
