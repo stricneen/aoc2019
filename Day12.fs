@@ -2,7 +2,7 @@ module Day12
 
 open Utils
 
-type Pos = { X:int; Y:int; Z:int}
+type Pos = { X:int; Y:int; Z:int }
 
 let day12 = 
     print "Advent of code - Day 12 - The N-Body Problem"
@@ -20,16 +20,29 @@ let day12 =
     
     let start = [| io, europa, ganymede, callisto |]
 
+    // Eg 1
     let a = { X= -1; Y=0; Z=2 }
     let b = { X=2; Y= -10; Z= -7 }
     let c = { X=4; Y= -8; Z=8 }
     let d = { X=3; Y=5; Z= -1 }
 
+// <x=-8, y=-10, z=0>
+// <x=5, y=5, z=10>
+// <x=2, y=-7, z=3>
+// <x=9, y=-8, z=-3>
+    
+
+    // Eg 2
+    // let a = { X= -8; Y= -10; Z=0 }
+    // let b = { X=5; Y=5; Z=10 }
+    // let c = { X= 2; Y= -7; Z=3 }
+    // let d = { X= 9; Y= -8; Z= -3 }
+
     let s = [
-        a, {X=0;Y=0;Z=0} ;
-        b, {X=0;Y=0;Z=0} ;
-        c, {X=0;Y=0;Z=0} ;
-        d, {X=0;Y=0;Z=0} ;
+        a, {X=0;Y=0;Z=0};
+        b, {X=0;Y=0;Z=0};
+        c, {X=0;Y=0;Z=0};
+        d, {X=0;Y=0;Z=0};
     ]
 
     // let pairs = comb 2 s
@@ -88,17 +101,41 @@ let day12 =
                 |> List.fold sumVelocity []
                 |> List.map applyGravity
 
-    let y = tick s
+
+    let interateSelf func initial count =
+        let rec inner intermediate n =
+            if n = 1 then
+                func intermediate
+                    else
+                inner (func intermediate) (n - 1)
+
+        inner initial count
+
+  
+    let iter func (input: 't) n = 
+        let rec inner (input: 't) count = 
+            let output = func input
+            printf "%A\n" output
+            if count = 1 then
+                () // output
+            else 
+                inner output (count-1)
+            // let ouput = func input
+        inner input n
 
 
-    let z = tick y
+         
+    iter tick s 3
 
-    printf "%A\n\n" s
-    print "------------------------------------------------------"
-    printf "%A\n\n" y
-    print "------------------------------------------------------"
+    // let y = tick s
+    // let z = tick y
 
-    printf "%A\n\n" z
+    // printf "%A\n\n" s
+    // print "------------------------------------------------------"
+    // printf "%A\n\n" y
+    // print "------------------------------------------------------"
+
+    // printf "%A\n\n" z
     
         
 
