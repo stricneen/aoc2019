@@ -13,17 +13,17 @@ let day12 =
 // <x=6, y=-9, z=-11>
 
 
-    let io = { X=1; Y= -4; Z=3 }
-    let europa = { X= -14; Y=9; Z= -4 }
-    let ganymede = { X= -4; Y= -6; Z=7 }
-    let callisto = { X=6; Y= -9; Z= -11 }
+    // let io = { X=1; Y= -4; Z=3 }
+    // let europa = { X= -14; Y=9; Z= -4 }
+    // let ganymede = { X= -4; Y= -6; Z=7 }
+    // let callisto = { X=6; Y= -9; Z= -11 }
     
-    let s = [
-        io,         {X=0;Y=0;Z=0};
-        europa,     {X=0;Y=0;Z=0};
-        ganymede,   {X=0;Y=0;Z=0};
-        callisto,   {X=0;Y=0;Z=0};
-    ]
+    // let s = [
+    //     io,         {X=0;Y=0;Z=0};
+    //     europa,     {X=0;Y=0;Z=0};
+    //     ganymede,   {X=0;Y=0;Z=0};
+    //     callisto,   {X=0;Y=0;Z=0};
+    // ]
 
     // Eg 1
     let a = { X= -1; Y=0; Z=2 }
@@ -43,12 +43,12 @@ let day12 =
     // let c = { X= 2; Y= -7; Z=3 }
     // let d = { X= 9; Y= -8; Z= -3 }
 
-    // let s = [
-    //     a, {X=0;Y=0;Z=0};
-    //     b, {X=0;Y=0;Z=0};
-    //     c, {X=0;Y=0;Z=0};
-    //     d, {X=0;Y=0;Z=0};
-    // ]
+    let s = [
+        a, {X=0;Y=0;Z=0};
+        b, {X=0;Y=0;Z=0};
+        c, {X=0;Y=0;Z=0};
+        d, {X=0;Y=0;Z=0};
+    ]
 
     // let pairs = comb 2 s
 
@@ -81,8 +81,6 @@ let day12 =
     let sumVelocity acc (ele: Pos * Pos * Pos) = 
         // printf "acc : %A\n\n" acc
         // printf "ele : %A\n\n" ele
-        
-        
         let pos, vel, del = ele
 
         let x = acc |> List.where (fun x -> fst x = fst3 ele)
@@ -106,16 +104,6 @@ let day12 =
                 |> List.fold sumVelocity []
                 |> List.map applyGravity
 
-
-    // let interateSelf func initial count =
-    //     let rec inner intermediate n =
-    //         if n = 1 then
-    //             func intermediate
-    //                 else
-    //             inner (func intermediate) (n - 1)
-
-    //     inner initial count
-
     let posValue pos = 
         abs pos.X + abs pos.Y + abs pos.Z
 
@@ -131,13 +119,53 @@ let day12 =
             if count = 1 then
                 () // output
             else 
-                inner output (count-1)
+                inner output (count - 1)
             // let ouput = func input
         inner input n
 
 
-    iter tick s 1000
+    // iter tick s 1000
 
-    // 179
+    // Part 2
+    let posEquals pos1 pos2 =
+        pos1.X = pos2.X && pos1.Y = pos2.Y && pos1.Z = pos2.Z
+
+    let stateEquals s1 s2 =
+        s1
+        |> List.zip s2
+        |> List.forall (fun (x, y) -> posEquals (fst x) (fst y) && posEquals (snd x) (snd y))
+
+    // let state = [
+    //     a, {X=0;Y=0;Z=0};
+    //     b, {X=0;Y=0;Z=0};
+    //     c, {X=0;Y=0;Z=0};
+    //     d, {X=0;Y=0;Z=0};
+    // ]  
+
+    let iter2 func (input: 't) start =    // move to utils
+
+        let initial = input
+
+        let rec inner (input: 't) count = 
+            let output = func input
+
+            if stateEquals initial output then
+                 printf "EQUAL: %A\n" count
+                 System.Console.ReadKey() |> ignore
+                 
+
+            printf "%A\n" output
+            printf "%A\n" count
+            //printf "Total : %A\n" (totalEnergy output)
+            // if count = 1 then
+            //     () // output
+            // else 
+            inner output (count+1)
+            // let ouput = func input
+        let initial = input
+        inner input start
+
+    iter2 tick s 0
+
 
     0
