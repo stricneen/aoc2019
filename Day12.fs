@@ -125,7 +125,7 @@ let day12 =
 
 
          
-    iter tick s 3
+    iter tick s 10
 
     // let y = tick s
     // let z = tick y
