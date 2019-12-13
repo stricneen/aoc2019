@@ -18,7 +18,12 @@ let day12 =
     let ganymede = { X= -4; Y= -6; Z=7 }
     let callisto = { X=6; Y= -9; Z= -11 }
     
-    let start = [| io, europa, ganymede, callisto |]
+    let s = [
+        io,         {X=0;Y=0;Z=0};
+        europa,     {X=0;Y=0;Z=0};
+        ganymede,   {X=0;Y=0;Z=0};
+        callisto,   {X=0;Y=0;Z=0};
+    ]
 
     // Eg 1
     let a = { X= -1; Y=0; Z=2 }
@@ -38,12 +43,12 @@ let day12 =
     // let c = { X= 2; Y= -7; Z=3 }
     // let d = { X= 9; Y= -8; Z= -3 }
 
-    let s = [
-        a, {X=0;Y=0;Z=0};
-        b, {X=0;Y=0;Z=0};
-        c, {X=0;Y=0;Z=0};
-        d, {X=0;Y=0;Z=0};
-    ]
+    // let s = [
+    //     a, {X=0;Y=0;Z=0};
+    //     b, {X=0;Y=0;Z=0};
+    //     c, {X=0;Y=0;Z=0};
+    //     d, {X=0;Y=0;Z=0};
+    // ]
 
     // let pairs = comb 2 s
 
@@ -102,20 +107,27 @@ let day12 =
                 |> List.map applyGravity
 
 
-    let interateSelf func initial count =
-        let rec inner intermediate n =
-            if n = 1 then
-                func intermediate
-                    else
-                inner (func intermediate) (n - 1)
+    // let interateSelf func initial count =
+    //     let rec inner intermediate n =
+    //         if n = 1 then
+    //             func intermediate
+    //                 else
+    //             inner (func intermediate) (n - 1)
 
-        inner initial count
+    //     inner initial count
 
+    let posValue pos = 
+        abs pos.X + abs pos.Y + abs pos.Z
+
+    let totalEnergy (state: (Pos * Pos) list) =
+        state 
+        |> List.sumBy (fun x -> posValue (fst x) * posValue (snd x))
   
-    let iter func (input: 't) n = 
+    let iter func (input: 't) n =    // move to utils
         let rec inner (input: 't) count = 
             let output = func input
-            printf "%A\n" output
+            //printf "%A\n" output
+            printf "Total : %A\n" (totalEnergy output)
             if count = 1 then
                 () // output
             else 
@@ -124,22 +136,8 @@ let day12 =
         inner input n
 
 
-         
-    iter tick s 10
+    iter tick s 1000
 
-    // let y = tick s
-    // let z = tick y
-
-    // printf "%A\n\n" s
-    // print "------------------------------------------------------"
-    // printf "%A\n\n" y
-    // print "------------------------------------------------------"
-
-    // printf "%A\n\n" z
-    
-        
-
-
-
+    // 179
 
     0
