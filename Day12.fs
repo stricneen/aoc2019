@@ -36,42 +36,44 @@ let day12 =
 
     let n a b c =
         if a < b then
-            c + 1
+            1
         else if a > b then
-            c - 1
+           -1
         else 
-            c
+            0
           
 
     let applyVelocity (l: (Pos * Pos) list) =
-       printf "A : %A\n\n" l
-       let a  = fst l.[0]
+       // printf "A : %A\n\n" l
+       let a  = fst l.[0] 
        let a' = snd l.[0]
        let b  = fst l.[1]
        let b' = snd l.[1]
        let v = [ 
-           (a, {X = n a.X b.X a'.X; Y = n a.Y b.Y a'.Y; Z = n a.Z b.Z a'.Z}),
-           (b, {X = n b.X a.X b'.X; Y = n b.Y a.Y b'.Y; Z = n b.Z a.Z b'.Z})
+           (a, a', {X = n a.X b.X a'.X; Y = n a.Y b.Y a'.Y; Z = n a.Z b.Z a'.Z}),
+           (b, b', {X = n b.X a.X b'.X; Y = n b.Y a.Y b'.Y; Z = n b.Z a.Z b'.Z})
        ]
-       printf "B : %A\n\n" v
+       // printf "B : %A\n\n" v
        v
         
     let unwrapPairs acc ele =
         let acc1 = fst ele :: acc
         snd ele :: acc1
 
-    let sumVelocity acc ele = 
+    let sumVelocity acc (ele: Pos * Pos * Pos) = 
         // printf "acc : %A\n\n" acc
         // printf "ele : %A\n\n" ele
         
-        let x = acc |> List.where (fun x -> fst x = fst ele)
+        
+        let pos, vel, del = ele
+
+        let x = acc |> List.where (fun x -> fst x = fst3 ele)
         if List.isEmpty x then 
-            ele :: acc
+            (pos, { X = vel.X + del.X ; Y = vel.Y + del.Y; Z = vel.Z + del.Z}) :: acc
         else 
-            let nw = acc |> List.where (fun x -> fst x <> fst ele)
-            let hd = snd(x |> List.head)
-            let sum = { X = (snd ele).X + hd.X; Y = (snd ele).Y + hd.Y; Z = (snd ele).Z + hd.Z}
-            (fst ele,sum) :: nw
+            let nw = acc |> List.where (fun x -> fst x <> fst3 ele)
+            let vel' = snd (List.head x)
+            (pos, { X = vel'.X + del.X ; Y = vel'.Y + del.Y; Z = vel'.Z + del.Z}) :: nw
 
     let applyGravity data =
         let pos, vel = data
@@ -87,13 +89,14 @@ let day12 =
                 |> List.map applyGravity
 
     let y = tick s
-    print "------------------------------------------------------"
 
 
     let z = tick y
 
     printf "%A\n\n" s
+    print "------------------------------------------------------"
     printf "%A\n\n" y
+    print "------------------------------------------------------"
 
     printf "%A\n\n" z
     
