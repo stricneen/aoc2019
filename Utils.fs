@@ -59,3 +59,15 @@ let rec comb n l =   // ** 1222185
 let fst3 t = 
     let x, _, _ = t
     x
+ 
+let snd3 t = 
+    let _, x, _ = t
+    x
+
+let trd3 t = 
+    let _, _, x = t
+    x
+
+let fst4 t = 
+    let x, _, _, _ = t
+    x
