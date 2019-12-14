@@ -13,17 +13,17 @@ let day12 =
 // <x=6, y=-9, z=-11>
 
 
-    // let io = { X=1; Y= -4; Z=3 }
-    // let europa = { X= -14; Y=9; Z= -4 }
-    // let ganymede = { X= -4; Y= -6; Z=7 }
-    // let callisto = { X=6; Y= -9; Z= -11 }
+    let io = { X=1; Y= -4; Z=3 }
+    let europa = { X= -14; Y=9; Z= -4 }
+    let ganymede = { X= -4; Y= -6; Z=7 }
+    let callisto = { X=6; Y= -9; Z= -11 }
     
-    // let s = [
-    //     io,         {X=0;Y=0;Z=0};
-    //     europa,     {X=0;Y=0;Z=0};
-    //     ganymede,   {X=0;Y=0;Z=0};
-    //     callisto,   {X=0;Y=0;Z=0};
-    // ]
+    let universe = [
+        io,         {X=0;Y=0;Z=0};
+        europa,     {X=0;Y=0;Z=0};
+        ganymede,   {X=0;Y=0;Z=0};
+        callisto,   {X=0;Y=0;Z=0};
+    ]
 
     // Eg 1
     let a = { X= -1; Y=0; Z=2 }
@@ -133,7 +133,7 @@ let day12 =
     let stateEquals s1 s2 =
         s1
         |> List.zip s2
-        |> List.forall (fun (x, y) -> posEquals (fst x) (fst y) && posEquals (snd x) (snd y))
+        |> List.exists (fun (x, y) -> posEquals (fst x) (fst y) && posEquals (snd x) (snd y))
 
     // let state = [
     //     a, {X=0;Y=0;Z=0};
@@ -142,10 +142,10 @@ let day12 =
     //     d, {X=0;Y=0;Z=0};
     // ]  
 
-    let iter2 func (input: 't) start =    // move to utils
+    let iter2 func (input: 't) (start:bigint) =    // move to utils
 
         let initial = input
-
+        printf "%A\n" initial
         let rec inner (input: 't) count = 
             let output = func input
 
@@ -154,18 +154,20 @@ let day12 =
                  System.Console.ReadKey() |> ignore
                  
 
-            printf "%A\n" output
-            printf "%A\n" count
+            if count % 100000I = 0I then
+                printf "%A\n" count
+                printf "%A\n" output
+            //System.Console.ReadKey() |> ignore
+
             //printf "Total : %A\n" (totalEnergy output)
             // if count = 1 then
             //     () // output
             // else 
-            inner output (count+1)
-            // let ouput = func input
-        let initial = input
+            inner output (count + 1I)        
+    
         inner input start
 
-    iter2 tick s 0
-
+    //iter2 tick s 0
+    iter2 tick universe 0I
 
     0
