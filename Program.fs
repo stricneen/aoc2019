@@ -20,15 +20,11 @@ let main argv =
 
     //Day8.day8 |> ignore
     
-    // let x: bigint = bigint 34915192 * bigint 34915192
-    //printf "x : %A\n" x
-
-    //Day9.day9 |> ignore
+    Day9.day9 |> ignore
 
     //Day10.day10 |> ignore
 
-
-    Day12.day12 |> ignore
+    //Day12.day12 |> ignore
 
 
     0 // return an integer exit code
