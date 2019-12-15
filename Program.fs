@@ -1,12 +1,9 @@
-﻿
-type Point = { X:int; Y: int }
-
-[<EntryPoint>]
+﻿[<EntryPoint>]
 let main argv =
 
     //Day1.day1 |> ignore
 
-    //Day2.day2 |> ignore
+    //Day2.day2 |> igno
 
     //Day3.day3 |> ignore
 

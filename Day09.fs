@@ -22,10 +22,10 @@ let day9 =
     // printf "%A\n" o3
 
     
-    let o = IntCode.execute prog9 [| 1L |]
-    printf "%A\n" o
+    let o = IntCode.execute prog9 [| 2L |]
+    //printf "%A\n" o
 
-
+    // 3484538123
 
 
 
