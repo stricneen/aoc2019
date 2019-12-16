@@ -71,3 +71,10 @@ let trd3 t =
 let fst4 t = 
     let x, _, _, _ = t
     x
+
+
+let rec iterate func input count =
+    let output = func input
+    match count with
+    | 0 -> ()
+    | _ -> iterate func output (count - 1)

@@ -8,7 +8,6 @@ let day16 =
 
     let prog =  readLines "./data/day16.txt" |> Array.head
 
-    let input = "12345678"
 
     let countSeq p =
         seq {
@@ -24,26 +23,35 @@ let day16 =
 
     let pattern p = cycle (countSeq p) |> Seq.skip 1
 
-    // let x =
-    //     Seq.initInfinite pattern
-    //     |> Seq.zip input
-
-    let digit i =
+    let digit input i =
         Seq.map2 (fun a b -> a, b) input (pattern i)
         |> Seq.sumBy(fun (a, b) -> int(a.ToString()) * b)
 
-    //for i in 0 .. String.length input  do
-
-
     let generate inp =
         inp
-        |> Seq.mapi(fun i _ -> (digit i).ToString())
+        |> Seq.mapi (fun i _ -> (digit inp i).ToString())
         |> Seq.map (fun x -> x.[x.Length - 1])
         |> String.Concat
   
-    let next = generate input
 
-    printf "%A\n" next
+    let input = "12345678"
+
+    
+    
+    iterate (fun x ->   printf "%A\n" x
+                        generate x) input 100
+
+    // let n1 = generate input
+    // printf "%A\n" n1
+    
+    // let n2 = generate n1
+    // printf "%A\n" n2
+
+    // let n3 = generate n2
+    // printf "%A\n" n3
+
+    // let n3 = generate n3
+    // printf "%A\n" n3
 
 
 
