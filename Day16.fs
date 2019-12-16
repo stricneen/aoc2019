@@ -6,7 +6,7 @@ open Utils
 let day16 =
     print "Advent of code - Day 16 - Flawed Frequency Transmission"
 
-    let prog =  readLines "./data/day16.txt" |> Array.head
+    
 
 
     let countSeq p =
@@ -34,24 +34,15 @@ let day16 =
         |> String.Concat
   
 
-    let input = "12345678"
+    // let input = "69317163492948606335995924319873"
 
+    let input =  readLines "./data/day16.txt" |> Array.head
     
     
     iterate (fun x ->   printf "%A\n" x
                         generate x) input 100
 
-    // let n1 = generate input
-    // printf "%A\n" n1
-    
-    // let n2 = generate n1
-    // printf "%A\n" n2
 
-    // let n3 = generate n2
-    // printf "%A\n" n3
-
-    // let n3 = generate n3
-    // printf "%A\n" n3
 
 
 
