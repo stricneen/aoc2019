@@ -5,18 +5,50 @@ open Utils
 let day7 = 
     print "Advent of code - Day 7 - Amplification Circuit"
 
+    let outputVal x = x
 
 
-    // let amplify prog (phases: int[]) = 
-    //     let o1 = IntCode.execute prog [| phases.[0]; 0 |]
-    //     let o2 = IntCode.execute prog [| phases.[1]; o1 |]
-    //     let o3 = IntCode.execute prog [| phases.[2]; o2 |]
-    //     let o4 = IntCode.execute prog [| phases.[3]; o3 |]
-    //     let o5 = IntCode.execute prog [| phases.[4]; o4 |]
-    //     o5
+    let queueFactory = 
+        let outputQueue = MailboxProcessor<int64>.Start(fun inbox -> 
+            let rec messageLoop() = async{
+                let! msg = inbox.Receive()
+                printfn "message is: %A\n" msg
+                return! messageLoop()  
+                }
+            messageLoop() 
+            )
+        outputQueue
+
+    let amplify prog (phases: int64[]) = 
+
+        let outQ1 = queueFactory
+        let inQ1 = IntCode2.initialise prog outQ1
+        
+        //System.Console.ReadKey() |> ignore
+        inQ1.Post phases.[0]
+        //System.Console.ReadKey() |> ignore
+        inQ1.Post 0L
+
+        let output1 = 
+            async {
+                let! i = outQ1.Receive()
+                return i
+            }
+            
+
+        let inQ2 = IntCode2.initialise prog queueFactory
+        inQ2.Post phases.[1]
+        inQ2.Post (Async.RunSynchronously output1)
+
+
+
+        // let o3 = IntCode.execute prog [| phases.[2]; o2 |]
+        // let o4 = IntCode.execute prog [| phases.[3]; o3 |]
+        // let o5 = IntCode.execute prog [| phases.[4]; o4 |]
+        // o5
 
     // let tryPhases prog = 
-    //     let phases = perms [0;1;2;3;4] 
+    //     let phases = perms [0L;1L;2L;3L;4L] 
     //     let timings  = phases
     //                    |> Seq.map (fun x -> x, amplify prog (x |> Seq.toArray))
     //     timings
@@ -33,7 +65,13 @@ let day7 =
 
 
 
-    print "Part 2"
+    //print "Part 2"
+
+    // let prog7 = readCSV "./data/day7.txt" 
+    // let inQueue1 = IntCode2.initialise prog7
+
+    // inQueue1.Post 7L
+
 
     // let rec feedback prog (phases: int[]) init = 
         
@@ -132,12 +170,12 @@ let day7 =
 
 
 
-    // DAY 5
-    let prog5 = readCSV "./data/day5.txt"
+    // // DAY 5
+    // let prog5 = readCSV "./data/day5.txt"
                 
-    let output = IntCode.execute prog5 [| 1L |]
-    print "***********"
-    printn output
-    print "***********"
+    // let output = IntCode.execute prog5 [| 1L |]
+    // print "***********"
+    // printn output
+    // print "***********"
 
     0

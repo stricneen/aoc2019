@@ -13,7 +13,7 @@ let main argv =
 
     //Day6.day6 |> ignore
 
-    //Day7.day7 |> ignore
+    Day7.day7 |> ignore
 
     //Day8.day8 |> ignore
     
@@ -24,28 +24,6 @@ let main argv =
     //Day11.day11 |> ignore
 
     //Day12.day12 |> ignore
-
-
-
-    let waitforit input = 
-        let signal = input
-
-        while true do
-            async {
-                printf "Waiting for input ... \n"
-                let i = signal // Should wait here unitl input func is call outside
-                printf "Input rec: %A\n" i
-            } |> ignore
-
-    let pass v = v
-
-    let wfi = waitforit (pass)
-
-    System.Console.ReadKey() |> ignore
-    pass 345 |> ignore
-
-    System.Console.ReadKey() |> ignore
-    pass 475 |> ignore
 
 
 

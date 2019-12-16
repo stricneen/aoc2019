@@ -116,52 +116,54 @@ module IntCode2
     
    
 
-    let initialise (progin: Int64[]) inFunc =
+    let initialise (progin: Int64[]) (outQ: MailboxProcessor<int64>) =
         let mutable ptr = 0
        // let mutable inputPtr = 0
         let mutable cond = true
-        let mutable out = 0
+        //let mutable out = 0
         let mutable rb = 0
+        let mutable input = 0L
         
         // temp
         let prog = Array.append progin (Array.create 10000 0L)
-       
-        while cond do
-            // print ""
 
-            print "Waiting for input ..."
-            let (inp:int64) = inFunc() 
-            printf "Got intput %A\n" inp
 
-            // let inp = if Array.length inputs > inputPtr then  // dont need both of these
-            //                 inputs.[inputPtr]
-            //            else 
-            //                 0L
+        let inputQueue = MailboxProcessor.Start(fun inbox ->
 
-            let inpxx = 0L
-            let nptr, prog, op = tick ptr prog inpxx rb
+            let rec messageLoop() = async {
 
-            
-            printf "fst op : %A\n" (fst op)
-
-           // if (fst op).[0] = 3L then
-           //     inputPtr <- (inputPtr + 1) % Array.length inputs
-
-            if (fst op).[0] = 4L then
-                out <- int (fst op).[1]
-            
-            if (fst op).[0] = 9L then
-                // printf "Relavitve : %A\n" (fst op).[1]
-                rb <- rb + int (fst op).[1]
-                printf "Relative is : %A\n" rb
-
-            if (fst op).[0] = 99L then // END
-                cond <- false
+                if prog.[ptr] = 3L then
+                    print "Waiting for input ..."
+                    let! i = inbox.Receive()
+                    input <- i
+                    printf "Got intput: %A\n" input
+  
+                let nptr, prog, op = tick ptr prog input rb
               
-        //     //let t = System.Console.ReadKey()
-        //     ptr <- nptr
+                printf "fst op : %A\n" (fst op)
+
+                //if (fst op).[0] = 3L then
+                    // inputPtr <- (inputPtr + 1) % Array.length inputs
+
+                if (fst op).[0] = 4L then
+                    outQ.Post ((fst op).[1])
+                    //out <- int (fst op).[1]
+                
+                if (fst op).[0] = 9L then
+                    rb <- rb + int (fst op).[1]
+                  
+                if (fst op).[0] = 99L then // END
+                    cond <- false
 
 
-        printf "************** exec complete **************"
-        //let t' = System.Console.ReadKey()
-        out
+
+                return! messageLoop()
+            }
+            messageLoop() // start the loop
+
+        )
+
+        inputQueue
+      
+      
+  
