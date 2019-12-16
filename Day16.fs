@@ -1,44 +1,49 @@
 module Day16
 
+open System
 open Utils
 
-let day16 = 
+let day16 =
     print "Advent of code - Day 16 - Flawed Frequency Transmission"
 
     let prog =  readLines "./data/day16.txt" |> Array.head
 
-    let test1 = "12345678"
+    let input = "12345678"
 
     let countSeq p =
         seq {
-            yield! seq { for _ in 0 .. p -> 0 }
-            yield! seq { for _ in 0 .. p -> 1}
-            yield! seq { for _ in 0 .. p -> 0 }
+            yield! seq { for _ in 0 .. p ->  0 }
+            yield! seq { for _ in 0 .. p ->  1 }
+            yield! seq { for _ in 0 .. p ->  0 }
             yield! seq { for _ in 0 .. p -> -1 }
         }
-            
+
+    // let inputSeq = input |> Seq.toSeq
+
     let rec cycle xs = seq { yield! xs; yield! cycle xs }
 
-    let pattern p = cycle (countSeq p)
+    let pattern p = cycle (countSeq p) |> Seq.skip 1
 
-                // for x in 0..3 do
-                //     print "S"
+    // let x =
+    //     Seq.initInfinite pattern
+    //     |> Seq.zip input
 
-                //inc
-           // inc
-        
+    let digit i =
+        Seq.map2 (fun a b -> a, b) input (pattern i)
+        |> Seq.sumBy(fun (a, b) -> int(a.ToString()) * b)
 
-
-    // let pattern position = 
-    //     let p = [0, 1, 0, -1]
-    //     seq {
-
-    //     }
+    //for i in 0 .. String.length input  do
 
 
-    printf "%A\n" (pattern 4 |> Seq.skip 3 |> Seq.take 50 |>  Seq.toList)
+    let generate inp =
+        inp
+        |> Seq.mapi(fun i _ -> (digit i).ToString())
+        |> Seq.map (fun x -> x.[x.Length - 1])
+        |> String.Concat
+  
+    let next = generate input
 
-
+    printf "%A\n" next
 
 
 
