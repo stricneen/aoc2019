@@ -132,35 +132,37 @@ module IntCode2
 
             let rec messageLoop() = async {
 
+                printf "Running op : %A\n" prog.[ptr] 
+
                 if prog.[ptr] = 3L then
                     print "Waiting for input ..."
-                    let! i = inbox.Receive()
+                    let! i = inbox.Receive() // Wait to recieve from the Q
                     input <- i
                     printf "Got intput: %A\n" input
   
                 let nptr, prog, op = tick ptr prog input rb
               
-                printf "fst op : %A\n" (fst op)
+                //printf "fst op : %A\n" (fst op)
 
                 //if (fst op).[0] = 3L then
                     // inputPtr <- (inputPtr + 1) % Array.length inputs
 
-                if (fst op).[0] = 4L then
-                    outQ.Post ((fst op).[1])
+                //if (fst op).[0] = 4L then     /// need to output
+                   // outQ.Post ((fst op).[1])
                     //out <- int (fst op).[1]
                 
                 if (fst op).[0] = 9L then
                     rb <- rb + int (fst op).[1]
                   
                 if (fst op).[0] = 99L then // END
-                    cond <- false
+                    print "Exiting Intcode comp"
+                    return ()
 
-
+                ptr <- nptr
 
                 return! messageLoop()
             }
             messageLoop() // start the loop
-
         )
 
         inputQueue

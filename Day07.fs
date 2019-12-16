@@ -23,47 +23,71 @@ let day7 =
 
         let outQ1 = queueFactory
         let inQ1 = IntCode2.initialise prog outQ1
-        
-        //System.Console.ReadKey() |> ignore
+        System.Console.ReadKey() |> ignore
         inQ1.Post phases.[0]
-        //System.Console.ReadKey() |> ignore
+        System.Console.ReadKey() |> ignore
         inQ1.Post 0L
+        System.Console.ReadKey() |> ignore
+        print "boo"
 
-        let output1 = 
-            async {
-                let! i = outQ1.Receive()
-                return i
-            }
-            
+        let output = ( async {
+                 let! i = outQ1.Receive()
+                 return i } |> Async.RunSynchronously)
+        output
+ 
+        // let outQ2 = queueFactory
+        // let inQ2 = IntCode2.initialise prog outQ2
+        // inQ2.Post phases.[1]
+        // inQ2.Post ( async {
+        //         let! i = outQ1.Receive()
+        //         return i } |> Async.RunSynchronously)
 
-        let inQ2 = IntCode2.initialise prog queueFactory
-        inQ2.Post phases.[1]
-        inQ2.Post (Async.RunSynchronously output1)
+        // let outQ3 = queueFactory
+        // let inQ3 = IntCode2.initialise prog outQ3
+        // inQ3.Post phases.[2]
+        // inQ3.Post ( async {
+        //         let! i = outQ2.Receive()
+        //         return i } |> Async.RunSynchronously)
+
+        // let outQ4 = queueFactory
+        // let inQ4 = IntCode2.initialise prog outQ4
+        // inQ4.Post phases.[3]
+        // inQ4.Post ( async {
+        //         let! i = outQ3.Receive()
+        //         return i } |> Async.RunSynchronously)
+
+        // let outQ5 = queueFactory
+        // let inQ5 = IntCode2.initialise prog outQ5
+        // inQ5.Post phases.[4]
+        // inQ5.Post ( async {
+        //         let! i = outQ4.Receive()
+        //         return i } |> Async.RunSynchronously)
+
+        // let output = ( async {
+        //         let! i = outQ5.Receive()
+        //         return i } |> Async.RunSynchronously)
+        // output
 
 
-
-        // let o3 = IntCode.execute prog [| phases.[2]; o2 |]
-        // let o4 = IntCode.execute prog [| phases.[3]; o3 |]
-        // let o5 = IntCode.execute prog [| phases.[4]; o4 |]
-        // o5
-
-    // let tryPhases prog = 
-    //     let phases = perms [0L;1L;2L;3L;4L] 
-    //     let timings  = phases
-    //                    |> Seq.map (fun x -> x, amplify prog (x |> Seq.toArray))
-    //     timings
+    let tryPhases prog = 
+        let phases = perms [0L;1L;2L;3L;4L] 
+        let timings  = phases
+                       |> Seq.map (fun x -> x, amplify prog (x |> Seq.toArray))
+        timings
 
 
-    // let prog7 = readCSV "./data/day7.txt" 
+    let prog7 = readCSV "./data/day7.txt" 
 
-    // let output = tryPhases prog7 
-    //               |> Seq.maxBy snd
+    let output = tryPhases prog7 
+                  |> Seq.maxBy snd
 
-    // print "***********"
-    // printf "%A\n" output
-    // print "***********"
+    print "***********"
+    printf "%A\n" output
+    print "***********"
 
+// thak4eeg8chaew3Y
 
+// SonarQube-VM01
 
     //print "Part 2"
 
