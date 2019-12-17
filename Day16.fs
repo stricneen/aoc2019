@@ -34,15 +34,15 @@ let day16 =
     let input =  readLines "./data/day16.txt" |> Array.head
     
     
-    // iterate generate input 100
+    iterate generate input 100
 
  
 
     print "Part 2"
 
-    let big = input |> String.replicate 100
+   // let big = input |> String.replicate 100
 
-    iterate generate big 100
+   // iterate generate big 100
 
     // iterate (fun x ->   printf "%A\n" x
     //                     generate x) input 100
