@@ -1,40 +1,49 @@
 module Day7
 
 open Utils
+open IntCode2
 
 let day7 = 
     print "Advent of code - Day 7 - Amplification Circuit"
 
-    let outputVal x = x
-
-
-    let queueFactory = 
-        let outputQueue = MailboxProcessor<int64>.Start(fun inbox -> 
-            let rec messageLoop() = async{
-                let! msg = inbox.Receive()
-                printfn "message is: %A\n" msg
-                return! messageLoop()  
-                }
-            messageLoop() 
-            )
-        outputQueue
+    // let queueFactory = 
+    //     let outputQueue = MailboxProcessor<int64>.Start(fun inbox -> 
+    //         let rec messageLoop() = async{
+    //             let! msg = inbox.Receive()
+    //             printfn "message is: %A\n" msg
+    //             return! messageLoop()  
+    //             }
+    //         messageLoop() 
+    //         )
+    //     outputQueue
 
     let amplify prog (phases: int64[]) = 
 
-        let outQ1 = queueFactory
-        let inQ1 = IntCode2.initialise prog outQ1
-        System.Console.ReadKey() |> ignore
+       
+        let ampa = IntCode2()
+        let inQa = ampa.Initialise prog
+        inQa.Post phases.[0]
+        inQa.Post 0L
+
+        let ampb = IntCode2()
+        let inQb = ampa.Initialise prog
+        inQb.Post phases.[1]
+        inQb.Post 0L
+
+        ampa.OutputReady.Add(fun x -> printf "Output event : %A\n" x)
+
+//        ampa.OutputReady.Add(fun x -> printf "Output event : %A\n" x)
+
+
+        System.  Console.ReadKey() |> ignore
         inQ1.Post phases.[0]
         System.Console.ReadKey() |> ignore
-        inQ1.Post 0L
         System.Console.ReadKey() |> ignore
-        print "boo"
+      
 
-        let output = ( async {
-                 let! i = outQ1.Receive()
-                 return i } |> Async.RunSynchronously)
-        output
- 
+        0
+
+      
         // let outQ2 = queueFactory
         // let inQ2 = IntCode2.initialise prog outQ2
         // inQ2.Post phases.[1]
