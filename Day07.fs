@@ -28,54 +28,28 @@ let day7 =
         let ampb = IntCode2()
         let inQb = ampa.Initialise prog
         inQb.Post phases.[1]
-        inQb.Post 0L
+        
+        let ampc = IntCode2()
+        let inQc = ampa.Initialise prog
+        inQc.Post phases.[2]
 
-        ampa.OutputReady.Add(fun x -> printf "Output event : %A\n" x)
+        let ampd = IntCode2()
+        let inQd = ampa.Initialise prog
+        inQd.Post phases.[3]
 
-//        ampa.OutputReady.Add(fun x -> printf "Output event : %A\n" x)
+        let ampe = IntCode2()
+        let inQe= ampa.Initialise prog
+        inQe.Post phases.[4]
 
-
-        System.  Console.ReadKey() |> ignore
-        inQ1.Post phases.[0]
-        System.Console.ReadKey() |> ignore
-        System.Console.ReadKey() |> ignore
-      
+        ampa.OutputReady.Add(inQb.Post)
+        ampb.OutputReady.Add(inQc.Post)
+        ampc.OutputReady.Add(inQd.Post)
+        ampd.OutputReady.Add(inQe.Post)
 
         0
 
-      
-        // let outQ2 = queueFactory
-        // let inQ2 = IntCode2.initialise prog outQ2
-        // inQ2.Post phases.[1]
-        // inQ2.Post ( async {
-        //         let! i = outQ1.Receive()
-        //         return i } |> Async.RunSynchronously)
 
-        // let outQ3 = queueFactory
-        // let inQ3 = IntCode2.initialise prog outQ3
-        // inQ3.Post phases.[2]
-        // inQ3.Post ( async {
-        //         let! i = outQ2.Receive()
-        //         return i } |> Async.RunSynchronously)
 
-        // let outQ4 = queueFactory
-        // let inQ4 = IntCode2.initialise prog outQ4
-        // inQ4.Post phases.[3]
-        // inQ4.Post ( async {
-        //         let! i = outQ3.Receive()
-        //         return i } |> Async.RunSynchronously)
-
-        // let outQ5 = queueFactory
-        // let inQ5 = IntCode2.initialise prog outQ5
-        // inQ5.Post phases.[4]
-        // inQ5.Post ( async {
-        //         let! i = outQ4.Receive()
-        //         return i } |> Async.RunSynchronously)
-
-        // let output = ( async {
-        //         let! i = outQ5.Receive()
-        //         return i } |> Async.RunSynchronously)
-        // output
 
 
     let tryPhases prog = 
