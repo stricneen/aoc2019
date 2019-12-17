@@ -6,6 +6,7 @@ module IntCode2
     open Utils
 
     type IntCode2() = 
+    
         let getOpCode op =
             let s = op.ToString()
             if String.length s > 2 then

@@ -26,19 +26,19 @@ let day7 =
         inQa.Post 0L
 
         let ampb = IntCode2()
-        let inQb = ampa.Initialise prog
+        let inQb = ampb.Initialise prog
         inQb.Post phases.[1]
         
         let ampc = IntCode2()
-        let inQc = ampa.Initialise prog
+        let inQc = ampc.Initialise prog
         inQc.Post phases.[2]
 
         let ampd = IntCode2()
-        let inQd = ampa.Initialise prog
+        let inQd = ampd.Initialise prog
         inQd.Post phases.[3]
 
         let ampe = IntCode2()
-        let inQe= ampa.Initialise prog
+        let inQe= ampe.Initialise prog
         inQe.Post phases.[4]
 
         ampa.OutputReady.Add(inQb.Post)
