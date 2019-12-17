@@ -5,7 +5,7 @@ module IntCode2
     open System
     open Utils
 
-    type IntCode2() = 
+    type IntCode2(name) = 
     
         let getOpCode op =
             let s = op.ToString()
@@ -74,9 +74,9 @@ module IntCode2
             let debug = true
 
             let opcode = prog |> Array.skip ptr |> Array.truncate 4
-            printf "\ninst:  %A\n" opcode
+            //printf "inst:  %A\n" opcode
             let resolved = resolve opcode prog rb
-            printf "resv:  %A\n" resolved
+            printf "(%A) inst:  %A\t\t    resv:  %A\n" name opcode resolved
 
             let op = 
                 match resolved with // all ops here are immediate
@@ -107,10 +107,12 @@ module IntCode2
                 | [| 9L; x; _; _ |] -> if debug then printf "Add %A to relative \n" x  
                                        [|9L; x|], ptr + 2 // Relative
 
-                | [| 99L; x; _; _|] -> [|99L; x|], 0
+                | [| 99L; x; _; _|] -> if debug then print "99 - all done \n"
+                                       
+                                       [|99L; x|], 0
                                       
                 | _ -> [||], 0
-            
+            printf "(%A) prt at %A\n" name (snd op)
             snd op, prog, op
        
         let outputEvent = new Event<int64>()
@@ -133,18 +135,18 @@ module IntCode2
 
                 let rec messageLoop() = async {
 
-                    printf "Running op : %A\n" prog.[ptr] 
+                    printf "(%A) Running op : %A\n" name prog.[ptr] 
 
                     if prog.[ptr] = 3L then
-                        print "Waiting for input ...\n"
+                        printf "(%A) Waiting for input ...\n" name
                         let! i = inbox.Receive() // Wait to recieve from the Q
                         input <- i
-                        printf "Got intput: %A\n" input
+                        printf "(%A) Got intput: %A\n" name input
       
                     let nptr, prog, op = tick ptr prog input rb
                  
                     if (fst op).[0] = 4L then     /// need to output
-                        printf "Outputting ... %A\n" (fst op).[1]
+                        printf "(%A) Outputting ... %A\n" name (fst op).[1]
                         outputEvent.Trigger((fst op).[1])
                         //out <- int (fst op).[1]
                     
