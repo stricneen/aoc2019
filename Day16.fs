@@ -6,9 +6,6 @@ open Utils
 let day16 =
     print "Advent of code - Day 16 - Flawed Frequency Transmission"
 
-    
-
-
     let countSeq p =
         seq {
             yield! seq { for _ in 0 .. p ->  0 }
@@ -16,8 +13,6 @@ let day16 =
             yield! seq { for _ in 0 .. p ->  0 }
             yield! seq { for _ in 0 .. p -> -1 }
         }
-
-    // let inputSeq = input |> Seq.toSeq
 
     let rec cycle xs = seq { yield! xs; yield! cycle xs }
 
@@ -39,11 +34,18 @@ let day16 =
     let input =  readLines "./data/day16.txt" |> Array.head
     
     
-    iterate (fun x ->   printf "%A\n" x
-                        generate x) input 100
+    // iterate generate input 100
 
+ 
 
+    print "Part 2"
 
+    let big = input |> String.replicate 100
+
+    iterate generate big 100
+
+    // iterate (fun x ->   printf "%A\n" x
+    //                     generate x) input 100
 
 
 

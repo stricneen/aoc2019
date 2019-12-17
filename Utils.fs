@@ -75,6 +75,11 @@ let fst4 t =
 
 let rec iterate func input count =
     let output = func input
+
+    //if count % 10 = 1 then  
+    print output
+
     match count with
     | 0 -> ()
     | _ -> iterate func output (count - 1)
+    
