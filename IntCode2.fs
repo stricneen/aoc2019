@@ -86,11 +86,8 @@ module IntCode2
                 | [| 3L; x; _; _ |] -> if debug then printf "write %A to %A\n" input x 
                                        Array.set prog (int x) input
                                        [|3L; x|], ptr + 2       //Input
-                | [| 4L; x; _; _ |] -> if debug then printf "**********\n"
-                                       if debug then printf "output %A\n" x
-                                       if debug then printf "**********\n"
-                                       [|4L; x|], ptr + 2       //Output
-
+                | [| 4L; x; _; _ |] -> [|4L; x|], ptr + 2       //Output
+                                       
                 | [| 5L; x; y; _ |] -> if debug then printf "Jump to %A  if (%A <> 0L)\n" y x 
                                        [| 5L; x; y|], if x <> 0L then (int y) else ptr + 3  // JNZ
                                         
@@ -121,9 +118,9 @@ module IntCode2
 
         member this.Initialise (progin: Int64[]) =
             let mutable ptr = 0
-           // let mutable inputPtr = 0
-            let mutable cond = true
-            //let mutable out = 0
+            // let mutable inputPtr = 0
+            // let mutable cond = true
+            // let mutable out = 0
             let mutable rb = 0
             let mutable input = 0L
             
@@ -138,19 +135,15 @@ module IntCode2
                     printf "Running op : %A\n" prog.[ptr] 
 
                     if prog.[ptr] = 3L then
-                        print "Waiting for input ..."
+                        print "Waiting for input ...\n"
                         let! i = inbox.Receive() // Wait to recieve from the Q
                         input <- i
                         printf "Got intput: %A\n" input
       
                     let nptr, prog, op = tick ptr prog input rb
-                  
-                    //printf "fst op : %A\n" (fst op)
-
-                    //if (fst op).[0] = 3L then
-                        // inputPtr <- (inputPtr + 1) % Array.length inputs
-
+                 
                     if (fst op).[0] = 4L then     /// need to output
+                        printf "Outputting ... %A\n" (fst op).[1]
                         outputEvent.Trigger((fst op).[1])
                         //out <- int (fst op).[1]
                     
@@ -158,7 +151,9 @@ module IntCode2
                         rb <- rb + int (fst op).[1]
                       
                     if (fst op).[0] = 99L then // END
-                        print "Exiting Intcode comp"
+                        outputEvent.Trigger(-99999L)
+                        
+                        print "Exiting Intcode comp\n"
                         return ()
 
                     ptr <- nptr

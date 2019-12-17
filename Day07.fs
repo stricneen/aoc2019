@@ -45,8 +45,20 @@ let day7 =
         ampb.OutputReady.Add(inQc.Post)
         ampc.OutputReady.Add(inQd.Post)
         ampd.OutputReady.Add(inQe.Post)
+        
 
-        0
+        let mutable finished = false
+        let mutable output = 0L
+        ampe.OutputReady.Add(fun o -> if o = -99999L then
+                                         finished <- true
+                                      else 
+                                          output <- o )
+        while not finished do
+            async { do! Async.Sleep(10) } |> ignore
+
+        output
+        
+
 
 
 
@@ -62,7 +74,7 @@ let day7 =
     let prog7 = readCSV "./data/day7.txt" 
 
     let output = tryPhases prog7 
-                  |> Seq.maxBy snd
+                 |> Seq.maxBy snd
 
     print "***********"
     printf "%A\n" output
