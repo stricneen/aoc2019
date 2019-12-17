@@ -65,7 +65,7 @@ let day7 =
 
 
     let tryPhases prog = 
-        let phases = perms [0L;1L;2L;3L;4L] 
+        let phases = perms [9L;8L;7L;6L;5L] 
         let timings  = phases
                        |> Seq.map (fun x -> x, amplify prog (x |> Seq.toArray))
         timings
@@ -79,7 +79,7 @@ let day7 =
     print "***********"
     printf "%A\n" output
     print "***********"
-
+    System.Console.ReadKey() |> ignore
 // thak4eeg8chaew3Y
 
 // SonarQube-VM01
