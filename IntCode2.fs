@@ -76,7 +76,7 @@ module IntCode2
             let opcode = prog |> Array.skip ptr |> Array.truncate 4
             //printf "inst:  %A\n" opcode
             let resolved = resolve opcode prog rb
-            printf "(%A) inst:  %A\t\t    resv:  %A\n" name opcode resolved
+            if debug then printf "(%A) inst:  %A\t\t    resv:  %A\n" name opcode resolved
 
             let op = 
                 match resolved with // all ops here are immediate
@@ -135,7 +135,7 @@ module IntCode2
 
                 let rec messageLoop() = async {
 
-                    printf "(%A) Running op : %A\n" name prog.[ptr] 
+                    // "(%A) Running op : %A\n" name prog.[ptr] 
 
                     if prog.[ptr] = 3L then
                         printf "(%A) Waiting for input ...\n" name

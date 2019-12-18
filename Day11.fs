@@ -14,9 +14,11 @@ let day11 =
     let inq = comp.Initialise prog
 
 
-    let grid = Array2D.init 500 500 (fun _ _-> 0L) 
-    let mutable loc = 250, 250
+    let grid = Array2D.init 100 100 (fun _ _-> 0L) 
+    let mutable loc = 50, 50
     let mutable direction = Direction.North
+
+    let mutable painted = []
 
     let rotate current dir =
         match current, dir with
@@ -24,10 +26,10 @@ let day11 =
         | West, 0 -> South
         | South, 0 -> East
         | East, 0 -> North
-        | North, 1 -> West
-        | West, 1 -> South
-        | South, 1 -> East
-        | East, 1 -> North
+        | North, 1 -> East
+        | West, 1 -> North
+        | South, 1 -> West
+        | East, 1 -> South
         | _ -> failwith "Bad direction"
 
     let move location direction = 
@@ -51,6 +53,12 @@ let day11 =
         // Forwad one
         loc <- move loc direction
 
+        printf "loc : %A   dir :  %A\n" loc direction
+
+        // System.Console.ReadKey() |> ignore
+
+        painted <- loc :: painted
+
         // Get curent 
         grid.[fst loc, snd loc]
 
@@ -58,7 +66,7 @@ let day11 =
 
 
 
-    inq.Post(0L); // Start on black
+    inq.Post(1L); // Start on black
 
     let mutable outCount = 0 
     let mutable finished = false
@@ -67,6 +75,20 @@ let day11 =
     let mutable dir = -1L
     comp.OutputReady.Add(fun o -> // System.Console.ReadKey() |> ignore
           if o = -99999L then
+             print "Finished"
+             let distinct = List.distinct painted
+
+             printf "total : %A\n" (List.length distinct)
+
+             for x in 0 .. (Array2D.length1 grid) - 1 do
+                 let line = grid.[*, x]
+                            |> Array.map (fun x -> int32(x))
+                            |> Array.fold (fun a e -> a + if e = 1 then e.ToString() else " " ) ""
+
+
+                 printf "%A\n" line
+
+
              finished <- true
           else 
          
@@ -86,12 +108,17 @@ let day11 =
         async { do! Async.Sleep(10) } |> ignore
     
 
-    print "Finished"
-    let mutable white = 0
-    let mutable black = 0
-    printf "W: %A\n" (grid |> Array2D.iter (fun x -> if x = 1L then white <- white + 1))
-    printf "B: %A\n" (grid |> Array2D.iter (fun x -> if x = 0L then black <- black + 1))
+   
+    // let white = (grid |> Array2D.iter (fun x -> if x = 1L then white <- white + 1)
+    // let mutable black = 0
+    // printf "W: %A\n" 
+    // printf "B: %A\n" (grid |> Array2D.iter (fun x -> if x = 0L then black <- black + 1))
     
+    // for x in 0 .. Array2D.length1 grid do
+    //     printf "%A\n" grid.[x, *]
+
+
+
 
     // let mutable dataReady = false
     // let mutable counter = 0
@@ -113,27 +140,5 @@ let day11 =
         
 
 
-    // comp.OutputReady.Add(outputFunc)
-
-    // inq.Post(0L); // Start on black
-    
-    // let mutable finished = false
-    // comp.OutputReady.Add(fun o -> finished <- o = -99999L)
-    // while not finished do
-    //     async { 
-    //         printf "%A\n" dataReady
-    //         if dataReady then
-    //             dataReady <- false
-    //             printf "FULL OUTPUT : %A \n" output
-    //         else 
-    //             printf "X\n"
-
-    //         do! Async.Sleep(10)
-       
-    //      } |> ignore
-
-
-    // System.Console.ReadKey() |> ignore
-    // System.Console.ReadKey() |> ignore
    
     0
