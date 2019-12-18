@@ -154,4 +154,4 @@ module IntCode
 
         printf "************** exec complete **************"
         //let t' = System.Console.ReadKey()
-        out
+        int64(out)
