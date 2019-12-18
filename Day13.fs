@@ -1,5 +1,6 @@
 module Day13
 
+open System
 open Utils
 open IntCode2
 
@@ -16,21 +17,46 @@ let day13 =
     let mutable outCount = 0 
     let mutable finished = false
 
-    let drawOutput pos block =
-        let block = 
-            match block with
-            | 0 -> " "
-            | 1 -> "W"
-            | 2 -> "B"
-            | 3 -> "-"
-            | 4 -> "o"
-            | _ -> failwith "Invalid block"
-        System.Console.SetCursorPosition pos
-        System.Console.Write(block)
+    let mutable paddleX = 0
+    let mutable ballX = 0
+    let mutable direction = 0L
+    let mutable score = 0
 
+    let printAt x y (message: string) = 
+        Console.SetCursorPosition(x, y)
+        Console.Write(message)
+
+    let drawOutput pos block =
+        if fst pos = -1 then
+            score <- score + block
+            printAt 10 30 ("Score : " + block.ToString())
+        else
+            let block = 
+                match block with
+                | 0 -> " "
+                | 1 -> "#"
+                | 2 -> "*"
+                | 3 -> // Console.ReadKey()
+                       paddleX <- fst pos
+                       "-"
+                | 4 -> //Console.ReadKey()
+                       ballX <- fst pos
+                       "o"
+                | _ -> failwith "Invalid block"
+
+            printAt 10 28 (paddleX.ToString() + " : " + ballX.ToString())
+            printAt (fst pos) (snd pos) (block.ToString())
+
+            if paddleX > ballX then
+                inq.Post -1L
+            else if paddleX < ballX then
+                inq.Post 1L
+            else 
+                inq.Post 0L
+
+            System.Threading.Thread.Sleep(100)
         
-        
-            
+   
     let mutable x = 0
     let mutable y = 0
     let mutable z = 0
@@ -39,10 +65,11 @@ let day13 =
     
     comp.OutputReady.Add(fun output -> // System.Console.ReadKey() |> ignore
           if output = -99999L then
-              printf "Block : %A\n" bcks
+              // printf "Block : %A\n" bcks
               finished <- true
           else 
-             
+            
+      
             // Work
             if outCount = 0 then 
                 x <- int32(output)
@@ -55,11 +82,25 @@ let day13 =
                 drawOutput (x, y) z
                 outCount <- 0
 
+       
+        
                 if z = 2 then   
                     bcks <- bcks + 1
+            
+
              
-                
-                  
+                    // let key = Console.ReadKey()
+         
+                        
+            //                 if Console.KeyAvailable && Console.ReadKey().Key = ConsoleKey.LeftArrow then 
+            //     //print "L"  
+            //     inq.Post(-1L)
+            // else if Console.KeyAvailable && Console.ReadKey().Key = ConsoleKey.RightArrow then 
+            //     //print "R"  
+            //     inq.Post(1L)
+            // else   
+            //     print "0"  
+            //         inq.Post(0L)
     )
 
 // 0 is an empty tile. No game object appears in this tile.
@@ -68,7 +109,24 @@ let day13 =
 // 3 is a horizontal paddle tile. The paddle is indestructible.
 // 4 is a ball tile. The ball moves diagonally and bounces off objects.
 
+        
+
     while not finished do
-        async { do! Async.Sleep(10) } |> ignore
-    
+//        Console.ReadKey() |> ignore
+        // if paddleX > ballX then
+        //     inq.Post(-1L)
+        // else if paddleX < ballX thinq.Post(1L)
+        // else 
+        //     inq.Post(0L)
+         
+        
+        async {
+            
+            do! Async.Sleep(100) } |> ignore
+
+
+    print ""
+    print ""
+    printf "Score : %A\n" score
+    Console.ReadKey()
     0

@@ -113,6 +113,7 @@ module IntCode2
                                       
                 | _ -> [||], 0
             // printf "(%A) ptr at %A\n" name (snd op)
+            //System.Threading.Thread.Sleep(1)
             snd op, prog, op
        
         let outputEvent = new Event<int64>()
@@ -138,10 +139,10 @@ module IntCode2
                     // "(%A) Running op : %A\n" name prog.[ptr] 
 
                     if prog.[ptr] = 3L then
-                        printf "(%A) Waiting for input ...\n" name
+                        //printf "(%A) Waiting for input ...\n" name
                         let! i = inbox.Receive() // Wait to recieve from the Q
                         input <- i
-                        printf "(%A) Got intput: %A\n" name input
+                        //printf "(%A) Got intput: %A\n" name input
       
                     let nptr, prog, op = tick ptr prog input rb
                  
