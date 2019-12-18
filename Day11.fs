@@ -3,6 +3,8 @@ module Day11
 open Utils
 open IntCode2
 
+type Direction = North | East | South | West
+
 let day11 = 
     print "Advent of code - Day 11 - Space Police"
 
@@ -10,6 +12,51 @@ let day11 =
 
     let comp = IntCode2("painter")
     let inq = comp.Initialise prog
+
+
+    let grid = Array2D.init 500 500 (fun _ _-> 0L) 
+    let mutable loc = 250, 250
+    let mutable direction = Direction.North
+
+    let rotate current dir =
+        match current, dir with
+        | North, 0 -> West
+        | West, 0 -> South
+        | South, 0 -> East
+        | East, 0 -> North
+        | North, 1 -> West
+        | West, 1 -> South
+        | South, 1 -> East
+        | East, 1 -> North
+        | _ -> failwith "Bad direction"
+
+    let move location direction = 
+        let x, y = location
+        match direction with
+        | North -> x, y-1
+        | West -> x-1, y
+        | South -> x, y+1
+        | East -> x+1, y
+
+    let painting colour rotation = 
+        printf "Painting : %A  %A\n" colour direction
+
+        // Paint current 
+        let x, y = loc
+        Array2D.set grid x y colour
+
+        // Rotate
+        direction <- rotate direction rotation
+
+        // Forwad one
+        loc <- move loc direction
+
+        // Get curent 
+        grid.[fst loc, snd loc]
+
+       
+
+
 
     inq.Post(0L); // Start on black
 
@@ -22,26 +69,30 @@ let day11 =
           if o = -99999L then
              finished <- true
           else 
-            // Work
-            
+         
+           // Work
             if outCount = 0 then 
                 colour <- o
                 outCount <- outCount + 1
             else    
                 dir <- o
                 outCount <- 0
-
-                printf "%A  %A\n" colour dir
-                inq.Post(1L);   // logic here
-
-
-
+                let colourToPaint = painting colour (int32(dir))
+                inq.Post(colourToPaint);  
     )
 
 
     while not finished do
         async { do! Async.Sleep(10) } |> ignore
     
+
+    print "Finished"
+    let mutable white = 0
+    let mutable black = 0
+    printf "W: %A\n" (grid |> Array2D.iter (fun x -> if x = 1L then white <- white + 1))
+    printf "B: %A\n" (grid |> Array2D.iter (fun x -> if x = 0L then black <- black + 1))
+    
+
     // let mutable dataReady = false
     // let mutable counter = 0
     // let mutable output = -1L, -1L
