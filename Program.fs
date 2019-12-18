@@ -21,11 +21,11 @@ let main argv =
 
     //Day10.day10 |> ignore
 
-    Day11.day11 |> ignore
+    //Day11.day11 |> ignore
 
     //Day12.day12 |> ignore
 
-    //Day13.day13 |> ignore
+    Day13.day13 |> ignore
     //Day14.day14 |> ignore
     //Day15.day15 |> ignore
     //Day16.day16 |> ignore

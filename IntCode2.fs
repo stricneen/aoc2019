@@ -146,7 +146,7 @@ module IntCode2
                     let nptr, prog, op = tick ptr prog input rb
                  
                     if (fst op).[0] = 4L then     /// need to output
-                        printf "(%A) Outputting ... %A\n" name (fst op).[1]
+                        // printf "(%A) Outputting ... %A\n" name (fst op).[1]
                         outputEvent.Trigger((fst op).[1])
                         //out <- int (fst op).[1]
                     
