@@ -34,7 +34,7 @@ let day16 =
     let input =  readLines "./data/day16.txt" |> Array.head
     
     
-    iterate generate input 100
+   //iterate generate input 100
 
  
 

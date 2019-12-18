@@ -71,7 +71,7 @@ module IntCode2
         // Input  --   inst ptr      --  prog
         // Output --   new inst ptr  --  updated prog  --  last run op
         let tick ptr prog input rb = 
-            let debug = true
+            let debug = false
 
             let opcode = prog |> Array.skip ptr |> Array.truncate 4
             //printf "inst:  %A\n" opcode
@@ -112,7 +112,7 @@ module IntCode2
                                        [|99L; x|], 0
                                       
                 | _ -> [||], 0
-            printf "(%A) prt at %A\n" name (snd op)
+            // printf "(%A) ptr at %A\n" name (snd op)
             snd op, prog, op
        
         let outputEvent = new Event<int64>()
