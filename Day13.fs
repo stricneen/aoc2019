@@ -27,14 +27,19 @@ let day13 =
             | _ -> failwith "Invalid block"
         System.Console.SetCursorPosition pos
         System.Console.Write(block)
+
+        
         
             
     let mutable x = 0
     let mutable y = 0
     let mutable z = 0
+
+    let mutable bcks = 0
     
     comp.OutputReady.Add(fun output -> // System.Console.ReadKey() |> ignore
           if output = -99999L then
+              printf "Block : %A\n" bcks
               finished <- true
           else 
              
@@ -49,6 +54,9 @@ let day13 =
                 z <- int32(output)
                 drawOutput (x, y) z
                 outCount <- 0
+
+                if z = 2 then   
+                    bcks <- bcks + 1
              
                 
                   
