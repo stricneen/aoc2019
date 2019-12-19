@@ -14,7 +14,7 @@ let day15 =
     let inq = comp.Initialise prog
     let mutable finished = false
 
-    let mutable location = 80, 10
+    let mutable location = 80, 50
     let mutable dir = Direction.North
     let wall = "#"
     let corridor = "."
@@ -37,16 +37,16 @@ let day15 =
                                                             Direction.North
                   | 1L, (x,y) when dir =  Direction.North -> printAt x y corridor
                                                              location <- (x, y-1)
-                                                             dir
+                                                             Direction.West
                   | 1L, (x,y) when dir =  Direction.East -> printAt x y corridor
                                                             location <- (x+1, y)
-                                                            dir
+                                                            Direction.North
                   | 1L, (x,y) when dir =  Direction.South -> printAt x y corridor
                                                              location <- (x, y+1)
-                                                             dir
+                                                             Direction.East
                   | 1L, (x,y) when dir =  Direction.West -> printAt x y corridor
                                                             location <- (x-1, y)
-                                                            dir
+                                                            Direction.South
                   | _ -> failwith "invalid user"
                
               inq.Post (int64 dir)

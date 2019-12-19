@@ -133,5 +133,5 @@ let day13 =
     print ""
     print ""
     printf "Score : %A\n" score
-    Console.ReadKey()
+    Console.ReadKey() |> ignore
     0
