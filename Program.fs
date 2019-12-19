@@ -25,8 +25,8 @@ let main argv =
 
     //Day12.day12 |> ignore
 
-    // for x in 0 .. 256 do
-    //     printf "%A\t%A\n" x (char x)
+    //for x in 0 .. 2048 do
+    //    printf "%A\t%A\n" x (char x)
 
     //Day13.day13 |> ignore
     //Day14.day14 |> ignore
