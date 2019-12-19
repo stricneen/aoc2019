@@ -18,7 +18,7 @@ let day13 =
     let mutable finished = false
 
     let mutable paddleX = 0
-    let mutable ballX = 0
+    let mutable ballX = 10
     let mutable direction = 0L
     let mutable score = 0
 
@@ -47,14 +47,14 @@ let day13 =
             printAt 10 28 (paddleX.ToString() + " : " + ballX.ToString())
             printAt (fst pos) (snd pos) (block.ToString())
 
-            if paddleX > ballX then
-                inq.Post -1L
-            else if paddleX < ballX then
-                inq.Post 1L
-            else 
-                inq.Post 0L
+            // if paddleX > ballX then
+            //     inq.Post -1L
+            // else if paddleX < ballX then
+            //     inq.Post 1L
+            // else 
+            //     inq.Post 0L
 
-            System.Threading.Thread.Sleep(100)
+            // System.Threading.Thread.Sleep(100)
         
    
     let mutable x = 0
@@ -69,6 +69,7 @@ let day13 =
               finished <- true
           else 
             
+           
       
             // Work
             if outCount = 0 then 
@@ -86,6 +87,8 @@ let day13 =
         
                 if z = 2 then   
                     bcks <- bcks + 1
+           
+          
             
 
              
@@ -113,16 +116,18 @@ let day13 =
 
     while not finished do
 //        Console.ReadKey() |> ignore
-        // if paddleX > ballX then
-        //     inq.Post(-1L)
-        // else if paddleX < ballX thinq.Post(1L)
-        // else 
-        //     inq.Post(0L)
-         
+        if paddleX > ballX then
+            inq.Post(-1L)
+        else if paddleX < ballX then
+            inq.Post(1L)
+        else 
+            inq.Post(0L)
         
-        async {
+        System.Threading.Thread.Sleep 600
+        
+        // async {
             
-            do! Async.Sleep(100) } |> ignore
+        //     do! Async.Sleep(100) } |> ignore
 
 
     print ""
