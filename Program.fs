@@ -28,9 +28,9 @@ let main argv =
     // for x in 0 .. 256 do
     //     printf "%A\t%A\n" x (char x)
 
-    Day13.day13 |> ignore
+    //Day13.day13 |> ignore
     //Day14.day14 |> ignore
-    //Day15.day15 |> ignore
+    Day15.day15 |> ignore
     //Day16.day16 |> ignore
 
 

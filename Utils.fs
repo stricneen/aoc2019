@@ -83,3 +83,6 @@ let rec iterate func input count =
     | 0 -> ()
     | _ -> iterate func output (count - 1)
     
+let printAt x y (message: string) = 
+    Console.SetCursorPosition(x, y)
+    Console.Write(message)
