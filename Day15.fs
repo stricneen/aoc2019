@@ -23,6 +23,7 @@ let day15 =
     let mutable dir = Direction.North
     let wall = "#"
     let corridor = "."
+    let mutable steps = 0
     inq.Post (int64 dir)
 
     comp.OutputReady.Add(fun output ->
@@ -44,21 +45,25 @@ let day15 =
                   | 0L, (x,y) when dir =  Direction.West -> printStatus "Can't go W - trying N"
                                                             printAt (x-1) y wall
                                                             Direction.North
-                  | 1L, (x,y) when dir =  Direction.North -> printStatus "Going N     "
+                  | 1L, (x,y) when dir =  Direction.North -> printStatus ("Going N                 " +  steps.ToString())
                                                              printAt x y corridor
                                                              location <- (x, y-1)
+                                                             steps <- steps + 1
                                                              Direction.West
-                  | 1L, (x,y) when dir =  Direction.East -> printStatus "Going E      "
+                  | 1L, (x,y) when dir =  Direction.East -> printStatus ("Going E                  " +  steps.ToString())
                                                             printAt x y corridor
                                                             location <- (x+1, y)
+                                                            steps <- steps + 1
                                                             Direction.North
-                  | 1L, (x,y) when dir =  Direction.South -> printStatus "Going S      "
+                  | 1L, (x,y) when dir =  Direction.South -> printStatus ("Going S                 " +  steps.ToString())
                                                              printAt x y corridor
                                                              location <- (x, y+1)
+                                                             steps <- steps + 1
                                                              Direction.East
-                  | 1L, (x,y) when dir =  Direction.West -> printStatus "Going W        "
+                  | 1L, (x,y) when dir =  Direction.West -> printStatus ("Going W                  " +  steps.ToString())
                                                             printAt x y corridor
                                                             location <- (x-1, y)
+                                                            steps <- steps + 1
                                                             Direction.South
 
                   | 2L, (x,y) when dir =  Direction.North -> printStatus "Going N     "
@@ -81,14 +86,15 @@ let day15 =
                                                             endpos <- location
                                                             location <- (x-1, y)
                                                             Direction.South
-                //   | 2L, (_,_) -> printAt 10 80  "************************DONE********************"
-                //                  endpos <- location
-                //                  Direction.South
-                //                  //finished <- true
-                //                  //Direction.End
+                  | 2L, (_,_) -> printAt 10 80  "************************DONE********************"
+                                 endpos <- location
+                                 Direction.South
+                                 printAt 5 3 ("STEPS : " +  steps.ToString())
+                                // finished <- true
+                                 Direction.End
                   | _ -> failwith "invalid user"
 
-
+              printAt 0 3 ("Steps:  " +  steps.ToString())
               printAt (fst endpos) (snd endpos) "F"
               printAt (fst startpos) (snd startpos) "S"
 
@@ -105,6 +111,6 @@ let day15 =
             do! Async.Sleep(100) } |> ignore
 
 
-
+// 953
 
     0
