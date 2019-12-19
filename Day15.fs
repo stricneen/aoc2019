@@ -17,7 +17,9 @@ let day15 =
     let printStatus msg = 
         printAt 1 1 msg
 
-    let mutable location = 50, 40
+    let mutable startpos = 50, 25
+    let mutable endpos = 50, 25
+    let mutable location = 50, 25
     let mutable dir = Direction.North
     let wall = "#"
     let corridor = "."
@@ -58,12 +60,38 @@ let day15 =
                                                             printAt x y corridor
                                                             location <- (x-1, y)
                                                             Direction.South
-                  | 2L, (_,_) -> printAt 10 80  "************************DONE********************"
-                                 finished <- true
-                                 Direction.End
+
+                  | 2L, (x,y) when dir =  Direction.North -> printStatus "Going N     "
+                                                             printAt x y corridor
+                                                             endpos <- location
+                                                             location <- (x, y-1)
+                                                             Direction.West
+                  | 2L, (x,y) when dir =  Direction.East -> printStatus "Going E      "
+                                                            printAt x y corridor
+                                                            endpos <- location
+                                                            location <- (x+1, y)
+                                                            Direction.North
+                  | 2L, (x,y) when dir =  Direction.South -> printStatus "Going S      "
+                                                             printAt x y corridor
+                                                             endpos <- location
+                                                             location <- (x, y+1)
+                                                             Direction.East
+                  | 2L, (x,y) when dir =  Direction.West -> printStatus "Going W        "
+                                                            printAt x y corridor
+                                                            endpos <- location
+                                                            location <- (x-1, y)
+                                                            Direction.South
+                //   | 2L, (_,_) -> printAt 10 80  "************************DONE********************"
+                //                  endpos <- location
+                //                  Direction.South
+                //                  //finished <- true
+                //                  //Direction.End
                   | _ -> failwith "invalid user"
 
-              printAt 50 40 "X"
+
+              printAt (fst endpos) (snd endpos) "F"
+              printAt (fst startpos) (snd startpos) "S"
+
               printAt (fst location) (snd location) "D"
               // System.Console.ReadKey() 
               
