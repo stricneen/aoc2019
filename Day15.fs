@@ -3,7 +3,7 @@ module Day15
 open Utils
 open IntCode2
 
-type Direction = North = 1L | East = 4L | South = 2L | West = 3L
+type Direction = North = 1L | East = 4L | South = 2L | West = 3L | End = 4L
 
 let day15 = 
     print "Advent of code - Day 15 - Oxygen System"
@@ -17,7 +17,7 @@ let day15 =
     let printStatus msg = 
         printAt 1 1 msg
 
-    let mutable location = 50, 50
+    let mutable location = 50, 40
     let mutable dir = Direction.North
     let wall = "#"
     let corridor = "."
@@ -58,12 +58,16 @@ let day15 =
                                                             printAt x y corridor
                                                             location <- (x-1, y)
                                                             Direction.South
-                  | 2L, (_,_) -> printStatus "************************DONE********************"
-                                 Direction.North
+                  | 2L, (_,_) -> printAt 10 80  "************************DONE********************"
+                                 finished <- true
+                                 Direction.End
                   | _ -> failwith "invalid user"
 
+              printAt 50 40 "X"
               printAt (fst location) (snd location) "D"
-              //System.Console.ReadKey() 
+              // System.Console.ReadKey() 
+              
+              //if dir <> Direction.End then
               inq.Post (int64 dir)
 
          )
