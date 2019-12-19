@@ -27,24 +27,32 @@ let day15 =
               printAt (fst location) (snd location) "D"
               dir <-
                   match output, location with
-                  | 0L, (x,y) when dir =  Direction.North -> printAt x (y-1) wall
+                  | 0L, (x,y) when dir =  Direction.North -> printAt 0 0 "Can't go N - trying E"
+                                                             printAt x (y-1) wall
                                                              Direction.East
-                  | 0L, (x,y) when dir =  Direction.East -> printAt (x+1) y wall
+                  | 0L, (x,y) when dir =  Direction.East -> printAt 0 0 "Can't go E - trying S"
+                                                            printAt (x+1) y wall
                                                             Direction.South
-                  | 0L, (x,y) when dir =  Direction.South -> printAt x (y+1) wall
+                  | 0L, (x,y) when dir =  Direction.South -> printAt 0 0 "Can't go S - trying W"
+                                                             printAt x (y+1) wall
                                                              Direction.West
-                  | 0L, (x,y) when dir =  Direction.West -> printAt (x+1) y wall
+                  | 0L, (x,y) when dir =  Direction.West -> printAt 0 0 "Can't go W - trying N"
+                                                            printAt (x+1) y wall
                                                             Direction.North
-                  | 1L, (x,y) when dir =  Direction.North -> printAt x y corridor
+                  | 1L, (x,y) when dir =  Direction.North -> printAt 0 0 "Going N"
+                                                             printAt x y corridor
                                                              location <- (x, y-1)
                                                              Direction.West
-                  | 1L, (x,y) when dir =  Direction.East -> printAt x y corridor
+                  | 1L, (x,y) when dir =  Direction.East -> printAt 0 0 "Going E"
+                                                            printAt x y corridor
                                                             location <- (x+1, y)
                                                             Direction.North
-                  | 1L, (x,y) when dir =  Direction.South -> printAt x y corridor
+                  | 1L, (x,y) when dir =  Direction.South -> printAt 0 0 "Going S"
+                                                             printAt x y corridor
                                                              location <- (x, y+1)
                                                              Direction.East
-                  | 1L, (x,y) when dir =  Direction.West -> printAt x y corridor
+                  | 1L, (x,y) when dir =  Direction.West -> printAt 0 0 "Going W"
+                                                            printAt x y corridor
                                                             location <- (x-1, y)
                                                             Direction.South
                   | _ -> failwith "invalid user"
