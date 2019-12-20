@@ -77,7 +77,7 @@ module IntCode2
             //printf "inst:  %A\n" opcode
             let resolved = resolve opcode prog rb
             if debug then printf "(%A) inst:  %A\t\t    resv:  %A\n" name opcode resolved
-
+            System.Console.ReadKey()
             let op = 
                 match resolved with // all ops here are immediate
                 | [| 1L; x; y; z |] -> Array.set prog (int z) (x + y)
@@ -140,10 +140,11 @@ module IntCode2
                     // "(%A) Running op : %A\n" name prog.[ptr] 
 
                     if prog.[ptr] = 3L then
-                        //printf "(%A) Waiting for input ...\n" name
+                        printf "(%A) Waiting for input ...\n" name
+                        Console.ReadKey()
                         let! i = inbox.Receive() // Wait to recieve from the Q
                         input <- i
-                        //printf "(%A) Got intput: %A\n" name input
+                        printf "(%A) Got intput: %A\n" name input
       
                     let nptr, prog, op = tick ptr prog input rb
                  
