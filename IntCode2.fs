@@ -71,7 +71,7 @@ module IntCode2
         // Input  --   inst ptr      --  prog
         // Output --   new inst ptr  --  updated prog  --  last run op
         let tick ptr prog input rb = 
-            let debug = false
+            let debug = true
 
             let opcode = prog |> Array.skip ptr |> Array.truncate 4
             //printf "inst:  %A\n" opcode
@@ -87,7 +87,8 @@ module IntCode2
                 | [| 3L; x; _; _ |] -> if debug then printf "write %A to %A\n" input x 
                                        Array.set prog (int x) input
                                        [|3L; x|], ptr + 2       //Input
-                | [| 4L; x; _; _ |] -> [|4L; x|], ptr + 2       //Output
+                | [| 4L; x; _; _ |] -> if debug then printf "output %A\n" x
+                                       [|4L; x|], ptr + 2       //Output
                                        
                 | [| 5L; x; y; _ |] -> if debug then printf "Jump to %A  if (%A <> 0L)\n" y x 
                                        [| 5L; x; y|], if x <> 0L then (int y) else ptr + 3  // JNZ
@@ -157,7 +158,7 @@ module IntCode2
                     if (fst op).[0] = 99L then // END
                         outputEvent.Trigger(-99999L)
                         
-                        print "Exiting Intcode comp\n"
+                        // print "Exiting Intcode comp\n"
                         return ()
 
                     ptr <- nptr
