@@ -22,23 +22,38 @@ let day19 =
     //             for y in 0L .. 49L do
     //                 yield x,y
     //     }
+   
+    for x in 0L .. 49L do
+        for y in 0L .. 49L do
+            let comp = IntCode2("")
+            let prog = readCSV "./data/day19.txt" 
+            let inq = comp.Initialise prog
 
-    let comp = IntCode2("test")
-    let prog = readCSV "./data/day19.txt" 
-    let inq = comp.Initialise prog
+            comp.OutputReady.Add(fun output ->
 
-    comp.OutputReady.Add(fun output ->
+            // System.Console.ReadKey()
+            // print ("Output : " + output.ToString())
+                if output <> -99999L then 
+                 //   printAt x y (output.ToString())
+                    counter <- counter + output
+                 //   print ("Counter : " + counter.ToString())
+                else 
+                   // finished <- true
+                    printf "Count : %A\n" counter
+                    //System.Console.ReadKey() |> ignore
+                ()
+            )    
 
-    // System.Console.ReadKey()
-    // print ("Output : " + output.ToString())
-        if output <> -99999L then 
-         //   printAt x y (output.ToString())
-            counter <- counter + output
-         //   print ("Counter : " + counter.ToString())
-        else 
-            System.Console.ReadKey() |> ignore
-        ()
-    )    
+            inq.Post(x)
+            inq.Post(y)
+            
+//   //  System.Console.ReadKey() |> ignore
+//     inq.Post(20L)
+//  //   System.Console.ReadKey() |> ignore
+//     inq.Post(0L)
+  //  System.Console.ReadKey() |> ignore
+    
+
     // for x in 0 .. 9 do
     //     for y in 0 .. 9 do
     //         let comp = IntCode2(x.ToString() + " : " + y.ToString())
