@@ -29,7 +29,7 @@ let main argv =
     //    printf "%A\t%A\n" x (char x)
 
     //Day13.day13 |> ignore
-    //Day14.day14 |> ignore
+    Day14.day14 |> ignore
     //Day15.day15 |> ignore
     //Day16.day16 |> ignore
 
@@ -38,7 +38,7 @@ let main argv =
 
     // Day18.day18 |> ignore
 
-    Day19.day19 |> ignore
+//    Day19.day19 |> ignore
 
 
 

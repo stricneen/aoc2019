@@ -7,6 +7,7 @@
     <Compile Include="Utils.fs" />
     <Compile Include="IntCode.fs" />
     <Compile Include="IntCode2.fs" />
+    <Compile Include="IntCode3.fs" />
     <Compile Include="Day00.fs" />
     <Compile Include="Day01.fs" />
     <Compile Include="Day02.fs" />
@@ -25,8 +26,8 @@
     <Compile Include="Day15.fs" />
     <Compile Include="Day16.fs" />
     <Compile Include="Day17.fs" />
-    <Compile Include="Day18.fs" />
     <Compile Include="Day19.fs" />
+    <Compile Include="Day18.fs" />
     <Compile Include="Day20.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>

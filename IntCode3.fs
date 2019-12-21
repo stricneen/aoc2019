@@ -1,11 +1,11 @@
 // INTCODE VERSION 2
 
-module IntCode2
+module IntCode3
 
     open System
     open Utils
 
-    type IntCode2(name) = 
+    type IntCode3(name) = 
     
         let getOpCode op =
             let s = op.ToString()
@@ -119,7 +119,9 @@ module IntCode2
         let outputEvent = new Event<int64>()
        
         let mutable tag = 0L,0L
-        //member this.SetTag<T> (tag:T)= 
+        member this.SetTag t = tag <- t 
+        member this.GetTag = tag
+                        
 
         member this.OutputReady = outputEvent.Publish
 
