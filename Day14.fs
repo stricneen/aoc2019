@@ -51,14 +51,17 @@ let day14 =
    // printf "Fuel : %A\n" fuel
 
     let rec resolve reaction = 
-        printf "%A\n" reaction
-        let exp = expandReaction reaction
-        System.Console.ReadKey() |> ignore
-        resolve exp
+        if reaction.In |> List.forall(fun x -> x.Name = ore) then 
+            reaction
+        else
+            printf "%A\n" reaction
+            let exp = expandReaction reaction
+            System.Console.ReadKey() |> ignore
+            resolve exp
 
-    resolve fuelR |> ignore
+    let o = resolve fuelR
+    printf "Done : %A\n" o
 
-   // printf "Expanded : %A\n" expanded
 
 
     //let r =  "7 A, 1 D => 1 E"
