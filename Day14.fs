@@ -28,7 +28,7 @@ let day14 =
     let reactions = reactionsStr
                     |> List.map parseReaction
 
-// 10 ORE => 7 A
+// 10 ORE => 10 A
 // 1 ORE => 1 B
 // 7 A, 1 B => 1 C
 // 7 A, 1 C => 1 D
@@ -48,7 +48,6 @@ let day14 =
         }
 
     let fuelR = reactions |> List.find(fun x -> x.Out.Name = fuel)
-   // printf "Fuel : %A\n" fuel
 
     let rec resolve reaction = 
         if reaction.In |> List.forall(fun x -> x.Name = ore) then 
@@ -56,18 +55,20 @@ let day14 =
         else
             printf "%A\n" reaction
             let exp = expandReaction reaction
-            System.Console.ReadKey() |> ignore
+            // System.Console.ReadKey() |> ignore
             resolve exp
 
     let o = resolve fuelR
     printf "Done : %A\n" o
+
+    printf "In ORE : %A\n" (o.In |> List.sumBy (fun x -> x.Amount))
+
 
 
 
     //let r =  "7 A, 1 D => 1 E"
     // printf "r : %A\n" (r.Substring(r.IndexOf("=>") + 3).Trim())
     // printf "amount : %A\n" ("7 A".Substring("7 A".IndexOf(" ")).Trim())
-
     //printf "r : %A\n" (parseChemical "7 A")
 
 
