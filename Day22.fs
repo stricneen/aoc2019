@@ -20,8 +20,12 @@ let day22 =
 
 
     let cut (deck:list<int>) (pos:int) = 
-        deck.[pos..] @ deck.[0..pos-1]
-
+        if pos > 0 then
+            deck.[pos..] @ deck.[0..pos-1]
+        else
+            let len = List.length deck
+            (deck |> List.skip (len + pos)) @ (deck |> List.take (len + pos))
+        
     let shuffle deck (line: string) =
         match line with
         | l when l.Contains("stack") -> deck |> List.rev
@@ -31,7 +35,7 @@ let day22 =
         
 
     // let ns = shuffle startDeck "deal into new stack"
-    let ns = shuffle startDeck "cut 3"
+    let ns = shuffle startDeck "cut -4"
   
     printf "%A\n" ns
   
