@@ -33,7 +33,7 @@ let main argv =
     //Day15.day15 |> ignore
     //Day16.day16 |> ignore
 
-    // Day17.day17 |> ignore
+    Day17.day17 |> ignore
 
 
     // Day18.day18 |> ignore
@@ -42,7 +42,7 @@ let main argv =
 
     // Day20.day20 |> ignore
     // Day21.day21 |> ignore
-    Day22.day22 |> ignore
+    //Day22.day22 |> ignore
 
 
 
