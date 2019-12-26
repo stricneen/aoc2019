@@ -50,15 +50,34 @@ let day24 =
         grid
         |> Array2D.mapi (fun x y e -> toBeBug grid x y )
         
+  
+    let bioArray grid =
+        grid
+        |> Array2D.mapi (fun x y e ->
+            match e with
+            | '.' -> 0
+            | _ -> pown 2 (x * 5 + y) 
+        )
+        |> Seq.cast<int>
+        |> Seq.sum
+        
 
-    let rec iterate grid c = 
-        printf "%A\n\n" grid
-        System.Console.ReadKey() |> ignore
+
+    let rec iterate grid c iterations = 
+      //  printf "%A\n\n" grid
+
+//        printf "%A\n\n" (bioArray grid)
+
+     //   System.Console.ReadKey() |> ignore
         let newGrid = ite grid
-        iterate newGrid c+1
+        let bio = bioArray newGrid
+        if List.contains bio iterations  then
+            printf "Repeated %A\n" bio
+        else
+            iterate newGrid (c + 1) (bio :: iterations)
 
-
-    let x = iterate prog 0
+    let bio = bioArray prog
+    let x = iterate prog 0 [bio]
 
     // printf "%A\n" prog
 
