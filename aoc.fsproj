@@ -5,8 +5,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Utils.fs" />
-    <Compile Include="IntCode.fs" />
     <Compile Include="IntCode2.fs" />
+    <Compile Include="IntCode.fs" />
     <Compile Include="IntCode3.fs" />
     <Compile Include="Day00.fs" />
     <Compile Include="Day01.fs" />
