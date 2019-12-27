@@ -8,7 +8,7 @@ type Reaction = { In: Chemical list; Out: Chemical }
 let day14 = 
     print "Advent of code - Day 14 - Space Stoichiometry"
 
-    let reactionsStr = readLines "./data/day14a.txt" |> Array.toList
+    let reactionsStr = readLines "./data/day14.txt" |> Array.toList
     let fuel = "FUEL"
     let ore = "ORE"
 
@@ -78,16 +78,39 @@ let day14 =
         let updated = resolve reaction toBeReplaced
         printf "%A\n" toBeReplaced
         printf "%A\n" (updated)
-        System.Console.ReadKey()
+        //System.Console.ReadKey()
         let chems = updated @ fuel.In |> List.where(fun x -> x.Name <> toBeReplaced.Name)
         {
             fuel 
             with In = simplify chems   
         }
 
+    // check if any items in l1 are in l2
+    let listContains l1 l2 =
+        let rec c l1' l2' =
+            match l1' with
+            | [] -> false
+            | h::t -> if l2' |> List.contains h then true else c t l2'
+        c l1 l2
 
-    let topological r = 
-        r
+    let names chems = 
+        chems |> List.map (fun x -> x.Name)
+
+    let topological lst = 
+        let rec topSort sort sorted = 
+            match sort with
+            | [] -> sorted
+            | _ ->
+                //printf "%A\n" sorted
+                //System.Console.ReadKey()
+                // get all outputs 
+                let outputs = sort |> List.fold(fun a e -> [e.Out.Name] @ a ) []
+                let next = sort |> List.find(fun x -> not(listContains (names x.In) outputs))
+                let remaining = sort |> List.where(fun x -> x.Out.Name <> next.Out.Name)
+                topSort remaining ([next] @ sorted)
+
+        topSort lst []
+        
 
     let rec loop fuel (lst: list<Reaction>) =
        match lst with 
@@ -97,6 +120,9 @@ let day14 =
                  loop simp t
          
     let sorted = topological reactions
+
+    printf "Done : %A\n" sorted
+
 
     let fuelR = reactions |> List.find(fun x -> x.Out.Name = fuel)
     let rest = sorted |> List.where(fun x -> x.Out.Name <> fuel)
