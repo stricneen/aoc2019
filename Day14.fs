@@ -28,25 +28,6 @@ let day14 =
     let reactions = reactionsStr
                     |> List.map parseReaction
 
-    let roots = reactions
-                |> List.where (fun x -> x.In |> List.exists (fun x -> x.Name = ore))
-                |> List.map (fun x -> x.Out.Name)
-
-    // 10 ORE => 10 A
-    // 1 ORE => 1 B
-    // 7 A, 1 B => 1 C
-    // 7 A, 1 C => 1 D
-    // 7 A, 1 D => 1 E
-    // 7 A, 1 E => 1 FUEL
-
-    // 9 ORE => 2 A
-    // 8 ORE => 3 B
-    // 7 ORE => 5 C
-    // 3 A, 4 B => 1 AB
-    // 5 B, 7 C => 1 BC
-    // 4 C, 1 A => 1 CA
-    // 2 AB, 3 BC, 4 CA => 1 FUEL
-
     let simplify chems = // removes duplication in chemical list
         chems
         |> List.fold (fun a e -> let current = a |> List.tryFind(fun x -> x.Name = e.Name)
@@ -59,21 +40,12 @@ let day14 =
     let scale chems factor = 
         chems
         |> List.map (fun x -> { x with Amount = x.Amount * factor })
-     
-    // let resolve chem = 
-    //     let creator = reactions |> List.find (fun x -> x.Out.Name = chem.Name)
-    //     let factor = int(ceil((chem.Amount |> double) / (creator.Out.Amount |> double)))
-    //     scale creator.In factor
 
     let resolve creator chem =
         let factor = int(ceil((chem.Amount |> double) / (creator.Out.Amount |> double)))
         scale creator.In factor
 
-    // 2 AB, 3 BC, 4 CA => 1 FUEL
-    // 4 C, 1 A => 1 CA
-
     let expandReaction fuel reaction = 
-        
         let toBeReplaced = fuel.In |> List.find(fun x -> x.Name = reaction.Out.Name)
         let updated = resolve reaction toBeReplaced
         printf "%A\n" toBeReplaced
@@ -101,9 +73,6 @@ let day14 =
             match sort with
             | [] -> sorted
             | _ ->
-                //printf "%A\n" sorted
-                //System.Console.ReadKey()
-                // get all outputs 
                 let outputs = sort |> List.fold(fun a e -> [e.Out.Name] @ a ) []
                 let next = sort |> List.find(fun x -> not(listContains (names x.In) outputs))
                 let remaining = sort |> List.where(fun x -> x.Out.Name <> next.Out.Name)
@@ -121,8 +90,6 @@ let day14 =
          
     let sorted = topological reactions
 
-    printf "Done : %A\n" sorted
-
 
     let fuelR = reactions |> List.find(fun x -> x.Out.Name = fuel)
     let rest = sorted |> List.where(fun x -> x.Out.Name <> fuel)
@@ -131,27 +98,5 @@ let day14 =
 
 
     printf "Done : %A\n" r
-
-
-
-
-
-    //let o = loop fuelR
-
-
-
-
-    //printf "Done : %A\n" o
-    // let r = reactions
-    //         |> List.where (fun x -> x.In |> List.exists (fun x -> x.Name = ore))
-
-    //let t = o.In |> List.map resolve
-    
-    //let s = t |> List.map List.head
-   // printf "s : %A\n" s
-
-    //printf "In ORE : %A\n" (s |> List.sumBy (fun x -> x.Amount))
-
-
 
     0
