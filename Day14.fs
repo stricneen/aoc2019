@@ -99,4 +99,6 @@ let day14 =
 
     printf "Done : %A\n" r
 
+    printf "%A\n" (1000000000000L / 13312L)
+
     0
