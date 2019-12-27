@@ -47,23 +47,7 @@ let day14 =
     // 4 C, 1 A => 1 CA
     // 2 AB, 3 BC, 4 CA => 1 FUEL
 
-
-    let scale chems factor = 
-        chems
-        |> List.map (fun x -> { x with Amount = x.Amount * factor })
-     
-    let resolve chem = 
-        let creator = reactions |> List.find (fun x -> x.Out.Name = chem.Name)
-        let factor = int(ceil((chem.Amount |> double) / (creator.Out.Amount |> double)))
-        scale creator.In factor
-
-    let withOutput chem = 
-        if roots |> List.exists (fun x -> x = chem.Name) then
-            List.singleton chem
-        else
-           resolve chem
-
-    let simplify chems =
+    let simplify chems = // removes duplication in chemical list
         chems
         |> List.fold (fun a e -> let current = a |> List.tryFind(fun x -> x.Name = e.Name)
                                  match current with
@@ -72,42 +56,75 @@ let day14 =
                                  { chem with Amount = chem.Amount + e.Amount } ::
                                   (a |> List.where(fun x -> x.Name <> chem.Name))) []
 
-    let expandReaction reaction = 
-        let chems = reaction.In
-                    |> (List.fold (fun a e -> List.append a (withOutput e)) [])
-        printf "%A\n" chems
-        printf "%A\n" (simplify chems)
+    let scale chems factor = 
+        chems
+        |> List.map (fun x -> { x with Amount = x.Amount * factor })
+     
+    // let resolve chem = 
+    //     let creator = reactions |> List.find (fun x -> x.Out.Name = chem.Name)
+    //     let factor = int(ceil((chem.Amount |> double) / (creator.Out.Amount |> double)))
+    //     scale creator.In factor
+
+    let resolve creator chem =
+        let factor = int(ceil((chem.Amount |> double) / (creator.Out.Amount |> double)))
+        scale creator.In factor
+
+    // 2 AB, 3 BC, 4 CA => 1 FUEL
+    // 4 C, 1 A => 1 CA
+
+    let expandReaction fuel reaction = 
+        
+        let toBeReplaced = fuel.In |> List.find(fun x -> x.Name = reaction.Out.Name)
+        let updated = resolve reaction toBeReplaced
+        printf "%A\n" toBeReplaced
+        printf "%A\n" (updated)
+        System.Console.ReadKey()
+        let chems = updated @ fuel.In |> List.where(fun x -> x.Name <> toBeReplaced.Name)
         {
-            reaction 
+            fuel 
             with In = simplify chems   
         }
 
+
+    let topological r = 
+        r
+
+    let rec loop fuel (lst: list<Reaction>) =
+       match lst with 
+       | [] -> fuel
+       | h::t -> let r = expandReaction fuel h
+                 let simp = { r with In = simplify r.In }
+                 loop simp t
+         
+    let sorted = topological reactions
+
     let fuelR = reactions |> List.find(fun x -> x.Out.Name = fuel)
+    let rest = sorted |> List.where(fun x -> x.Out.Name <> fuel)
+    
+    let r = loop fuelR rest // List of reactions
 
-    let rec loop reaction = 
-        if reaction.In |> List.forall(fun x -> roots |> List.contains x.Name) then 
-            reaction
-        else
-            let exp = expandReaction reaction
-            loop exp
 
-    let o = loop fuelR
+    printf "Done : %A\n" r
 
-    printf "Done : %A\n" o
+
+
+
+
+    //let o = loop fuelR
+
+
+
+
+    //printf "Done : %A\n" o
     // let r = reactions
     //         |> List.where (fun x -> x.In |> List.exists (fun x -> x.Name = ore))
 
-    let t = o.In |> List.map resolve
+    //let t = o.In |> List.map resolve
     
-    printf "res : %A\n" t
+    //let s = t |> List.map List.head
+   // printf "s : %A\n" s
 
-
-
-
-    let s = t |> List.map List.head
-    printf "s : %A\n" s
-
-    printf "In ORE : %A\n" (s |> List.sumBy (fun x -> x.Amount))
+    //printf "In ORE : %A\n" (s |> List.sumBy (fun x -> x.Amount))
 
 
 
