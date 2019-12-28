@@ -2,6 +2,8 @@ module Day18
 
 open Utils
 
+type Location = { x:int; y:int; pos:char; dist:int }
+
 let day18 = 
     print "Advent of code - Day 18 - Many-Worlds Interpretation"
 
@@ -20,29 +22,39 @@ let day18 =
 
         loop ary 0
 
+
+
     let prog = read2DArray "./data/day18a.txt"
-
-    let coords = coordsOf prog '@'
-    printf "%A\n" prog
-
-
-    printf "%A\n" (coordsOf prog '@')
-    printf "%A\n" (coordsOf prog 'a')
-    printf "%A\n" (coordsOf prog 'A')
-
-
-    // let find2d arr chr = 
-    //     for y in 0 .. Array2D.length2 do
-    //         let row = arr.[*, y]
-    //         let fnd = 
-
-
-    // prog |> Array2D.
-
 
     // #########
     // #b.A.@.a#
     // #########
+    
+    let getSurroundings locs =
+        locs
+        |> List.fold(fun acc loc -> 
+            let n = { x=loc.x; y=(loc.y)-1; pos=prog.[loc.y-1, loc.x]; dist= loc.dist+1 }
+            let e = { x=loc.x+1; y=loc.y; pos=prog.[loc.y, loc.x+1]; dist= loc.dist+1 }
+            let s = { x=loc.x; y=loc.y+1; pos=prog.[loc.y+1, loc.x]; dist= loc.dist+1 }
+            let w = { x=loc.x-1; y=loc.y; pos=prog.[loc.y, loc.x-1]; dist= loc.dist+1 }
+            [n; e; s ;w] @ acc
+        ) []
+        |> List.where(fun x -> x.pos='.' || System.Char.IsLower x.pos)
+
+    let availableKeys map = 
+        let start = coordsOf prog '@'
+        let s = [ { x=fst start; y=snd start; pos='@'; dist=0 }]
+        printf "%A\n\n" s
+        let x = getSurroundings s
+        x
+
+
+    let keys = availableKeys prog
+
+    printf "%A\n\n" keys
+    // prog |> Array2D.
+
+
 
 
 
