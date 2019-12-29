@@ -58,14 +58,25 @@ let day18 =
         locations |> List.where(fun x -> System.Char.IsLower x.pos)
 
       
+    let useKey map pos = 
+        let cx, cy = coordsOf map '@'
+        let dx, dy = coordsOf map (System.Char.ToUpper pos.pos)
+        let cpy = Array2D.copy map
+        Array2D.set cpy pos.y pos.x '@'
+        Array2D.set cpy cy cx '.'
+        Array2D.set cpy dy dx '.'
+        cpy
+    
     let keys = availableKeys prog
 
-    printf "%A\n\n" keys
-    
-    //printf "%A\n\n" prog
+    let k = keys |> List.head
 
+    let t = useKey prog k
+
+    printf "%A\n\n" keys
     printmap prog
 
+    printmap t
 
 
 
