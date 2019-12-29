@@ -4,6 +4,8 @@ open Utils
 
 type Location = { x:int; y:int; pos:char; dist:int }
 
+type State = { total:int; map: char[,] }
+
 let day18 = 
     print "Advent of code - Day 18 - Many-Worlds Interpretation"
 
@@ -69,7 +71,11 @@ let day18 =
         let locations = traverse [ { x=fst start; y=snd start; pos='@'; dist=0 }] 0
         locations |> List.where(fun x -> System.Char.IsLower x.pos)
 
-      
+    let printState s = 
+        s |> List.iter(fun x -> printf "Total : %A\n" x.total
+                                printmap x.map
+        )
+
     let useKey map pos = 
         let cx, cy = coordsOf map '@'
         let dx, dy = coordsOf map (System.Char.ToUpper pos.pos)
@@ -79,14 +85,48 @@ let day18 =
         if dy > -1 then Array2D.set cpy dy dx '.'
         cpy
     
-    let prog = read2DArray "./data/day18a.txt"
+    let prog = read2DArray "./data/day18.txt"
     printmap prog
+
+    let rec loop states = 
+        let keys = states
+                   |> List.map(fun x -> x, availableKeys x.map)
+        let newStates = keys
+                        |> List.fold(fun a x -> 
+                                let state, keys = x
+                                let unlock = keys
+                                           |> List.map(fun x -> {total=state.total + x.dist; map=useKey state.map x})
+                                unlock @ a
+                        ) []
+                        // |> List.sortBy(fun x -> x.total)
+                        // |> List.truncate 10000
+        if List.isEmpty newStates then
+            states
+        else
+            //print "\n\n"
+            printn (List.length newStates)
+            
+            // printState states
+            //System.Console.ReadKey()
+            
+            loop newStates
     
-    let keys = availableKeys prog
-    let k = keys |> List.head
-    let t = useKey prog k
-    printf "%A\n\n" keys
-    printmap t
+
+    let startState = { total=0; map=prog }
+    let t = loop [ startState ]
+   
+
+    let min = t |> List.minBy (fun x -> x.total)
+    
+    print "DONE"
+    printState [min]
+
+
+    // let keys = availableKeys prog
+    // let k = keys |> List.head
+    // let t = useKey prog k
+    // printf "%A\n\n" keys
+    // printmap t
 
 
     // let keys' = availableKeys t

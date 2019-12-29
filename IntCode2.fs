@@ -90,10 +90,10 @@ module IntCode2
                 | [| 4L; x; _; _ |] -> if debug then printf "output %A\n" x
                                        [|4L; x|], ptr + 2       //Output
                                        
-                | [| 5L; x; y; _ |] -> if debug then printf "Jump to %A  if (%A <> 0L)\n" y x 
+                | [| 5L; x; y; _ |] -> if debug then printf "Jump to %A if (%A <> 0L)\n" y x 
                                        [| 5L; x; y|], if x <> 0L then (int y) else ptr + 3  // JNZ
                                         
-                | [| 6L; x; y; _ |] -> if debug then printf "Jump to %A  if (%A = 0L)\n" y x 
+                | [| 6L; x; y; _ |] -> if debug then printf "Jump to %A if (%A = 0L)\n" y x 
                                        [| 6L; x; y|], if x = 0L then (int y) else ptr + 3  // JEZ
 
                 | [| 7L; x; y; z |] -> if debug then printf "Set %A to 1 if (%A < %A) else 0\n" z x y
