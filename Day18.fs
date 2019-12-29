@@ -19,10 +19,13 @@ let day18 =
             match f with 
             | None -> loop a (c + 1) 
             | Some x -> x,c
-
         loop ary 0
 
-
+    let rec printmap lst = 
+        for x in 0 .. Array2D.length1 lst - 1 do
+            let l = lst.[x,*] |> System.String
+            printf "%A\n" l
+   
 
     let prog = read2DArray "./data/day18a.txt"
 
@@ -40,20 +43,28 @@ let day18 =
             [n; e; s ;w] @ acc
         ) []
         |> List.where(fun x -> x.pos='.' || System.Char.IsLower x.pos)
+        
 
     let availableKeys map = 
-        let start = coordsOf prog '@'
-        let s = [ { x=fst start; y=snd start; pos='@'; dist=0 }]
-        printf "%A\n\n" s
-        let x = getSurroundings s
-        x
+        let rec traverse points = 
+            let x = getSurroundings points @ points
+                    |> List.distinctBy(fun x -> x.x * 1000 + x.y)
+            if List.length x = List.length points then
+                x
+            else 
+                traverse x        
+        let start = coordsOf map '@'
+        let locations = traverse [ { x=fst start; y=snd start; pos='@'; dist=0 }]
+        locations |> List.where(fun x -> System.Char.IsLower x.pos)
 
-
+      
     let keys = availableKeys prog
 
     printf "%A\n\n" keys
-    // prog |> Array2D.
+    
+    //printf "%A\n\n" prog
 
+    printmap prog
 
 
 
