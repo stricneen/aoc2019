@@ -98,12 +98,11 @@ let day18 =
                                            |> List.map(fun x -> {total=state.total + x.dist; map=useKey state.map x})
                                 unlock @ a
                         ) []
-                        // |> List.sortBy(fun x -> x.total)
-                        // |> List.truncate 10000
+                        |> List.sortBy(fun x -> x.total)
+                        |> List.truncate 100000
         if List.isEmpty newStates then
             states
         else
-            //print "\n\n"
             printn (List.length newStates)
             
             // printState states
@@ -115,29 +114,10 @@ let day18 =
     let startState = { total=0; map=prog }
     let t = loop [ startState ]
    
-
     let min = t |> List.minBy (fun x -> x.total)
     
     print "DONE"
     printState [min]
-
-
-    // let keys = availableKeys prog
-    // let k = keys |> List.head
-    // let t = useKey prog k
-    // printf "%A\n\n" keys
-    // printmap t
-
-
-    // let keys' = availableKeys t
-    // printf "%A\n\n" keys'
-    // let k' = keys' |> List.head
-    // let t' = useKey t k'
-    // printmap t'
-
-
-
-
 
 
     0

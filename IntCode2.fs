@@ -71,7 +71,7 @@ module IntCode2
         // Input  --   inst ptr      --  prog
         // Output --   new inst ptr  --  updated prog  --  last run op
         let tick ptr prog input rb = 
-            let debug = false
+            let debug = true
 
             let opcode = prog |> Array.skip ptr |> Array.truncate 4
             //printf "inst:  %A\n" opcode
@@ -148,11 +148,11 @@ module IntCode2
                         
 
                     if x = '3' then
-                        //printf "(%A) Waiting for input ...\n" name
+                        printf "(%A) Waiting for input ...\n" name
                         //Console.ReadKey()
                         let! i = inbox.Receive() // Wait to recieve from the Q
                         input <- i
-                        //printf "(%A) Got intput: %A\n" name input
+                        printf "(%A) Got intput: %A\n" name input
       
                     let nptr, prog, op = tick ptr prog input rb
                  

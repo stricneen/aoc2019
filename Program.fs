@@ -43,8 +43,9 @@ let main argv =
     // Day20.day20 |> ignore
     // Day21.day21 |> ignore
     //Day22.day22 |> ignore
-
+    Day23.day23 |> ignore
+    
     //Day24.day24 |> ignore
-    Day25.day25 |> ignore
+    //Day25.day25 |> ignore
 
     0 // return an integer exit code
