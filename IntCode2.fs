@@ -64,14 +64,13 @@ module IntCode2
                     else
                         0L
 
-
                 [| op; p1; p2; p3 |]
     //1008
 
         // Input  --   inst ptr      --  prog
         // Output --   new inst ptr  --  updated prog  --  last run op
         let tick ptr prog input rb = 
-            let debug = true
+            let debug = false
 
             let opcode = prog |> Array.skip ptr |> Array.truncate 4
             //printf "inst:  %A\n" opcode
@@ -131,10 +130,11 @@ module IntCode2
             let mutable rb = 0
             let mutable input = 0L
            
+            let mutable outstate = 0 // 0 - address : 1 - x : 2 - y
+            let mutable address = 0L
             
             // temp
             let prog = Array.append progin (Array.create 10000 0L)
-
 
             let inputQueue = MailboxProcessor.Start(fun inbox ->
 
@@ -148,17 +148,48 @@ module IntCode2
                         
 
                     if x = '3' then
-                        printf "(%A) Waiting for input ...\n" name
+                        //printf "(%A) Waiting for input ...\n" name
                         //Console.ReadKey()
-                        let! i = inbox.Receive() // Wait to recieve from the Q
-                        input <- i
-                        printf "(%A) Got intput: %A\n" name input
+                        
+                        if inbox.CurrentQueueLength = 0 then
+                            input <- -1L
+                            // System.Console.ReadKey()
+                        else
+                          
+                            let! i = inbox.Receive() // Wait to recieve from the Q
+                          
+                            //if i > 50L then 
+                              //  printf "** You've got mail **  %A\n" i
+                             //   System.Console.ReadKey()
+
+                            input <- i
+                        //printf "(%A) Got intput: %A\n" name input
+
+
       
                     let nptr, prog, op = tick ptr prog input rb
                  
                     if (fst op).[0] = 4L then     /// need to output
-                        // printf "(%A) Outputting ... %A\n" name (fst op).[1]
-                        outputEvent.Trigger((fst op).[1])
+                        let outputValue = (fst op).[1]
+
+                        if outstate = 0 then
+                            printf "(%A) Address ... %A\n" name outputValue
+                            address <- outputValue
+                            outstate <- 1
+                        else if outstate = 1 then
+                            printf "(%A) X ... %A\n" name outputValue
+                            outstate <- 2
+                            outputEvent.Trigger(outputValue * 1000L + address)
+                       //     printf "(%A) X SENT... %A\n" name outputValue
+                            
+                        else
+                            printf "(%A) Y ... %A\n" name outputValue
+                            outstate <- 0
+                            outputEvent.Trigger(outputValue * 1000L + address)
+                            if address = 255L then
+                                printf "ANSWER : %A\n"outputValue 
+                        
+
                         //out <- int (fst op).[1]
                     
                     if (fst op).[0] = 9L then

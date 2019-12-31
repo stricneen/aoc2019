@@ -119,9 +119,11 @@ module IntCode3
         let outputEvent = new Event<int64>()
        
         let mutable tag = 0L,0L
+
         member this.SetTag t = tag <- t 
         member this.GetTag = tag
-                        
+
+      //  member this.member = memberInput
 
         member this.OutputReady = outputEvent.Publish
 
