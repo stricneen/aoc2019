@@ -17,7 +17,7 @@ let day23 =
     let network = List.init 50 (fun x -> 
         let c = IntCode2 (x.ToString())
         let q = c.Initialise (Array.copy prog)
-        //q.Post (int64 x)
+        q.Post (int64 x)
         //c.OutputReady.Add(outputNic)
         (x, q, c)
     )
@@ -31,12 +31,26 @@ let day23 =
        // let q = c.Initialise (Array.copy prog)
 
         c.OutputReady.Add(fun o -> 
-           // printf "OOOOOOO: %A\n" o
-        
+
+            printf "OOOOOOO: %A\n" o
+
+
             let command = o / 1000L
-           // printf "c: %A\n" command
-            let address = int(o - command * 1000L)
-           // printf "a: %A\n" address
+            printf "c: %A\n" command
+
+
+            let address =
+                if command > 0L then 
+                    int(o - command * 1000L)
+                else
+                    1000 - int(command * 1000L - o)
+             
+                    
+            printf "a: %A\n" address
+
+
+
+
             let reciept = network |> List.tryFind(fun x' -> let x,q,c = x'
                                                             x = address )
 
@@ -50,7 +64,7 @@ let day23 =
             ()
         )
 
-        q.Post (int64 x) // Address
+        //q.Post (int64 x) // Address
 
 
 

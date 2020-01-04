@@ -83,7 +83,8 @@ module IntCode2
                                        [|1L; x; y; z|], ptr + 4 //Add
                 | [| 2L; x; y; z |] -> Array.set prog (int z) (x * y)
                                        [|2L; x; y; z|], ptr + 4 //Mul
-                | [| 3L; x; _; _ |] -> if debug then printf "write %A to %A\n" input x 
+                | [| 3L; x; _; _ |] -> if input <> -1L then
+                                           printf "(%A) write %A to %A\n" name input x 
                                        Array.set prog (int x) input
                                        [|3L; x|], ptr + 2       //Input
                 | [| 4L; x; _; _ |] -> if debug then printf "output %A\n" x
@@ -132,6 +133,8 @@ module IntCode2
            
             let mutable outstate = 0 // 0 - address : 1 - x : 2 - y
             let mutable address = 0L
+            let mutable xout = 0L
+            let mutable yout = 0L
             
             // temp
             let prog = Array.append progin (Array.create 10000 0L)
@@ -173,23 +176,29 @@ module IntCode2
                         let outputValue = (fst op).[1]
 
                         if outstate = 0 then
-                            printf "(%A) Address ... %A\n" name outputValue
+                            //printf "(%A) Address ... %A\n" name outputValue
                             address <- outputValue
                             outstate <- 1
                         else if outstate = 1 then
-                            printf "(%A) X ... %A\n" name outputValue
+                            // printf "(%A) X ... %A\n" name outputValue
+                            xout <- outputValue * 1000L + address
                             outstate <- 2
-                            outputEvent.Trigger(outputValue * 1000L + address)
-                       //     printf "(%A) X SENT... %A\n" name outputValue
+                            // outputEvent.Trigger(outputValue * 1000L + address)
+                            // printf "(%A) X SENT... %A\n" name outputValue
                             
                         else
-                            printf "(%A) Y ... %A\n" name outputValue
-                            outstate <- 0
-                            outputEvent.Trigger(outputValue * 1000L + address)
+                            printf "ov: %A\n" outputValue
+                            yout <- outputValue * 1000L + address
+                            printf "(%A) to:%A  x:%A   y:%A\n" name address (xout/1000L) (yout/1000L)
+                            
+                            outputEvent.Trigger(xout)
+                            outputEvent.Trigger(yout)
+                            
                             if address = 255L then
                                 printf "ANSWER : %A\n"outputValue 
+                            outstate <- 0
                         
-
+// 66968L x
                         //out <- int (fst op).[1]
                     
                     if (fst op).[0] = 9L then
