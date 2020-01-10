@@ -17,14 +17,16 @@ let day23 =
 
     let network = List.init 50 (fun x -> 
         
+        let q = System.Collections.Generic.Queue<int64>()
         let c = IntCode3 (x.ToString())
         //let event = new System.Threading.AutoResetEvent(false)
         //c.AutoReEvent event
-        let q = c.Initialise (Array.copy prog)
-
+        c.Initialise (Array.copy prog) q
+        q.Enqueue -1L
+        c.Start
         // q.Post (int64 x)
         // c.OutputReady.Add(outputNic)
-        (x, q, c)
+        (x, q, c)   
     )
 
     network
@@ -48,7 +50,7 @@ let day23 =
             match reciept with
             | None -> printf "Can't find address : %A\n" address
                       finished <- true
-            | Some (_,y,_) -> y.Post command 
+            | Some (_,y,_) -> y.Enqueue command 
 
             ()
         )

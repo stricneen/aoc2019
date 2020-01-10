@@ -1,11 +1,9 @@
-// INTCODE VERSION 2
-
 module IntCode3
 
     open System
     open Utils
 
-    type IntCode3(name) = 
+    type IntCode3 (name) = 
     
         let getOpCode op =
             let s = op.ToString()
@@ -119,33 +117,25 @@ module IntCode3
        
         let outputEvent = new Event<int64>()
        
-        //let mutable arevent:Threading.AutoResetEvent = null
         let mutable tag = 0L,0L
-        //member this.SetTag<T> (tag:T)= 
-
-        
-       // let mutable booted = false
-       // let mutable step = true
+  
         member this.OutputReady = outputEvent.Publish
 
-        // member this.Booted b = 
-        //     booted <- b
-        // member this.AutoReEvent are =
-        //     arevent <- are
+        member this.Start = 
+            ()
 
-
-       // member this.Step = step <- false
-
-        member this.Initialise (progin: Int64[]) =
+        member this.Initialise (program: Int64[]) (queue:System.Collections.Generic.Queue<int64>) =
             let mutable ptr = 2
 
-            Array.set progin 62 (Int64.Parse name)
+            Array.set program 62 (Int64.Parse name)
             //Array.set progin 0 203L
-           // Array.set progin 1 -1L
+               // Array.set progin 1 -1L
 
             // let mutable inputPtr = 0
             // let mutable cond = true
             // let mutable out = 0
+            
+
             let mutable rb = 0
             let mutable input = 0L
            
@@ -159,90 +149,74 @@ module IntCode3
 
             let mutable cx = 0
 
-            // temp
-            let prog = Array.append progin (Array.create 10000 0L)
-
-            let inputQueue = MailboxProcessor<int64>.Start(fun inbox ->
-
-                let rec messageLoop() = async {
-                    printf "(%A) Running op : %A\n" name prog.[ptr] 
-
-                    let c = (prog.[ptr]).ToString()
-                    let x = c.[(String.length c) - 1]
-
-
-                    if x = '3' then
- //                       System.Console.ReadKey()
-   //                     printf "waiting for %A\n" name
-                        let! opt = inbox.TryReceive 5
-                        let input' = match opt with
-                                     | None -> -1L
-                                     | Some message ->  //cx <- cx + 1
-                                                        //print "bbbbbb"
-                                                        //System.Console.ReadKey()
-                                                        message
-
-                        input <- input'
-      
-                    let nptr, prog, op = tick ptr prog input rb
-                 
-                    if (fst op).[0] = 4L then     /// need to output
-                        let outputValue = (fst op).[1]
-
-                        if outstate = 0 then
-                            //printf "(%A) Address ... %A\n" name outputValue
-                            address <- outputValue
-                            outstate <- 1
-                        else if outstate = 1 then
-                            // printf "(%A) X ... %A\n" name outputValue
-                            xout <- outputValue * 1000L + address
-                            outstate <- 2
-                            // outputEvent.Trigger(outputValue * 1000L + address)
-                            // printf "(%A) X SENT... %A\n" name outputValue
-                            
-                        else
-                           // printf "ov: %A\n" outputValue
-                            yout <- outputValue * 1000L + address
-                            printf "(%A) to:%A  x:%A   y:%A\n" name address (xout/1000L) (yout/1000L)
-                            
-                            outputEvent.Trigger(xout)
-                            outputEvent.Trigger(yout)
-                            
-                            // if address = 255L then
-                            //     printf "ANSWER : %A\n" outputValue 
-                            outstate <- 0
-                        
-                        // 66968L x
-                        //out <- int (fst op).[1]
-                    
-                    if (fst op).[0] = 9L then
-                        rb <- rb + int (fst op).[1]
-                      
-                    if (fst op).[0] = 99L then // END
-                        outputEvent.Trigger(-99999L)
-                        
-                        // print "Exiting Intcode comp\n"
-                        return ()
-
-                    ptr <- nptr
-
-                    printf "(%A) Waiting : %A\n" name
-
-                   
-                   // arevent.WaitOne() |> ignore
-
-                    // while step do
-                    //     Threading.Thread.Sleep 5000
-
-                    //step <- true
-
-                    return! messageLoop()
-                }
-                messageLoop() // start the loop
-            )
-
             
-            inputQueue
+            // temp
+            let prog = Array.append program (Array.create 10000 0L)
+
+            //let inputQueue = MailboxProcessor<int64>.Start(fun inbox ->
+            
+            let mutable run = true
+
+            while run do
+                printf "(%A) Running op : %A\n" name prog.[ptr] 
+
+                let c = (prog.[ptr]).ToString()
+                let x = c.[(String.length c) - 1]
+
+
+                if x = '3' then
+                    let opt = queue.TryDequeue()
+                    let input' = match opt with
+                                 | (x,_) when not x -> -1L
+                                 | (_,y)  -> y
+                    input <- input'
+  
+                let nptr, prog, op = tick ptr prog input rb
+             
+                if (fst op).[0] = 4L then     /// need to output
+                    let outputValue = (fst op).[1]
+
+                    if outstate = 0 then
+                        //printf "(%A) Address ... %A\n" name outputValue
+                        address <- outputValue
+                        outstate <- 1
+                    else if outstate = 1 then
+                        // printf "(%A) X ... %A\n" name outputValue
+                        xout <- outputValue * 1000L + address
+                        outstate <- 2
+                        // outputEvent.Trigger(outputValue * 1000L + address)
+                        // printf "(%A) X SENT... %A\n" name outputValue
+                        
+                    else
+                       // printf "ov: %A\n" outputValue
+                        yout <- outputValue * 1000L + address
+                        printf "(%A) to:%A  x:%A   y:%A\n" name address (xout/1000L) (yout/1000L)
+                        
+                        outputEvent.Trigger(xout)
+                        outputEvent.Trigger(yout)
+                        
+                        // if address = 255L then
+                        //     printf "ANSWER : %A\n" outputValue 
+                        outstate <- 0
+                    
+                    // 66968L x
+                    //out <- int (fst op).[1]
+                
+                if (fst op).[0] = 9L then
+                    rb <- rb + int (fst op).[1]
+                  
+                if (fst op).[0] = 99L then // END
+                    outputEvent.Trigger(-99999L)
+                    
+                    // print "Exiting Intcode comp\n"
+                    run <- false
+
+                ptr <- nptr
+
+                printf "(%A) Waiting : %A\n" name
+
+                ()
+
           
           
       
