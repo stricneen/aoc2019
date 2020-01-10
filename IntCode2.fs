@@ -84,7 +84,7 @@ module IntCode2
                 | [| 2L; x; y; z |] -> Array.set prog (int z) (x * y)
                                        [|2L; x; y; z|], ptr + 4 //Mul
                 | [| 3L; x; _; _ |] -> if input <> -1L then
-                                           printf "(%A) write %A to %A\n" name input x 
+                                            printf "(%A) write %A to %A\n" name input x 
                                        Array.set prog (int x) input
                                        [|3L; x|], ptr + 2       //Input
                 | [| 4L; x; _; _ |] -> if debug then printf "output %A\n" x
@@ -118,13 +118,28 @@ module IntCode2
        
         let outputEvent = new Event<int64>()
        
+        let mutable arevent:Threading.AutoResetEvent = null
         let mutable tag = 0L,0L
         //member this.SetTag<T> (tag:T)= 
 
+        
+       // let mutable booted = false
+       // let mutable step = true
         member this.OutputReady = outputEvent.Publish
 
+        // member this.Booted b = 
+        //     booted <- b
+        member this.AutoReEvent are =
+            arevent <- are
+
+
+       // member this.Step = step <- false
+
         member this.Initialise (progin: Int64[]) =
-            let mutable ptr = 0
+            let mutable ptr = 2
+
+            Array.set progin 62 (Int64.Parse name)
+
             // let mutable inputPtr = 0
             // let mutable cond = true
             // let mutable out = 0
@@ -136,39 +151,50 @@ module IntCode2
             let mutable xout = 0L
             let mutable yout = 0L
             
+            let mutable f = true
+            let mutable first = true
+
+            let mutable cx = 0
+
             // temp
             let prog = Array.append progin (Array.create 10000 0L)
 
-            let inputQueue = MailboxProcessor.Start(fun inbox ->
+            let inputQueue = MailboxProcessor<int64>.Start(fun inbox ->
 
                 let rec messageLoop() = async {
-
-                    //printf "(%A) Running op : %A\n" name prog.[ptr] 
+                   // printf "(%A) Running op : %A\n" name prog.[ptr] 
 
                     let c = (prog.[ptr]).ToString()
                     let x = c.[(String.length c) - 1]
-                    //printf "(%A)  ...\n" x
-                        
+
 
                     if x = '3' then
-                        //printf "(%A) Waiting for input ...\n" name
-                        //Console.ReadKey()
-                        
-                        if inbox.CurrentQueueLength = 0 then
-                            input <- -1L
-                            // System.Console.ReadKey()
-                        else
-                          
-                            let! i = inbox.Receive() // Wait to recieve from the Q
-                          
-                            //if i > 50L then 
-                              //  printf "** You've got mail **  %A\n" i
-                             //   System.Console.ReadKey()
+ //                       System.Console.ReadKey()
+   //                     printf "waiting for %A\n" name
+                        let! opt = inbox.TryReceive 5
+                        let input' = match opt with
+                                     | None -> if f then
+                                                    print name
+                                                    if cx = 1 then  
+                                                        print "xxxxxxxx"
+                                                        System.Console.ReadKey()
+                                                        ()
+                                                    if cx = 2 then  
+                                                        print "999999"
+                                                        System.Console.ReadKey()
+                                                        ()
+                                                    cx <- 0
+                                                    f <- false
+                                                    first <- false
+                                                    -1L
+                                               else 
+                                                    -1L
+                                     | Some message ->  cx <- cx + 1
+                                                        print "bbbbbb"
+                                                        System.Console.ReadKey()
+                                                        message
 
-                            input <- i
-                        //printf "(%A) Got intput: %A\n" name input
-
-
+                        input <- input'
       
                     let nptr, prog, op = tick ptr prog input rb
                  
@@ -187,18 +213,18 @@ module IntCode2
                             // printf "(%A) X SENT... %A\n" name outputValue
                             
                         else
-                            printf "ov: %A\n" outputValue
+                           // printf "ov: %A\n" outputValue
                             yout <- outputValue * 1000L + address
                             printf "(%A) to:%A  x:%A   y:%A\n" name address (xout/1000L) (yout/1000L)
                             
                             outputEvent.Trigger(xout)
                             outputEvent.Trigger(yout)
                             
-                            if address = 255L then
-                                printf "ANSWER : %A\n"outputValue 
+                            // if address = 255L then
+                            //     printf "ANSWER : %A\n" outputValue 
                             outstate <- 0
                         
-// 66968L x
+                        // 66968L x
                         //out <- int (fst op).[1]
                     
                     if (fst op).[0] = 9L then
@@ -212,11 +238,22 @@ module IntCode2
 
                     ptr <- nptr
 
+                    printf "(%A) Waiting : %A\n" name
+
+                   
+                   // arevent.WaitOne() |> ignore
+
+                    // while step do
+                    //     Threading.Thread.Sleep 5000
+
+                    //step <- true
+
                     return! messageLoop()
                 }
                 messageLoop() // start the loop
             )
 
+            
             inputQueue
           
           

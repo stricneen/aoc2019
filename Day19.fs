@@ -20,7 +20,7 @@ let day19 =
                // let output, tag = opt
                 if output <> -99999L then 
                  //   printAt x y (output.ToString())
-                    let x,y = comp.GetTag
+                  //  let x,y = comp.GetTag
                     printAt (int y) (int x) (if output = 0L then "." else "#")
                     counter <- counter + output
                  //   print ("Counter : " + counter.ToString())
@@ -31,7 +31,7 @@ let day19 =
                 ()
             )    
 
-            comp.SetTag (x,y)
+           // comp.SetTag (x,y)
             inq.Post x
             inq.Post y
             
