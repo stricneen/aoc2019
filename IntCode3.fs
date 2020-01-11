@@ -3,6 +3,8 @@ module IntCode3
     open System
     open Utils
 
+    type Message = { address: int; x: int64; y:int64 }
+
     type IntCode3 (name) = 
     
         let getOpCode op =
@@ -74,7 +76,7 @@ module IntCode3
             //printf "inst:  %A\n" opcode
             let resolved = resolve opcode prog rb
             //if debug then 
-            printf "(%A) inst:  %A\t\t    resv:  %A\n" name opcode resolved
+            //printf "(%A) inst:  %A\t\t    resv:  %A\n" name opcode resolved
          
             let op = 
                 match resolved with // all ops here are immediate
@@ -117,19 +119,19 @@ module IntCode3
        
         let outputEvent = new Event<int64>()
        
-        let mutable tag = 0L,0L
+        //let mutable tag = 0L,0L
   
-        member this.OutputReady = outputEvent.Publish
+        //member this.OutputReady = outputEvent.Publish
 
-        member this.Start = 
-            ()
+        // member this.Start = 
+        //     ()
 
-        member this.Initialise (program: Int64[]) (queue:System.Collections.Generic.Queue<int64>) =
+        member this.Initialise (program: Int64[]) (queue:System.Collections.Generic.Queue<int64>) sendOutput =
             let mutable ptr = 2
-
+            printf "intcode %A\n" name
             Array.set program 62 (Int64.Parse name)
             //Array.set progin 0 203L
-               // Array.set progin 1 -1L
+            // Array.set progin 1 -1L
 
             // let mutable inputPtr = 0
             // let mutable cond = true
@@ -149,7 +151,8 @@ module IntCode3
 
             let mutable cx = 0
 
-            
+            let mutable msg = { address = 0; x = 0L; y = 0L }
+
             // temp
             let prog = Array.append program (Array.create 10000 0L)
 
@@ -157,8 +160,9 @@ module IntCode3
             
             let mutable run = true
 
-            while run do
-                printf "(%A) Running op : %A\n" name prog.[ptr] 
+            let rec loop = 
+                async {
+                //printf "(%A) Running op : %A\n" name prog.[ptr] 
 
                 let c = (prog.[ptr]).ToString()
                 let x = c.[(String.length c) - 1]
@@ -173,27 +177,29 @@ module IntCode3
   
                 let nptr, prog, op = tick ptr prog input rb
              
+               
+
                 if (fst op).[0] = 4L then     /// need to output
                     let outputValue = (fst op).[1]
 
                     if outstate = 0 then
                         //printf "(%A) Address ... %A\n" name outputValue
-                        address <- outputValue
+                        // address <- outputValue
+                        msg <- { msg with  address = int outputValue }
                         outstate <- 1
                     else if outstate = 1 then
                         // printf "(%A) X ... %A\n" name outputValue
-                        xout <- outputValue * 1000L + address
+                        msg <- { msg with  x = outputValue }
                         outstate <- 2
                         // outputEvent.Trigger(outputValue * 1000L + address)
                         // printf "(%A) X SENT... %A\n" name outputValue
                         
                     else
                        // printf "ov: %A\n" outputValue
-                        yout <- outputValue * 1000L + address
+                        msg <- { msg with  y = outputValue }
                         printf "(%A) to:%A  x:%A   y:%A\n" name address (xout/1000L) (yout/1000L)
                         
-                        outputEvent.Trigger(xout)
-                        outputEvent.Trigger(yout)
+                        sendOutput msg 
                         
                         // if address = 255L then
                         //     printf "ANSWER : %A\n" outputValue 
@@ -213,10 +219,12 @@ module IntCode3
 
                 ptr <- nptr
 
-                printf "(%A) Waiting : %A\n" name
+                //printf "(%A) Waiting : %A\n" name
 
-                ()
-
+                if run then 
+                    return! loop
+                }
+            loop
           
           
       
