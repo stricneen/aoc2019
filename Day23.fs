@@ -30,58 +30,72 @@ let day23 =
         (x, q, c)
     )
 
+    let mutable nat = { address = 0; x = 0L; y = 0L }
+    
+    let comp address =
+        network |> List.tryFind(fun x' -> let x,q,c = x'
+                                          x = address )
+
+//http://23.102.48.255:9000/api/flextool
+
+
+//51.140.59.213 (oad-devtest-sit-flextool-appgateway.uksouth.cloudapp.azure.com)
+
+
+
+
     let sendOutput (msg: Message) =
-        printf "Sending : %A\n" msg
 
-        // let command = msg / 1000L
-        // let address =
-        //     if command > 0L then
-        //         int(msg - command * 1000L)
-        //     else
-        //         1000 - int(command * 1000L - msg)
-
-        let reciept = network |> List.tryFind(fun x' -> let x,q,c = x'
-                                                        x = msg.address )
-
+        let reciept = comp msg.address
         match reciept with
-        | None -> printf "Can't find address : %A\n" msg.address
-                  finished <- true
+        | None -> //printf "NAT : %A\n" msg.address
+                  if msg.address = 255 then
+                        
+                        printf "NAT  : %A\n" msg
+                        System.Console.ReadKey() |> ignore
+
+                        if nat.y = msg.y then
+                            printf "found : %A\n" nat
+                            finished <- true
+                        else
+                            let zero = comp 0
+                            let _,y,_ = zero.Value
+                            y.Enqueue msg.x
+                            y.Enqueue msg.y
+
+
+                        nat <- msg
         | Some (_,y,_) -> y.Enqueue msg.x
                           y.Enqueue msg.y
 
         ()
 
 
-    network
-    |> List.iteri(fun i x' ->
-        let x, q, c = x'
-        printn i
-        q.Enqueue -1L
-        q.Enqueue -1L
-        q.Enqueue -1L
-        q.Enqueue -1L
-        q.Enqueue -1L
-        q.Enqueue -1L
-        q.Enqueue -1L
+    let network' = network
+                    |> List.mapi(fun i x' ->
+                        let x, q, c = x'
+                        printn i
+                        q.Enqueue -1L
+                        q.Enqueue -1L
+                        q.Enqueue -1L
+                        let tick = c.Initialise (Array.copy prog) q sendOutput
+                        
+                        x, q, c, tick
+                    )
 
 
-        c.Initialise (Array.copy prog) q sendOutput
-        |> Async.Start
-
-    )
 
 
     while not finished do
-
-        // print "press key"
+    
+        network'
+        |> List.iter(fun x' ->
+        
+          let x, q, c, tick = x'
+          tick()
+        )
+     
         // System.Console.ReadKey()
-        // network
-        // |> List.iteri(fun i x' ->
-        //     let x, q, c, e = x'
-        //     e.Set()
-        //     ()
-        // )
-
         async { do! Async.Sleep(5000) } |> ignore
 
 

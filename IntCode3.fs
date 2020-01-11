@@ -65,7 +65,7 @@ module IntCode3
                         0L
 
                 [| op; p1; p2; p3 |]
-    //1008
+
 
         // Input  --   inst ptr      --  prog
         // Output --   new inst ptr  --  updated prog  --  last run op
@@ -160,8 +160,8 @@ module IntCode3
             
             let mutable run = true
 
-            let rec loop = 
-                async {
+            let loop () = 
+                
                 //printf "(%A) Running op : %A\n" name prog.[ptr] 
 
                 let c = (prog.[ptr]).ToString()
@@ -176,37 +176,22 @@ module IntCode3
                     input <- input'
   
                 let nptr, prog, op = tick ptr prog input rb
-             
-               
-
+         
                 if (fst op).[0] = 4L then     /// need to output
                     let outputValue = (fst op).[1]
 
                     if outstate = 0 then
-                        //printf "(%A) Address ... %A\n" name outputValue
-                        // address <- outputValue
                         msg <- { msg with  address = int outputValue }
                         outstate <- 1
                     else if outstate = 1 then
-                        // printf "(%A) X ... %A\n" name outputValue
                         msg <- { msg with  x = outputValue }
                         outstate <- 2
-                        // outputEvent.Trigger(outputValue * 1000L + address)
-                        // printf "(%A) X SENT... %A\n" name outputValue
-                        
                     else
-                       // printf "ov: %A\n" outputValue
                         msg <- { msg with  y = outputValue }
-                        printf "(%A) to:%A  x:%A   y:%A\n" name address (xout/1000L) (yout/1000L)
-                        
+                       // printf "(%A) to:%A  x:%A   y:%A\n" name address (xout/1000L) (yout/1000L)
                         sendOutput msg 
-                        
-                        // if address = 255L then
-                        //     printf "ANSWER : %A\n" outputValue 
                         outstate <- 0
                     
-                    // 66968L x
-                    //out <- int (fst op).[1]
                 
                 if (fst op).[0] = 9L then
                     rb <- rb + int (fst op).[1]
@@ -221,9 +206,7 @@ module IntCode3
 
                 //printf "(%A) Waiting : %A\n" name
 
-                if run then 
-                    return! loop
-                }
+            
             loop
           
           
