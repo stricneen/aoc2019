@@ -14,19 +14,11 @@ let day23 =
     let mutable finished = false
 
 
-    // will be xxxxxxxaaa xxx : command,  aaa : address
-    // let outputNic x =
-    //     printf "OUTPUT : %A\n" x
 
     let network = List.init 50 (fun x ->
 
         let q = System.Collections.Generic.Queue<int64>()
         let c = IntCode3 (x.ToString())
-        //let event = new System.Threading.AutoResetEvent(false)
-        //c.AutoReEvent event
-        //printn x
-        // q.Post (int64 x)
-        // c.OutputReady.Add(outputNic)
         (x, q, c)
     )
 
@@ -43,6 +35,7 @@ let day23 =
 
 
 
+    let mutable yvs = 0L
 
     let sendOutput (msg: Message) =
 
@@ -50,21 +43,23 @@ let day23 =
         match reciept with
         | None -> //printf "NAT : %A\n" msg.address
                   if msg.address = 255 then
-                        
-                        printf "NAT  : %A\n" msg
-                        System.Console.ReadKey() |> ignore
-
-                        if nat.y = msg.y then
-                            printf "found : %A\n" nat
-                            finished <- true
-                        else
-                            let zero = comp 0
-                            let _,y,_ = zero.Value
-                            y.Enqueue msg.x
-                            y.Enqueue msg.y
-
-
                         nat <- msg
+                        
+                        // printf "NAT  : %A\n" msg
+                        // System.Console.ReadKey() |> ignore
+
+                        // if yvs = msg.y then
+                        //     printf "found : %A\n" msg
+                        //     finished <- true
+                        // else
+                        //     yvs <- msg.y
+                            
+                            // let zero = comp 0
+                            // let _,y,_ = zero.Value
+                            // y.Enqueue msg.x
+                            // y.Enqueue msg.y
+
+
         | Some (_,y,_) -> y.Enqueue msg.x
                           y.Enqueue msg.y
 
@@ -76,8 +71,7 @@ let day23 =
                         let x, q, c = x'
                         printn i
                         q.Enqueue -1L
-                        q.Enqueue -1L
-                        q.Enqueue -1L
+      
                         let tick = c.Initialise (Array.copy prog) q sendOutput
                         
                         x, q, c, tick
@@ -85,18 +79,52 @@ let day23 =
 
 
 
-
     while not finished do
     
-        network'
-        |> List.iter(fun x' ->
+        let t = network'
+                |> List.fold (fun acc x' ->
+                
+                      let x, q, c, tick = x'
+                      let qc, po = tick()
+                    //   if qc > 0 then
+                    //     printn qc
+                      qc + fst acc, snd acc || po
+                ) (0, false)
+
+
+        if fst t = 0 && snd t then
+            printf "send nat %A\n" nat.y
+            let zero = comp 0
+            let _,y,_ = zero.Value
+            y.Enqueue nat.x
+            y.Enqueue nat.y
+
+            if yvs = nat.y && nat.y > 0L then
+                printf "found : %A\n" nat
+                finished <- true
+            else
+                yvs <- nat.y
+
+        ()
         
-          let x, q, c, tick = x'
-          tick()
-        )
+
      
         // System.Console.ReadKey()
-        async { do! Async.Sleep(5000) } |> ignore
+       // async { do! Async.Sleep(5000) } |> ignore
 
 
     0
+
+
+//     NAT  : { address = 255
+//   x = 71153L
+//   y = 17605L }
+
+
+// found : { address = 255
+//   x = 71153L
+//   y = 18549L }
+
+/// 16152 & 16153
+/// 
+/// // 16151

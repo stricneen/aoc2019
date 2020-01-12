@@ -84,8 +84,8 @@ module IntCode3
                                        [|1L; x; y; z|], ptr + 4 //Add
                 | [| 2L; x; y; z |] -> Array.set prog (int z) (x * y)
                                        [|2L; x; y; z|], ptr + 4 //Mul
-                | [| 3L; x; _; _ |] -> if input <> -1L then
-                                            printf "(%A) write %A to %A\n" name input x 
+                | [| 3L; x; _; _ |] -> //if input <> -1L then
+                                       //     printf "(%A) write %A to %A\n" name input x 
                                        Array.set prog (int x) input
                                        [|3L; x|], ptr + 2       //Input
                 | [| 4L; x; _; _ |] -> if debug then printf "output %A\n" x
@@ -128,9 +128,9 @@ module IntCode3
 
         member this.Initialise (program: Int64[]) (queue:System.Collections.Generic.Queue<int64>) sendOutput =
             let mutable ptr = 2
-            printf "intcode %A\n" name
+            // printf "intcode %A\n" name
             Array.set program 62 (Int64.Parse name)
-            //Array.set progin 0 203L
+            // Array.set progin 0 203L
             // Array.set progin 1 -1L
 
             // let mutable inputPtr = 0
@@ -160,10 +160,13 @@ module IntCode3
             
             let mutable run = true
 
+            let mutable producedOutput = false
+
             let loop () = 
                 
                 //printf "(%A) Running op : %A\n" name prog.[ptr] 
-
+                producedOutput <- false
+                    
                 let c = (prog.[ptr]).ToString()
                 let x = c.[(String.length c) - 1]
 
@@ -187,6 +190,7 @@ module IntCode3
                         msg <- { msg with  x = outputValue }
                         outstate <- 2
                     else
+                        producedOutput <- true
                         msg <- { msg with  y = outputValue }
                        // printf "(%A) to:%A  x:%A   y:%A\n" name address (xout/1000L) (yout/1000L)
                         sendOutput msg 
@@ -206,8 +210,9 @@ module IntCode3
 
                 //printf "(%A) Waiting : %A\n" name
 
+                queue.Count, producedOutput
+          
             
             loop
-          
           
       
