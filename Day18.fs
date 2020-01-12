@@ -1,6 +1,7 @@
 module Day18
 
 open Utils
+open System
 
 type Location = { x:int; y:int; pos:char; dist:int }
 
@@ -28,7 +29,7 @@ let day18 =
 
     let rec printmap lst = 
         for x in 0 .. Array2D.length1 lst - 1 do
-            let l = lst.[x,*] |> System.String
+            let l = lst.[x,*] |> String
             printf "%A\n" l
    
 
@@ -47,14 +48,13 @@ let day18 =
                     let w = { x=loc.x-1; y=loc.y; pos=map.[loc.y, loc.x-1]; dist= loc.dist+1 }
                     [n; e; s ;w] @ acc
                 ) []
-                |> List.where(fun x -> x.pos='.' || System.Char.IsLower x.pos)
+                |> List.where(fun x -> x.pos='.' || x.pos='@' || System.Char.IsLower x.pos || System.Char.IsUpper x.pos)
        // printf "acc: %A\n" x
-        //System.Console.ReadKey()
+        //System.Console.ReadKey() x
         x
                 
-        
 
-    let availableKeys map= 
+    let availableKeys map from = 
         let rec traverse points c = 
             let ends = points |> List.where(fun x -> x.dist = c)
             let x = getSurroundings map ends @ points
@@ -66,75 +66,58 @@ let day18 =
                 x
             else 
                 traverse x (c+1)
-        let start = coordsOf map '@'
+        let start = coordsOf map from
         //printf "start: %A\n" start
-        let locations = traverse [ { x=fst start; y=snd start; pos='@'; dist=0 }] 0
-        locations |> List.where(fun x -> System.Char.IsLower x.pos)
+        let locations = traverse [ { x=fst start; y=snd start; pos=from; dist=0 }] 0
+        locations |> List.where(fun x -> System.Char.IsLower x.pos || Char.IsUpper x.pos)
 
     let printState s = 
         s |> List.iter(fun x -> printf "Total : %A\n" x.total
                                 printmap x.map
         )
 
-    let useKey map pos = 
-        let cx, cy = coordsOf map '@'
-        let dx, dy = coordsOf map (System.Char.ToUpper pos.pos)
-        let cpy = Array2D.copy map
-        Array2D.set cpy pos.y pos.x '@'
-        Array2D.set cpy cy cx '.'
-        if dy > -1 then Array2D.set cpy dy dx '.'
-        cpy
     
-    let prog = read2DArray "./data/day18.txt"
+    let getDistance map start finish =
+        ()
+
+    let getDistances map key =
+        ()
+
+
+    let prog = read2DArray "./data/day18a.txt"
     printmap prog
 
-    let rec loop states = 
-        let keys = states
-                   |> List.map(fun x -> x, availableKeys x.map)
-        let newStates = keys
-                        |> List.fold(fun a x -> 
-                                let state, keys = x
-                                let unlock = keys
-                                           |> List.map(fun x -> {total=state.total + x.dist; map=useKey state.map x})
-                                unlock @ a
-                        ) []
-                        // |> List.sortBy(fun x -> x.total)
-                        // |> List.truncate 10000
-        if List.isEmpty newStates then
-            states
-        else
-            //print "\n\n"
-            printn (List.length newStates)
-            
-            // printState states
-            //System.Console.ReadKey()
-            
-            loop newStates
-    
-
-    let startState = { total=0; map=prog }
-    let t = loop [ startState ]
+    //let startState = { total=0; map=prog }
+    // let t = loop [ startState ]
    
+    // Get all keys and coords
+    let getKeys map = 
+        [ 'a' .. 'z' ]
+        |> List.map (fun x -> x, coordsOf map x)
+        |> List.filter (fun (_,c) -> snd c > -1 )
 
-    let min = t |> List.minBy (fun x -> x.total)
-    
-    print "DONE"
-    printState [min]
+    // Get distance to every other key
+    let distances map keys =
+        keys 
+        |> List.map(fun (key, (x,y)) ->
+            (key, (x,y), availableKeys map key )
+        )
 
+    let keys = getKeys prog
+    let dist = distances prog keys
 
-    // let keys = availableKeys prog
-    // let k = keys |> List.head
-    // let t = useKey prog k
-    // printf "%A\n\n" keys
-    // printmap t
+   // let x = availableKeys prog '@'
 
+    printf "%A\n" dist
+   // Get a list of keys on grid
+ 
+ 
+// want 
+//  @  [ b: 23  c : 33 ]   ABC
 
-    // let keys' = availableKeys t
-    // printf "%A\n\n" keys'
-    // let k' = keys' |> List.head
-    // let t' = useKey t k'
-    // printmap t'
-
+//  a x,y   [ b: 23: [ABV]  c : 33: [ERF] ]  
+//  b
+//  c
 
 
 
