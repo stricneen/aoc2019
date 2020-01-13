@@ -104,12 +104,42 @@ let day18 =
                 >> (fun (key, _, locs) -> key, locsToKeys locs))      
 
     let keys = getKeys prog
-    let dist = distances prog keys
+    let dists = distances prog keys
 
-    printf "%A\n" dist
+ //   printf "%A\n" dists
 
 
+    let path dist =
+                
+        let _, keys = dist |> List.find(fun x-> fst x = '@')
+       // let min = 
 
+        let rec step keys= 
+            printf "[%A]  %A\n" (List.length keys) keys
+            
+            if List.length keys = 1 then
+                keys
+            else
+                let doors = keys 
+                            |> List.sortBy(fun x -> (List.length x.doors, x.dist))
+                            
+                let h :: t = doors
+
+                let s = t |> List.map(fun x ->
+                            { 
+                                key = x.key; 
+                                dist = x.dist + h.dist;
+                                doors = x.doors |> List.where(fun x -> Char.ToLower x <> h.key)
+                            })
+                step s
+        
+        let dist =  List.head (step keys)
+        printf "Dist : %A\n" dist.dist
+
+    let x = path dists
+
+
+  
  
 // want 
 //  @  [ b: 23  c : 33 ]   ABC
