@@ -66,20 +66,16 @@ let day18 =
             let x = getSurroundings map ends @ points
                     |> List.sortBy(fun x -> x.dist)
                     |> List.distinctBy(fun x -> x.x * 1000 + x.y)
-            //printf "traverse: %A\n" x
-            //System.Console.ReadKey()
+
             if List.length x = List.length points then
                 x
             else 
                 traverse x (c+1)
         let start = coordsOf map from
-        //printf "start: %A\n" start
+
         let locations = traverse [ { x=fst start; y=snd start; pos=from; dist=0; doors= [] }] 0
 
-        //printf "Locations : [%A] %A\n" from locations 
-
-        //System.Console.ReadKey() |> ignore
-        locations |> List.where(fun x -> System.Char.IsLower x.pos || Char.IsUpper x.pos)
+        locations |> List.where(fun x -> System.Char.IsLower x.pos)// || Char.IsUpper x.pos)
 
     let printState s = 
         s |> List.iter(fun x -> printf "Total : %A\n" x.total
@@ -102,7 +98,7 @@ let day18 =
    
     // Get all keys and coords
     let getKeys map = 
-        [ 'a' .. 'z' ]
+        [ 'a' .. 'z' ] @ [ '@' ]
         |> List.map (fun x -> x, coordsOf map x)
         |> List.filter (fun (_,c) -> snd c > -1 )
 
