@@ -61,36 +61,25 @@ let day18 =
         //System.Console.ReadKey() x
         x
                 
-
     let availableKeys map from = 
         let rec traverse (points: Location list) c = 
             let ends = points |> List.where(fun x -> x.dist = c)
             let x = getSurroundings map ends @ points
                     |> List.sortBy(fun x -> x.dist)
                     |> List.distinctBy(fun x -> x.x * 1000 + x.y)
-
             if List.length x = List.length points then
                 x
             else 
                 traverse x (c+1)
+
         let start = coordsOf map from
-
         let locations = traverse [ { x=fst start; y=snd start; pos=from; dist=0; doors= [] }] 0
-
         locations |> List.where(fun x -> System.Char.IsLower x.pos)// || Char.IsUpper x.pos)
 
     let printState s = 
         s |> List.iter(fun x -> printf "Total : %A\n" x.total
                                 printmap x.map
         )
-
-    
-    let getDistance map start finish =
-        ()
-
-    let getDistances map key =
-        ()
-
 
     let prog = read2DArray "./data/day18a.txt"
     printmap prog
@@ -99,7 +88,7 @@ let day18 =
     // let t = loop [ startState ]
    
     // Get all keys and coords
-    let getKeys map = 
+    let getKeys map =   
         [ 'a' .. 'z' ] @ [ '@' ]
         |> List.map (fun x -> x, coordsOf map x)
         |> List.filter (fun (_,c) -> snd c > -1 )
@@ -107,21 +96,20 @@ let day18 =
     let locsToKeys locs = 
         locs 
         |> List.map(fun x -> { key = x.pos; dist = x.dist; doors = x.doors })
+        |> List.sortBy (fun x -> List.length x.doors)
 
-    // Get distance to every other key
     let distances map keys =
         keys 
-        |> List.map(fun (key, (x,y)) -> (key, (x,y), availableKeys map key ))
-        |> List.map(fun (key, _, locs) -> key, locsToKeys locs)
+        |> List.map(fun (key, (x,y)) -> (key, (x,y), availableKeys map key )
+                >> (fun (key, _, locs) -> key, locsToKeys locs))      
 
     let keys = getKeys prog
     let dist = distances prog keys
 
-   // let x = availableKeys prog '@'
-
     printf "%A\n" dist
-   // Get a list of keys on grid
- 
+
+
+
  
 // want 
 //  @  [ b: 23  c : 33 ]   ABC
