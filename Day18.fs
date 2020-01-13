@@ -7,6 +7,8 @@ type Location = { x:int; y:int; pos:char; dist:int; doors: char list }
 
 type State = { total:int; map: char[,] }
 
+type Key = { key: char; dist: int; doors: char list }
+
 let day18 = 
     print "Advent of code - Day 18 - Many-Worlds Interpretation"
 
@@ -61,7 +63,7 @@ let day18 =
                 
 
     let availableKeys map from = 
-        let rec traverse points c = 
+        let rec traverse (points: Location list) c = 
             let ends = points |> List.where(fun x -> x.dist = c)
             let x = getSurroundings map ends @ points
                     |> List.sortBy(fun x -> x.dist)
@@ -102,12 +104,15 @@ let day18 =
         |> List.map (fun x -> x, coordsOf map x)
         |> List.filter (fun (_,c) -> snd c > -1 )
 
+    let locsToKeys locs = 
+        locs 
+        |> List.map(fun x -> { key = x.pos; dist = x.dist; doors = x.doors })
+
     // Get distance to every other key
     let distances map keys =
         keys 
-        |> List.map(fun (key, (x,y)) ->
-            (key, (x,y), availableKeys map key )
-        )
+        |> List.map(fun (key, (x,y)) -> (key, (x,y), availableKeys map key ))
+        |> List.map(fun (key, _, locs) -> key, locsToKeys locs)
 
     let keys = getKeys prog
     let dist = distances prog keys
