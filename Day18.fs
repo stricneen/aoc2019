@@ -11,7 +11,7 @@ let day18 =
     print "Advent of code - Day 18 - Many-Worlds Interpretation"
 
     let read2DArray path = 
-        let input = readLines path
+        let input = readLines path |> Array.takeWhile (fun x -> x <> "*")
         let a2d = array2D input
         a2d
         
