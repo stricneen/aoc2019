@@ -3,7 +3,7 @@ module Day18
 open Utils
 open System
 
-type Location = { x:int; y:int; pos:char; dist:int }
+type Location = { x:int; y:int; pos:char; dist:int; doors: char list }
 
 type State = { total:int; map: char[,] }
 
@@ -39,13 +39,19 @@ let day18 =
     // #b.A.@.a#
     // #########
     
+    let doors visitied current = 
+        if System.Char.IsUpper current then
+            visitied @ [current]
+        else
+            visitied
+
     let getSurroundings (map:char[,]) locs =
         let x = locs
                 |> List.fold(fun acc loc -> 
-                    let n = { x=loc.x; y=(loc.y)-1; pos=map.[loc.y-1, loc.x]; dist= loc.dist+1 }
-                    let e = { x=loc.x+1; y=loc.y; pos=map.[loc.y, loc.x+1]; dist= loc.dist+1 }
-                    let s = { x=loc.x; y=loc.y+1; pos=map.[loc.y+1, loc.x]; dist= loc.dist+1 }
-                    let w = { x=loc.x-1; y=loc.y; pos=map.[loc.y, loc.x-1]; dist= loc.dist+1 }
+                    let n = { x=loc.x; y=(loc.y)-1; pos=map.[loc.y-1, loc.x]; dist= loc.dist+1; doors= doors loc.doors map.[loc.y-1, loc.x] }
+                    let e = { x=loc.x+1; y=loc.y; pos=map.[loc.y, loc.x+1]; dist= loc.dist+1; doors= doors loc.doors map.[loc.y, loc.x+1] }
+                    let s = { x=loc.x; y=loc.y+1; pos=map.[loc.y+1, loc.x]; dist= loc.dist+1; doors= doors loc.doors map.[loc.y+1, loc.x] }
+                    let w = { x=loc.x-1; y=loc.y; pos=map.[loc.y, loc.x-1]; dist= loc.dist+1; doors= doors loc.doors map.[loc.y, loc.x-1] }
                     [n; e; s ;w] @ acc
                 ) []
                 |> List.where(fun x -> x.pos='.' || x.pos='@' || System.Char.IsLower x.pos || System.Char.IsUpper x.pos)
@@ -68,7 +74,11 @@ let day18 =
                 traverse x (c+1)
         let start = coordsOf map from
         //printf "start: %A\n" start
-        let locations = traverse [ { x=fst start; y=snd start; pos=from; dist=0 }] 0
+        let locations = traverse [ { x=fst start; y=snd start; pos=from; dist=0; doors= [] }] 0
+
+        //printf "Locations : [%A] %A\n" from locations 
+
+        //System.Console.ReadKey() |> ignore
         locations |> List.where(fun x -> System.Char.IsLower x.pos || Char.IsUpper x.pos)
 
     let printState s = 
