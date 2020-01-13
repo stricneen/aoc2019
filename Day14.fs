@@ -8,9 +8,9 @@ type Reaction = { In: Chemical list; Out: Chemical }
 let day14 = 
     print "Advent of code - Day 14 - Space Stoichiometry"
 
-    let reactionsStr = readLines "./data/day14.txt" |> Array.toList
+    let reactionsStr = readLines "./data/day14a.txt" |> Array.toList
     let fuel = "FUEL"
-    let ore = "ORE"
+    //let ore = "ORE"
 
     let parseChemical (input:string) =
         { Name = input.Substring(input.IndexOf(" ")).Trim(); 
@@ -46,10 +46,11 @@ let day14 =
         scale creator.In factor
 
     let expandReaction fuel reaction = 
+        printf "t : %A\n\n" reaction
         let toBeReplaced = fuel.In |> List.find(fun x -> x.Name = reaction.Out.Name)
         let updated = resolve reaction toBeReplaced
-        printf "%A\n" toBeReplaced
-        printf "%A\n" (updated)
+        //printf "t : %A\n\n" toBeReplaced
+       // printf "u : %A\n\n\n" (updated)
         //System.Console.ReadKey()
         let chems = updated @ fuel.In |> List.where(fun x -> x.Name <> toBeReplaced.Name)
         {
@@ -99,6 +100,33 @@ let day14 =
 
     printf "Done : %A\n" r
 
-    printf "%A\n" (1000000000000L / 13312L)
+
+    let trillion = 1000000000000L
+
+    printf "%A\n" (trillion / 13312L)
+
+   // let top = 
+
+   // The 13312 ORE-per-FUEL example could produce 82892753 FUEL.
+
+    // let s = 13312L
+    // let mutable x = 0L
+    // let mutable fuel = 0L
+
+    // while x < trillion do
+    //     x <- x + s
+    //     fuel <- fuel + 1L
+
+    // printf "f : %A\n" fuel
+
+       
+
+
+
+
 
     0
+
+
+    82892753
+    75120192

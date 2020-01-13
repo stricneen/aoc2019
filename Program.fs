@@ -29,7 +29,7 @@ let main argv =
     //    printf "%A\t%A\n" x (char x)
 
     //Day13.day13 |> ignore
-    //Day14.day14 |> ignore
+    Day14.day14 |> ignore
     //Day15.day15 |> ignore
     //Day16.day16 |> ignore
 
@@ -45,6 +45,6 @@ let main argv =
     //Day22.day22 |> ignore
 
     //Day24.day24 |> ignore
-    Day25.day25 |> ignore
+    //Day25.day25 |> ignore
 
     0 // return an integer exit code
