@@ -116,7 +116,7 @@ let day18 =
     let path dist =
                 
         let _, keys = dist |> List.find(fun x-> fst x = '@')
-       // let min = 
+       
         let steps = 0
 
         let keyToKey k1 k2 =
@@ -127,43 +127,44 @@ let day18 =
             k2'.dist
 
         let move l =
-            let h :: t = l
-            t |> List.map(fun x ->
-            { 
-                key = x.key; 
-                dist = keyToKey h.key x.key + h.dist;
-                doors = x.doors |> List.where(fun x -> Char.ToLower x <> h.key)
-            })
-
-        let rec step keys = 
-            printf "[%A]  %A\n" (List.length keys) keys
+            let h :: t = l // search here
             
-            if List.length keys = 1 then
+            (t |> List.map(fun x ->
+            { 
+                key = x.key
+                dist = keyToKey h.key x.key + steps
+                doors = x.doors |> List.where(fun x -> Char.ToLower x <> h.key)
+            }), h.dist)
+
+        let rec step keys steps = 
+            printf "Step : %A\n" steps
+            printf "[%A]  %A\n\n" (List.length keys) keys
+            
+            if List.isEmpty keys then
                 keys
             else
                 let doors = keys 
                             |> List.sortBy(fun x -> (List.length x.doors, x.dist))
                             
-                let s = move doors
+                let s, dist = move doors
 
-                step s
+                step s (dist + steps)
         
-        let dist =  List.head (step keys)
-        printf "Dist : %A\n" dist.dist
+        let dist =  step keys 0
+        printf "Total : %A\n" dist
         
         
 
     let x = path dists
 
-    printf "Dist : %A\n" dists
-  
- 
-// want 
-//  @  [ b: 23  c : 33 ]   ABC
+    // printf "Dist : %A\n" dists
+   
+    // want 
+    //  @  [ b: 23  c : 33 ]   ABC
 
-//  a x,y   [ b: 23: [ABV]  c : 33: [ERF] ]  
-//  b
-//  c
+    //  a x,y   [ b: 23: [ABV]  c : 33: [ERF] ]  
+    //  b
+    //  c
 
 
 
