@@ -109,17 +109,29 @@ let day18 =
  //   printf "%A\n" dists
 
 
+   
+   
+      //  |> List.find(fun (_, x) -> x.k)
+
     let path dist =
                 
         let _, keys = dist |> List.find(fun x-> fst x = '@')
        // let min = 
+        let steps = 0
+
+        let keyToKey k1 k2 =
+            let k1' = dists
+                      |> List.find(fun (x, _) -> x = k1)   // 'char * Key list' 
+            let k2' = (snd k1')
+                      |> List.find(fun x -> x.key = k2)
+            k2'.dist
 
         let move l =
             let h :: t = l
             t |> List.map(fun x ->
             { 
                 key = x.key; 
-                dist = x.dist + h.dist;
+                dist = keyToKey h.key x.key + h.dist;
                 doors = x.doors |> List.where(fun x -> Char.ToLower x <> h.key)
             })
 
@@ -138,10 +150,12 @@ let day18 =
         
         let dist =  List.head (step keys)
         printf "Dist : %A\n" dist.dist
+        
+        
 
     let x = path dists
 
-
+    printf "Dist : %A\n" dists
   
  
 // want 
