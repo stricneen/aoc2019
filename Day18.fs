@@ -141,7 +141,7 @@ let day18 =
             printf "[%A]  %A\n\n" (List.length keys) keys
             
             if List.isEmpty keys then
-                keys
+                steps
             else
                 let doors = keys 
                             |> List.sortBy(fun x -> (List.length x.doors, x.dist))
