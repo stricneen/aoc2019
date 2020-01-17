@@ -107,7 +107,7 @@ let day18 =
     let dists = distances prog keys
 
 
-    let path dist iters =
+    let path dist (iters: int array) =
                 
         let _, keys = dist |> List.find(fun x-> fst x = '@')
         let bfs = Array.init (List.length keys) (fun _ -> 0)
@@ -120,7 +120,7 @@ let day18 =
                       |> List.find(fun x -> x.key = k2)
             k2'.dist
 
-        let split doors (iters: int array) = 
+        let split doors = 
 
             let av = doors |> List.where(fun x -> List.isEmpty x.doors)
             
@@ -139,8 +139,8 @@ let day18 =
             //let h :: t = doors
            // h, t
 
-        let move doors iters =
-            let h, t = split doors iters  // search here
+        let move doors =
+            let h, t = split doors  // search here
             (t |> List.map(fun x ->
             { 
                 key = x.key
@@ -148,8 +148,9 @@ let day18 =
                 doors = x.doors |> List.where(fun x -> Char.ToLower x <> h.key)
             }), h.dist)
 
-        let rec step keys steps iters = 
+        let rec step keys steps = 
             printf "Step : %A\n" steps
+            printf "Iter : %A\n" iters
             printf "[%A]  %A\n\n" (List.length keys) keys
             
             if List.isEmpty keys then
@@ -157,14 +158,14 @@ let day18 =
             else
                 let doors = keys 
                             |> List.sortBy(fun x -> (List.length x.doors, x.dist))
-                let s, dist = move doors iters
-                step s (dist + steps) iters
+                let s, dist = move doors 
+                step s (dist + steps) 
         
-        let dist =  step keys 0 iters
+        let dist =  step keys 0
         printf "Total : %A\n" dist
         
 
-    let iters = [|0;0;0;0;0;0;0;0;0;0;0|]
+    let iters = [|0;0;0;0;0;0;0;1;0;0;0|]
     let x = path dists iters
 
 
