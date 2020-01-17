@@ -106,17 +106,11 @@ let day18 =
     let keys = getKeys prog
     let dists = distances prog keys
 
- //   printf "%A\n" dists
 
-
-   
-   
-      //  |> List.find(fun (_, x) -> x.k)
-
-    let path dist =
+    let path dist iters =
                 
         let _, keys = dist |> List.find(fun x-> fst x = '@')
-       
+        let bfs = Array.init (List.length keys) (fun _ -> 0)
         let steps = 0
 
         let keyToKey k1 k2 =
@@ -126,9 +120,27 @@ let day18 =
                       |> List.find(fun x -> x.key = k2)
             k2'.dist
 
-        let move l =
-            let h :: t = l // search here
+        let split doors (iters: int array) = 
+
+            let av = doors |> List.where(fun x -> List.isEmpty x.doors)
             
+            let iter = iters.[List.length doors]
+
+            if iter < List.length av then
+                Array.set iters (List.length doors) (iter + 1)
+                av.[iter], doors |> List.where(fun x -> x <> av.[iter])
+            else 
+                Array.set iters (List.length av) 0
+                Array.set iters (List.length av - 1) (iters.[List.length av - 1] + 1)
+                av.[0], doors |> List.where(fun x -> x <> av.[0])
+               
+
+            
+            //let h :: t = doors
+           // h, t
+
+        let move doors iters =
+            let h, t = split doors iters  // search here
             (t |> List.map(fun x ->
             { 
                 key = x.key
@@ -136,7 +148,7 @@ let day18 =
                 doors = x.doors |> List.where(fun x -> Char.ToLower x <> h.key)
             }), h.dist)
 
-        let rec step keys steps = 
+        let rec step keys steps iters = 
             printf "Step : %A\n" steps
             printf "[%A]  %A\n\n" (List.length keys) keys
             
@@ -145,29 +157,15 @@ let day18 =
             else
                 let doors = keys 
                             |> List.sortBy(fun x -> (List.length x.doors, x.dist))
-                            
-                let s, dist = move doors
-
-                step s (dist + steps)
+                let s, dist = move doors iters
+                step s (dist + steps) iters
         
-        let dist =  step keys 0
+        let dist =  step keys 0 iters
         printf "Total : %A\n" dist
         
-        
 
-    let x = path dists
-
-    // printf "Dist : %A\n" dists
-   
-    // want 
-    //  @  [ b: 23  c : 33 ]   ABC
-
-    //  a x,y   [ b: 23: [ABV]  c : 33: [ERF] ]  
-    //  b
-    //  c
-
-
-
+    let iters = [|0;0;0;0;0;0;0;0;0;0;0|]
+    let x = path dists iters
 
 
     0
