@@ -109,8 +109,10 @@ let day18 =
 
     let path dist (iters: int array) =
                 
+        let mutable first = true
+        let nextIters = Array.copy iters
         let _, keys = dist |> List.find(fun x-> fst x = '@')
-        let bfs = Array.init (List.length keys) (fun _ -> 0)
+        //let bfs = Array.init (List.length keys) (fun _ -> 0)
         let steps = 0
 
         let keyToKey k1 k2 =
@@ -126,15 +128,18 @@ let day18 =
             
             let iter = iters.[List.length doors]
 
-            if iter < List.length av then
-                Array.set iters (List.length doors) (iter + 1)
-                av.[iter], doors |> List.where(fun x -> x <> av.[iter])
-            else 
-                Array.set iters (List.length av) 0
-                Array.set iters (List.length av - 1) (iters.[List.length av - 1] + 1)
-                av.[0], doors |> List.where(fun x -> x <> av.[0])
-               
-
+            let splt = 
+                if iter < List.length av then
+                    if first then
+                        Array.set nextIters (List.length doors) (iter + 1)
+                    av.[iter], doors |> List.where(fun x -> x <> av.[iter])
+                else 
+                    if first then
+                        Array.set nextIters (List.length doors) 0
+                        Array.set nextIters (List.length doors - 1) (nextIters.[List.length doors - 1] + 1)
+                    av.[0], doors |> List.where(fun x -> x <> av.[0])
+            first <- false
+            splt
             
             //let h :: t = doors
            // h, t
@@ -149,24 +154,46 @@ let day18 =
             }), h.dist)
 
         let rec step keys steps = 
-            printf "Step : %A\n" steps
-            printf "Iter : %A\n" iters
-            printf "[%A]  %A\n\n" (List.length keys) keys
+            //printf "Step : %A\n" steps
+            //printf "Iter : %A\n" nextIters
+            //printf "[%A]  %A\n\n" (List.length keys) keys
             
             if List.isEmpty keys then
-                steps
+                steps, nextIters
             else
                 let doors = keys 
                             |> List.sortBy(fun x -> (List.length x.doors, x.dist))
                 let s, dist = move doors 
-                step s (dist + steps) 
-        
-        let dist =  step keys 0
-        printf "Total : %A\n" dist
+                step s (dist + steps)
+
+        step keys 0 
+        //printf "Total / Next : %A\n" dist
+        //dist
         
 
-    let iters = [|0;0;0;0;0;0;0;1;0;0;0|]
-    let x = path dists iters
+        
 
+
+
+
+
+
+
+    let mutable iters = [|0;0;0;0;0;0;0;0;0;0;0|]
+    while true do
+
+        let x = path dists iters
+        iters <- snd x
+//        let iters = [|0;0;0;0;0;0;0;2;0;0;0|]
+        printf "Total / Next : %A\n\n\n" x
+
+    // let x' = path dists (snd x)
+    // printf "Total / Next : %A\n\n\n" x'
+
+    // let x'' = path dists (snd x')
+    // printf "Total / Next : %A\n\n\n" x''
+
+    // let xx = path dists (snd x'')
+    // printf "Total / Next : %A\n\n\n" xx
 
     0
