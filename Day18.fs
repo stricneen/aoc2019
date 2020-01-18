@@ -124,21 +124,23 @@ let day18 =
 
         let split doors = 
 
-            let av = doors |> List.where(fun x -> List.isEmpty x.doors)
+// [|0;0;0;0;0;0;0;0;0;0;0|]
+
+            let index = iters.[List.length doors]
             
-            let iter = iters.[List.length doors]
+            let accessible = doors |> List.where(fun x -> List.isEmpty x.doors)
 
             let splt = 
-                if iter < List.length av then
-                    if first then
-                        Array.set nextIters (List.length doors) (iter + 1)
-                    av.[iter], doors |> List.where(fun x -> x <> av.[iter])
+                if index < List.length accessible then
+                  //  if first then
+                    Array.set nextIters (List.length doors) (index + 1)
+                    accessible.[index], doors |> List.where(fun x -> x <> accessible.[index])
                 else 
-                    if first then
-                        Array.set nextIters (List.length doors) 0
-                        Array.set nextIters (List.length doors - 1) (nextIters.[List.length doors - 1] + 1)
-                    av.[0], doors |> List.where(fun x -> x <> av.[0])
-            first <- false
+               //     if first then
+                    Array.set nextIters (List.length doors) 0
+                    Array.set nextIters (List.length doors - 1) (nextIters.[List.length doors - 1] + 1)
+                    accessible.[0], doors |> List.where(fun x -> x <> accessible.[0])
+           // first <- false
             splt
             
             //let h :: t = doors
@@ -179,13 +181,22 @@ let day18 =
 
 
 
-    let mutable iters = [|0;0;0;0;0;0;0;0;0;0;0|]
-    while true do
+    let mutable iters = Array.init (List.length dists) (fun x -> 0)
+    let mutable min = 1000000000
+    let mutable run = true
+    while run do
 
-        let x = path dists iters
-        iters <- snd x
+        let steps, i = path dists iters
+        iters <- i
 //        let iters = [|0;0;0;0;0;0;0;2;0;0;0|]
-        printf "Total / Next : %A\n\n\n" x
+       // printf "Total / Next : %A\n\n\n" i
+
+        if steps < min then
+            min <- steps
+
+        if iters.[0] > Array.length iters then
+            printf "Min : %A\n" min
+            run <- false
 
     // let x' = path dists (snd x)
     // printf "Total / Next : %A\n\n\n" x'
