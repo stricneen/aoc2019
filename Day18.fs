@@ -109,12 +109,14 @@ let day18 =
 
     let path dist (iters: int array) =
                 
-        let mutable first = true
-        let nextIters = Array.copy iters
+
+       // let nextIters = Array.copy iters
         let _, keys = dist |> List.find(fun x-> fst x = '@')
+        
         //let bfs = Array.init (List.length keys) (fun _ -> 0)
         let steps = 0
 
+        // Get the distance between two keys
         let keyToKey k1 k2 =
             let k1' = dists
                       |> List.find(fun (x, _) -> x = k1)   // 'char * Key list' 
@@ -122,29 +124,47 @@ let day18 =
                       |> List.find(fun x -> x.key = k2)
             k2'.dist
 
-        let split doors = 
+        // Calculate the next iteration bfs
 
-// [|0;0;0;0;0;0;0;0;0;0;0|]
+        // [|0;0;0;0;1;0;0;0;1;0;0|]
 
-            let index = iters.[List.length doors]
+        let rec nextIteration iters doors =
+            let nextIters = Array.copy iters
+
             
             let accessible = doors |> List.where(fun x -> List.isEmpty x.doors)
-
-            let splt = 
-                if index < List.length accessible then
-                  //  if first then
-                    Array.set nextIters (List.length doors) (index + 1)
-                    accessible.[index], doors |> List.where(fun x -> x <> accessible.[index])
-                else 
-               //     if first then
-                    Array.set nextIters (List.length doors) 0
-                    Array.set nextIters (List.length doors - 1) (nextIters.[List.length doors - 1] + 1)
-                    accessible.[0], doors |> List.where(fun x -> x <> accessible.[0])
-           // first <- false
-            splt
+            let index = List.length doors
             
-            //let h :: t = doors
-           // h, t
+            printf "doors : %A\n" doors
+            printf "index : %A\n" index
+      //      printf "iters : %A\n" nextIters
+            printf "acces : %A\n" accessible
+            //printf "acces : %A\n" accessible
+        //    Console.ReadKey()
+
+            if (List.length accessible) > iters.[index] + 1 || List.isEmpty accessible then
+                Array.set nextIters index (nextIters.[index] + 1)
+                nextIters
+            else
+                Array.set nextIters index 0
+       //         printf "carry : %A\n" (List.length accessible)
+
+                let remaining = doors |> List.where(fun x -> x <> doors.[iters.[index]])
+                printf "remaining : %A\n" remaining
+               // Console.ReadKey()
+                nextIteration nextIters remaining
+                
+
+        let split doors = 
+
+            let index = iters.[List.length doors]
+            let accessible = doors |> List.where(fun x -> List.isEmpty x.doors)
+            accessible.[index], doors |> List.where(fun x -> x <> accessible.[index])
+
+            // printn index
+            // printn (List.length accessible)
+            // printf "%A\n" accessible
+//            if List.length accessible  index then 
 
         let move doors =
             let h, t = split doors  // search here
@@ -160,25 +180,21 @@ let day18 =
             //printf "Iter : %A\n" nextIters
             //printf "[%A]  %A\n\n" (List.length keys) keys
             
+            // Check for dead end
+            
+            
+            let doors = keys 
+                        |> List.sortBy(fun x -> (List.length x.doors, x.key))
+
+            printf "KEYS : %A\n" doors
+            
             if List.isEmpty keys then
-                steps, nextIters
+                steps, nextIteration iters (snd (dist |> List.find(fun x-> fst x = '@')))
             else
-                let doors = keys 
-                            |> List.sortBy(fun x -> (List.length x.doors, x.dist))
                 let s, dist = move doors 
                 step s (dist + steps)
 
         step keys 0 
-        //printf "Total / Next : %A\n" dist
-        //dist
-        
-
-        
-
-
-
-
-
 
 
     let mutable iters = Array.init (List.length dists) (fun x -> 0)
@@ -188,8 +204,11 @@ let day18 =
 
         let steps, i = path dists iters
         iters <- i
-//        let iters = [|0;0;0;0;0;0;0;2;0;0;0|]
-       // printf "Total / Next : %A\n\n\n" i
+//        let iters = [|0;0;0;0;0;0;0;0;0;0;5|]
+        printf "Next : %A\n\n\n" i
+        printf "Min : %A\n" min
+
+//        Console.ReadKey()
 
         if steps < min then
             min <- steps
@@ -197,14 +216,5 @@ let day18 =
         if iters.[0] > Array.length iters then
             printf "Min : %A\n" min
             run <- false
-
-    // let x' = path dists (snd x)
-    // printf "Total / Next : %A\n\n\n" x'
-
-    // let x'' = path dists (snd x')
-    // printf "Total / Next : %A\n\n\n" x''
-
-    // let xx = path dists (snd x'')
-    // printf "Total / Next : %A\n\n\n" xx
 
     0
