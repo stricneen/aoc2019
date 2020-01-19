@@ -170,17 +170,18 @@ let day18 =
                 key = x.key
                 dist = keyToKey keyCollected.key x.key + steps
                 doors = x.doors |> List.where(fun x -> Char.ToLower x <> keyCollected.key)
-            }), keyCollected.dist)
+            }), keyCollected)
             
 
-        let rec step keys steps = 
+        let rec step keys steps order= 
             if List.isEmpty keys then // Route complete
-                steps, nextIter
+                steps, nextIter, order
             else
-                let keys', dist = move keys 
-                step keys' (dist + steps)
+                let keys', key = move keys 
 
-        step keys 0 
+                step keys' (key.dist + steps) (key.key :: order)
+
+        step keys 0 []
 
 
 
@@ -201,6 +202,9 @@ let day18 =
 // *
 // 81
 // a, c, f, i, d, g, b, e, h
+
+
+    
     
 
     let mutable iters = Array.init (List.length dists) (fun x -> 0)
@@ -208,25 +212,35 @@ let day18 =
     let mutable run = true
     while run do
 
-        let steps, i = path dists iters
+        let steps, i, order = path dists iters
         if i.IsSome then
             iters <- i.Value
+
         else 
+         
             Array.set iters (List.length dists - 1) (iters.[ (List.length dists - 1)] + 1)
+            
+            let sorted = String.Join ("",(order |> List.rev))
+          
+                         // acfidgbeh
+            if sorted.StartsWith("ac") then
+                printf "Next : %A\n" iters
+                printf "Order : %A\n" sorted
+                printf "Stps : %A\n" steps
+                printf "Min : %A\n\n\n" min
+                Console.ReadKey() |> ignore
+            
+            
+            
             if steps < min then
                 min <- steps
 
-//        let iters = [|0;0;0;0;0;0;0;0;0;0;5|]
-        printf "Next : %A\n" iters
-        printf "Stps : %A\n" steps
-        printf "Min : %A\n\n\n" min
-
-//        Console.ReadKey()
+      
 
    
 
         if iters.[0] > Array.length iters then
-            //printf "Min : %A\n" min
+            printf "Min : %A\n" min
             run <- false
 
     0
