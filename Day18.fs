@@ -107,6 +107,12 @@ let day18 =
     let dists = distances prog keys
 
 
+
+
+
+
+
+
     let path dist (iters: int array) =
                 
 
@@ -127,49 +133,86 @@ let day18 =
         // Calculate the next iteration bfs
 
         // [|0;0;0;0;1;0;0;0;1;0;0|]
+        
 
         let rec nextIteration iters doors =
             let nextIters = Array.copy iters
 
-            
-            let accessible = doors |> List.where(fun x -> List.isEmpty x.doors)
+            let sortedDoors = doors
+                              |> List.sortBy(fun x -> (List.length x.doors), x.key)
+
+            let accessible = sortedDoors 
+                             |> List.where(fun x -> List.isEmpty x.doors)
+
             let index = List.length doors
+            let last = iters.[index]
             
-            printf "doors : %A\n" doors
+            printf "doors : %A\n" sortedDoors
             printf "index : %A\n" index
-      //      printf "iters : %A\n" nextIters
-            printf "acces : %A\n" accessible
+            if index = 0 then   
+                Console.ReadKey() |> ignore
+                ()
+            printf "iters : %A\n" nextIters
+           // printf "acces : %A\n" accessible
+            
+            let keyToGet = accessible |> List.tryItem last
             //printf "acces : %A\n" accessible
-        //    Console.ReadKey()
+            //printf "going : %A\n" doors |> List.where(fun x -> x = doors.[iters.[index]])
+                               
+            // let keyToGet = accessible |> List.tryFind last
 
-            if (List.length accessible) > iters.[index] + 1 || List.isEmpty accessible then
-                Array.set nextIters index (nextIters.[index] + 1)
-                nextIters
-            else
-                Array.set nextIters index 0
-       //         printf "carry : %A\n" (List.length accessible)
+            let r = match keyToGet with
+                        | None -> Array.set nextIters index 0
+                                  nextIters
+                        | Some key -> let remaining = sortedDoors
+                                                      |> List.where(fun x -> x <> key)
+                                      Console.ReadKey()
 
-                let remaining = doors |> List.where(fun x -> x <> doors.[iters.[index]])
-                printf "remaining : %A\n" remaining
-               // Console.ReadKey()
-                nextIteration nextIters remaining
+                                      nextIteration nextIters remaining
+            r
+
+
+    //         if (List.length accessible) = last then
+    //                 //List.length accessible 
+    //                 //List.isEmpty accessible then
+    //             printf "to go : %A\n" accessible
+
+    //             Array.set nextIters index (last + 1)
+    //             nextIters
+    //             // finished
+    //         else
+    //             Array.set nextIters index 0
+    //    //         printf "carry : %A\n" (List.length accessible)
+
+    //             let remaining = sortedDoors
+    //                             |> List.where(fun x -> x <> sortedDoors.[last])
+    //             printf "remaining : %A\n\n\n\n" remaining
+    //            // Console.ReadKey()
+    //             nextIteration nextIters remaining
                 
 
         let split doors = 
 
-            let index = iters.[List.length doors]
             let accessible = doors |> List.where(fun x -> List.isEmpty x.doors)
-            accessible.[index], doors |> List.where(fun x -> x <> accessible.[index])
+            let index = iters.[List.length doors]
+            //printn index
+            //printf "Going  : %A\n" accessible.[index]
+            //printf "%A\n" accessible
+            //printf "h : %A\n\n\n\n" accessible.[index]
+            //printf "t : %A\n\n\n\n" (doors |> List.where(fun x -> x <> accessible.[index]))
+             
+            accessible.[index], doors 
+                                |> List.where(fun x -> x <> accessible.[index])
+                                |> List.sortBy(fun x -> (List.length x.doors), x.key)
+                             
 
-            // printn index
-            // printn (List.length accessible)
-            // printf "%A\n" accessible
 //            if List.length accessible  index then 
 
         let move doors =
             let h, t = split doors  // search here
+            printf "removing key : %A\n" h.key
             (t |> List.map(fun x ->
-            { 
+            {
                 key = x.key
                 dist = keyToKey h.key x.key + steps
                 doors = x.doors |> List.where(fun x -> Char.ToLower x <> h.key)
@@ -179,15 +222,14 @@ let day18 =
             //printf "Step : %A\n" steps
             //printf "Iter : %A\n" nextIters
             //printf "[%A]  %A\n\n" (List.length keys) keys
-            
+
             // Check for dead end
             
-            
             let doors = keys 
-                        |> List.sortBy(fun x -> (List.length x.doors, x.key))
+                        |> List.sortBy(fun x -> (x.key, List.length x.doors))
 
-            printf "KEYS : %A\n" doors
-            
+           // printf "KEYS : %A\n" doors
+
             if List.isEmpty keys then
                 steps, nextIteration iters (snd (dist |> List.find(fun x-> fst x = '@')))
             else
@@ -197,6 +239,23 @@ let day18 =
         step keys 0 
 
 
+
+
+    //let iters = [|0; 0; 0; 0; 0; 0; 0; 0; 0; 4|]
+    let iters = [|0; 0; 0; 0; 0; 0; 1; 2; 3; 4|]
+    let steps, i = path dists iters
+
+// ########################
+// #@..............ac.GI.b#
+// ###d#e#f################
+// ###A#B#C################
+// ###g#h#i################
+// ########################
+// *
+// 81
+// a, c, f, i, d, g, b, e, h
+    0
+
     let mutable iters = Array.init (List.length dists) (fun x -> 0)
     let mutable min = 1000000000
     let mutable run = true
@@ -205,16 +264,17 @@ let day18 =
         let steps, i = path dists iters
         iters <- i
 //        let iters = [|0;0;0;0;0;0;0;0;0;0;5|]
-        printf "Next : %A\n\n\n" i
-        printf "Min : %A\n" min
+        printf "Next : %A\n" i
+        printf "Stps : %A\n" steps
+        printf "Min : %A\n\n\n" min
 
-//        Console.ReadKey()
+      //  Console.ReadKey()
 
         if steps < min then
             min <- steps
 
         if iters.[0] > Array.length iters then
-            printf "Min : %A\n" min
+            //printf "Min : %A\n" min
             run <- false
 
     0
