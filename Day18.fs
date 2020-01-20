@@ -259,7 +259,7 @@ let day18 =
 
         let steps, i, order = path dists iters
 
-        let sorted = String.Join ("",(order |> List.rev))
+        // let sorted = String.Join ("",(order |> List.rev))
       
         //              // acfidgbeh
         // if sorted.StartsWith("acfi") then
@@ -270,8 +270,8 @@ let day18 =
 
         if steps < min && i.IsNone then
             min <- steps
-            printf "Min : %A\n" min
-
+            printf "Itr : %A\n" iters
+            printf "Min : %A\n\n" min
      
 //        if iters.[0] > Array.length iters then
     
