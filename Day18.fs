@@ -166,7 +166,8 @@ let day18 =
                 // let cpy = Array.copy iters
                 // zeroTo cpy (List.length doors) 
                 // Array.set cpy (List.length doors-1) (cpy.[List.length doors-1]+1)
-                nextIter <- Some [||]
+                printn index
+                nextIter <- Some iters
                 accessible.[0], []  // dirty
             else
                 accessible.[index], doors 
@@ -267,6 +268,8 @@ let day18 =
         //     printf "Order : %A\n" sorted
         //     printf "Stps : %A\n" steps
         //     printf "Min : %A\n\n\n" min
+        if i.IsSome then
+            printf "%A\n" i.Value
 
         if steps < min && i.IsNone then
             min <- steps
