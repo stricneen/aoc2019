@@ -42,7 +42,7 @@ let day18 =
     // #########
     
     let doors visitied current = 
-        if System.Char.IsUpper current then //  || System.Char.IsLower current then
+        if System.Char.IsUpper current then // || System.Char.IsLower current then //  || System.Char.IsLower current then
             visitied @ [current]
         else
             visitied
