@@ -145,15 +145,33 @@ let day18 =
 
             let accessible = doors 
                              |> List.where(fun x -> List.isEmpty x.doors)
-                             |> List.sortBy(fun x -> (List.length x.doors, x.key))
+                             |> List.sortBy(fun x -> x.key)
 
             let index = iters.[List.length doors]
 
+                
+            // let index = 
+            //     if List.length accessible > 0 && lastIndex >= List.length accessible then 
+            //         let cpy = Array.copy iters
+            //         Array.set cpy lastIndex 0
+            //         nextIter <- Some cpy
+            //         0 
+            //     else if List.length accessible < lastIndex then
+            //         //printf "Acc : %A\n" accessible
+            //         lastIndex + 1
+            //     else 
+            //         lastIndex         
 
+
+            // if iters.[9] = 0 && iters.[8] = 0 && iters.[7] = 2 && iters.[6] >= 2 then
+           // printf "Doors : %A\n" doors
             // printn index
+            // printf "%A\n" iters
             // printf "Acc : %A\n" accessible
             // printf "Going  : %A\n" accessible.[index]
             // printf "Remainder : %A\n\n\n\n" (doors |> List.where(fun x -> x <> accessible.[index]))
+            // Console.ReadKey()
+            // ()
 
             if List.length accessible = index then // gone too high
                 // inform next route
@@ -184,7 +202,6 @@ let day18 =
                 steps, nextIter, order
             else
                 let keys', key = move keys 
-
                 step keys' (key.dist + steps) (key.key :: order)
 
         step keys 0 []
@@ -194,13 +211,39 @@ let day18 =
 
     let min = [|0; 0; 0; 0; 1; 0; 3; 2; 0; 0|]
 
+    let iters n = 
+        let iter = Array.init n (fun x -> 0)
 
-    let iters = [|0; 0; 0; 0; 0; 0; 1; 2; 3; 4|]
-    let steps, i, order = path dists iters
+        let rec inc index = 
+          //  printn index
+            if iter.[index] < index then
+               // printn index
+                Array.set iter index (iter.[index] + 1)
+                ()
+            else
+                Array.set iter index 0
+                inc (index - 1)
+
+        seq {
+            while iter.[0] = 0 do
+                yield iter
+                inc (n-1)
+        }
+
+
+    for x in (iters 10) do
+        printf "%A\n" x
+        let x' = x 
+        ()
+        
+           // let iters = [|0; 0; 0; 0; 0; 0; 1; 2; 3; 4|]
+    // let steps, i, order = path dists iters
     // printf "%A\n" iters
-    printf "Dist : %A\n" steps
+    //printf "Dist : %A\n" steps
     // printf "i : %A\n" i
     
+
+
 // ########################
 // #@..............ac.GI.b#
 // ###d#e#f################
@@ -215,40 +258,37 @@ let day18 =
     
     
 
-    let mutable iters = Array.init (List.length dists) (fun x -> 0)
-    let mutable min = 1000000000
-    let mutable run = true
-    while run do
+    // let mutable iters = Array.init (List.length dists) (fun x -> 0)
+    // iters <-  [|0; 0; 0; 0; 0; 0; 2; 2; 2; 2|]
 
-        let steps, i, order = path dists iters
-        if i.IsSome then
-            iters <- i.Value
-        else 
-            Array.set iters (List.length dists - 1) (iters.[ (List.length dists - 1)] + 1)
+    // let mutable min = 1000000000
+    // let mutable run = true
+    // print "Starting ..."
+    // while run do
+    //     printf "I : %A\n" iters
+    //     Console.ReadKey() |> ignore
+
+    //     let steps, i, order = path dists iters
+    //     if i.IsSome then
+    //         iters <- i.Value
+    //     else 
+    //         Array.set iters (List.length dists - 1) (iters.[ (List.length dists - 1)] + 1)
             
-        let sorted = String.Join ("",(order |> List.rev))
+    //     let sorted = String.Join ("",(order |> List.rev))
       
-        //printf "Next : %A\n" iters
-                     // acfidgbeh
-        // if sorted.StartsWith("acf") then
-        //     printf "Next : %A\n" iters
-        //     printf "Order : %A\n" sorted
-        //     printf "Stps : %A\n" steps
-        //     printf "Min : %A\n\n\n" min
-       
-            //Console.ReadKey() |> ignore
-        
-        
-        
-        if steps < min && i.IsNone then
-            min <- steps
+    //     //              // acfidgbeh
+    //     // if sorted.StartsWith("acfi") then
+    //     //     printf "Next : %A\n" iters
+    //     //     printf "Order : %A\n" sorted
+    //     //     printf "Stps : %A\n" steps
+    //     //     printf "Min : %A\n\n\n" min
 
-      
+    //     if steps < min && i.IsNone then
+    //         min <- steps
 
-   
-
-        if iters.[0] > Array.length iters then
-            printf "Min : %A\n" min
-            run <- false
+     
+    //     if iters.[0] > Array.length iters then
+    //         printf "Min : %A\n" min
+    //         run <- false
 
     0
