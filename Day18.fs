@@ -150,20 +150,7 @@ let day18 =
             let index = iters.[List.length doors]
 
                 
-            // let index = 
-            //     if List.length accessible > 0 && lastIndex >= List.length accessible then 
-            //         let cpy = Array.copy iters
-            //         Array.set cpy lastIndex 0
-            //         nextIter <- Some cpy
-            //         0 
-            //     else if List.length accessible < lastIndex then
-            //         //printf "Acc : %A\n" accessible
-            //         lastIndex + 1
-            //     else 
-            //         lastIndex         
-
-
-            // if iters.[9] = 0 && iters.[8] = 0 && iters.[7] = 2 && iters.[6] >= 2 then
+           // if iters.[9] = 0 && iters.[8] = 0 && iters.[7] = 2 && iters.[6] >= 2 then
            // printf "Doors : %A\n" doors
             // printn index
             // printf "%A\n" iters
@@ -172,13 +159,14 @@ let day18 =
             // printf "Remainder : %A\n\n\n\n" (doors |> List.where(fun x -> x <> accessible.[index]))
             // Console.ReadKey()
             // ()
+            
 
-            if List.length accessible = index then // gone too high
+            if List.length accessible <= index then // gone too high
                 // inform next route
-                let cpy = Array.copy iters
-                zeroTo cpy (List.length doors) 
-                Array.set cpy (List.length doors-1) (cpy.[List.length doors-1]+1)
-                nextIter <- Some cpy
+                // let cpy = Array.copy iters
+                // zeroTo cpy (List.length doors) 
+                // Array.set cpy (List.length doors-1) (cpy.[List.length doors-1]+1)
+                nextIter <- Some [||]
                 accessible.[0], []  // dirty
             else
                 accessible.[index], doors 
@@ -211,7 +199,7 @@ let day18 =
 
     let min = [|0; 0; 0; 0; 1; 0; 3; 2; 0; 0|]
 
-    let iters n = 
+    let generateIters n = 
         let iter = Array.init n (fun x -> 0)
 
         let rec inc index = 
@@ -231,10 +219,10 @@ let day18 =
         }
 
 
-    for x in (iters 10) do
-        printf "%A\n" x
-        let x' = x 
-        ()
+    // for x in (generateIters 10) do
+    //     printf "%A\n"
+    //     let x' = x 
+    //     ()
         
            // let iters = [|0; 0; 0; 0; 0; 0; 1; 2; 3; 4|]
     // let steps, i, order = path dists iters
@@ -257,38 +245,35 @@ let day18 =
 
     
     
+    let keys = List.length dists
+    let mutable iters = Array.init keys (fun x -> 0)
+    print "Starting ..."
+    let mutable min = 1000000000
+    for iters in (generateIters keys) do
+//    iters <-  [|0; 0; 0; 0; 0; 0; 2; 2; 2; 2|]
 
-    // let mutable iters = Array.init (List.length dists) (fun x -> 0)
-    // iters <-  [|0; 0; 0; 0; 0; 0; 2; 2; 2; 2|]
+        //let mutable run = true
 
-    // let mutable min = 1000000000
-    // let mutable run = true
-    // print "Starting ..."
-    // while run do
-    //     printf "I : %A\n" iters
-    //     Console.ReadKey() |> ignore
+        //printf "I : %A\n" iters
+        //Console.ReadKey() |> ignore
 
-    //     let steps, i, order = path dists iters
-    //     if i.IsSome then
-    //         iters <- i.Value
-    //     else 
-    //         Array.set iters (List.length dists - 1) (iters.[ (List.length dists - 1)] + 1)
-            
-    //     let sorted = String.Join ("",(order |> List.rev))
+        let steps, i, order = path dists iters
+
+        let sorted = String.Join ("",(order |> List.rev))
       
-    //     //              // acfidgbeh
-    //     // if sorted.StartsWith("acfi") then
-    //     //     printf "Next : %A\n" iters
-    //     //     printf "Order : %A\n" sorted
-    //     //     printf "Stps : %A\n" steps
-    //     //     printf "Min : %A\n\n\n" min
+        //              // acfidgbeh
+        // if sorted.StartsWith("acfi") then
+        //     printf "Next : %A\n" iters
+        //     printf "Order : %A\n" sorted
+        //     printf "Stps : %A\n" steps
+        //     printf "Min : %A\n\n\n" min
 
-    //     if steps < min && i.IsNone then
-    //         min <- steps
+        if steps < min && i.IsNone then
+            min <- steps
+            printf "Min : %A\n" min
 
      
-    //     if iters.[0] > Array.length iters then
-    //         printf "Min : %A\n" min
-    //         run <- false
+//        if iters.[0] > Array.length iters then
+    
 
     0
