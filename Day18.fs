@@ -10,7 +10,7 @@ type State = { total:int; map: char[,] }
 type Key = { key: char; dist: int; doors: char list }
 
 let day18 = 
-    print "Advent of code - Day 18 - Many-Worlds Interpretation"
+    //print "Advent of code - Day 18 - Many-Worlds Interpretation"
 
     let read2DArray path = 
         let input = readLines path |> Array.takeWhile (fun x -> x <> "*")
@@ -42,7 +42,7 @@ let day18 =
     // #########
     
     let doors visitied current = 
-        if System.Char.IsUpper current then
+        if System.Char.IsUpper current then //  || System.Char.IsLower current then
             visitied @ [current]
         else
             visitied
@@ -82,7 +82,7 @@ let day18 =
         )
 
     let prog = read2DArray "./data/day18a.txt"
-    printmap prog
+    // printmap prog
 
     //let startState = { total=0; map=prog }
     // let t = loop [ startState ]
@@ -132,6 +132,11 @@ let day18 =
 
         let mutable nextIter: option<int array> = None
 
+        let rec zeroTo array i =
+            Array.set array i 0
+            if i + 1  < (Array.length array) then   
+                zeroTo array (i + 1)
+         
         let rec nextIteration iters doors =
             iters
                 
@@ -143,16 +148,17 @@ let day18 =
                              |> List.sortBy(fun x -> (List.length x.doors, x.key))
 
             let index = iters.[List.length doors]
-            //printn index
-            //printf "Going  : %A\n" accessible.[index]
-            //printf "%A\n" accessible
-            //printf "h : %A\n\n\n\n" accessible.[index]
-            //printf "t : %A\n\n\n\n" (doors |> List.where(fun x -> x <> accessible.[index]))
+
+
+            // printn index
+            // printf "Acc : %A\n" accessible
+            // printf "Going  : %A\n" accessible.[index]
+            // printf "Remainder : %A\n\n\n\n" (doors |> List.where(fun x -> x <> accessible.[index]))
 
             if List.length accessible = index then // gone too high
                 // inform next route
                 let cpy = Array.copy iters
-                Array.set cpy (List.length doors) 0
+                zeroTo cpy (List.length doors) 
                 Array.set cpy (List.length doors-1) (cpy.[List.length doors-1]+1)
                 nextIter <- Some cpy
                 accessible.[0], []  // dirty
@@ -186,11 +192,13 @@ let day18 =
 
 
 
-    // let iters = [|0; 0; 0; 0; 0; 0; 0; 0; 0; 5|]
-    // //let iters = [|0; 0; 0; 0; 0; 0; 1; 2; 3; 4|]
-    // let steps, i = path dists iters
+    let min = [|0; 0; 0; 0; 1; 0; 3; 2; 0; 0|]
+
+
+    let iters = [|0; 0; 0; 0; 0; 0; 1; 2; 3; 4|]
+    let steps, i, order = path dists iters
     // printf "%A\n" iters
-    // printf "Dist : %A\n" steps
+    printf "Dist : %A\n" steps
     // printf "i : %A\n" i
     
 // ########################
@@ -215,25 +223,25 @@ let day18 =
         let steps, i, order = path dists iters
         if i.IsSome then
             iters <- i.Value
-
         else 
-         
             Array.set iters (List.length dists - 1) (iters.[ (List.length dists - 1)] + 1)
             
-            let sorted = String.Join ("",(order |> List.rev))
-          
-                         // acfidgbeh
-            if sorted.StartsWith("ac") then
-                printf "Next : %A\n" iters
-                printf "Order : %A\n" sorted
-                printf "Stps : %A\n" steps
-                printf "Min : %A\n\n\n" min
-                Console.ReadKey() |> ignore
-            
-            
-            
-            if steps < min then
-                min <- steps
+        let sorted = String.Join ("",(order |> List.rev))
+      
+        //printf "Next : %A\n" iters
+                     // acfidgbeh
+        // if sorted.StartsWith("acf") then
+        //     printf "Next : %A\n" iters
+        //     printf "Order : %A\n" sorted
+        //     printf "Stps : %A\n" steps
+        //     printf "Min : %A\n\n\n" min
+       
+            //Console.ReadKey() |> ignore
+        
+        
+        
+        if steps < min && i.IsNone then
+            min <- steps
 
       
 
