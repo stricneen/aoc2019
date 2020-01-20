@@ -10,7 +10,7 @@ type State = { total:int; map: char[,] }
 type Key = { key: char; dist: int; doors: char list }
 
 let day18 = 
-    print "Advent of code - Day 18 - Many-Worlds Interpretation"
+    //print "Advent of code - Day 18 - Many-Worlds Interpretation"
 
     let read2DArray path = 
         let input = readLines path |> Array.takeWhile (fun x -> x <> "*")
@@ -42,7 +42,7 @@ let day18 =
     // #########
     
     let doors visitied current = 
-        if System.Char.IsUpper current || System.Char.IsLower current then
+        if System.Char.IsUpper current then //  || System.Char.IsLower current then
             visitied @ [current]
         else
             visitied
@@ -82,7 +82,7 @@ let day18 =
         )
 
     let prog = read2DArray "./data/day18a.txt"
-    printmap prog
+    // printmap prog
 
     //let startState = { total=0; map=prog }
     // let t = loop [ startState ]
@@ -137,7 +137,7 @@ let day18 =
             if List.length accessible = index then // gone too high
                 // inform next route
                 let cpy = Array.copy iters
-                Array.set cpy (List.length doors) 0
+                //zeroTo cpy (List.length doors) 
                 Array.set cpy (List.length doors-1) (cpy.[List.length doors-1]+1)
                 nextIter <- Some cpy
                 accessible.[0], []  // dirty
@@ -170,6 +170,16 @@ let day18 =
         step keys 0 []
 
 
+
+
+    let min = [|0; 0; 0; 0; 1; 0; 3; 2; 0; 0|]
+
+
+    let iters = [|0; 0; 0; 0; 0; 0; 1; 2; 3; 4|]
+    let steps, i, order = path dists iters
+    // printf "%A\n" iters
+    printf "Dist : %A\n" steps
+    // printf "i : %A\n" i
     
 // ########################
 // #@..............ac.GI.b#
@@ -185,30 +195,37 @@ let day18 =
     let mutable iters = Array.init (List.length dists) (fun x -> 0)
     let mutable min = 1000000000
     let mutable run = true
-    // while run do
+    while run do
 
-    //     let steps, i, order = path dists iters
-    //     if i.IsSome then
-    //         iters <- i.Value
+        let steps, i, order = path dists iters
+        if i.IsSome then
+            iters <- i.Value
+        else 
+            Array.set iters (List.length dists - 1) (iters.[ (List.length dists - 1)] + 1)
+            
+        let sorted = String.Join ("",(order |> List.rev))
+      
+        //printf "Next : %A\n" iters
+                     // acfidgbeh
+        // if sorted.StartsWith("acf") then
+        //     printf "Next : %A\n" iters
+        //     printf "Order : %A\n" sorted
+        //     printf "Stps : %A\n" steps
+        //     printf "Min : %A\n\n\n" min
+       
+            //Console.ReadKey() |> ignore
+        
+        
+        
+        if steps < min && i.IsNone then
+            min <- steps
 
-    //     else 
-    //         Array.set iters (List.length dists - 1) (iters.[ (List.length dists - 1)] + 1)
-    //         let sorted = String.Join ("",(order |> List.rev))
-          
-    //                      // acfidgbeh
-    //         if sorted.StartsWith("a") then
-    //             printf "Next : %A\n" iters
-    //             printf "Order : %A\n" sorted
-    //             printf "Stps : %A\n" steps
-    //             printf "Min : %A\n\n\n" min
-    //             //Console.ReadKey() |> ignore
-           
-    //         if steps < min then
-    //             min <- steps
+      
 
-     
-    //     if iters.[0] > Array.length iters then
-    //         printf "Min : %A\n" min
-    //         run <- false
+   
+
+        if iters.[0] > Array.length iters then
+            printf "Min : %A\n" min
+            run <- false
 
     0
