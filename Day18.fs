@@ -42,7 +42,7 @@ let day18 =
     // #########
     
     let doors visitied current = 
-        if System.Char.IsUpper current then
+        if System.Char.IsUpper current || System.Char.IsLower current then
             visitied @ [current]
         else
             visitied
@@ -106,20 +106,14 @@ let day18 =
     let keys = getKeys prog
     let dists = distances prog keys
 
-
-
-
-
+    printf "%A\n" dists
 
 
 
     let path dist (iters: int array) =
-                
-
-       // let nextIters = Array.copy iters
+               
+        // let nextIters = Array.copy iters
         let _, keys = dist |> List.find(fun x-> fst x = '@')
-        
-        //let bfs = Array.init (List.length keys) (fun _ -> 0)
         let steps = 0
 
         // Get the distance between two keys
@@ -132,10 +126,6 @@ let day18 =
 
         let mutable nextIter: option<int array> = None
 
-        let rec nextIteration iters doors =
-            iters
-                
-
         let getKey doors = 
 
             let accessible = doors 
@@ -143,11 +133,6 @@ let day18 =
                              |> List.sortBy(fun x -> (List.length x.doors, x.key))
 
             let index = iters.[List.length doors]
-            //printn index
-            //printf "Going  : %A\n" accessible.[index]
-            //printf "%A\n" accessible
-            //printf "h : %A\n\n\n\n" accessible.[index]
-            //printf "t : %A\n\n\n\n" (doors |> List.where(fun x -> x <> accessible.[index]))
 
             if List.length accessible = index then // gone too high
                 // inform next route
@@ -170,6 +155,7 @@ let day18 =
                 key = x.key
                 dist = keyToKey keyCollected.key x.key + steps
                 doors = x.doors |> List.where(fun x -> Char.ToLower x <> keyCollected.key)
+
             }), keyCollected)
             
 
@@ -184,14 +170,6 @@ let day18 =
         step keys 0 []
 
 
-
-
-    // let iters = [|0; 0; 0; 0; 0; 0; 0; 0; 0; 5|]
-    // //let iters = [|0; 0; 0; 0; 0; 0; 1; 2; 3; 4|]
-    // let steps, i = path dists iters
-    // printf "%A\n" iters
-    // printf "Dist : %A\n" steps
-    // printf "i : %A\n" i
     
 // ########################
 // #@..............ac.GI.b#
@@ -202,45 +180,35 @@ let day18 =
 // *
 // 81
 // a, c, f, i, d, g, b, e, h
-
-
-    
     
 
     let mutable iters = Array.init (List.length dists) (fun x -> 0)
     let mutable min = 1000000000
     let mutable run = true
-    while run do
+    // while run do
 
-        let steps, i, order = path dists iters
-        if i.IsSome then
-            iters <- i.Value
+    //     let steps, i, order = path dists iters
+    //     if i.IsSome then
+    //         iters <- i.Value
 
-        else 
-         
-            Array.set iters (List.length dists - 1) (iters.[ (List.length dists - 1)] + 1)
-            
-            let sorted = String.Join ("",(order |> List.rev))
+    //     else 
+    //         Array.set iters (List.length dists - 1) (iters.[ (List.length dists - 1)] + 1)
+    //         let sorted = String.Join ("",(order |> List.rev))
           
-                         // acfidgbeh
-            if sorted.StartsWith("ac") then
-                printf "Next : %A\n" iters
-                printf "Order : %A\n" sorted
-                printf "Stps : %A\n" steps
-                printf "Min : %A\n\n\n" min
-                Console.ReadKey() |> ignore
-            
-            
-            
-            if steps < min then
-                min <- steps
+    //                      // acfidgbeh
+    //         if sorted.StartsWith("a") then
+    //             printf "Next : %A\n" iters
+    //             printf "Order : %A\n" sorted
+    //             printf "Stps : %A\n" steps
+    //             printf "Min : %A\n\n\n" min
+    //             //Console.ReadKey() |> ignore
+           
+    //         if steps < min then
+    //             min <- steps
 
-      
-
-   
-
-        if iters.[0] > Array.length iters then
-            printf "Min : %A\n" min
-            run <- false
+     
+    //     if iters.[0] > Array.length iters then
+    //         printf "Min : %A\n" min
+    //         run <- false
 
     0
