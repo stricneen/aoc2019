@@ -160,25 +160,61 @@ let day18 =
                     //printn (List.length a')
                     a'        
                     ) []
+
+        //    printf "%A\n" s
+          
             
-            //printf "%A\n" s
+            let shortest = 
+                s |> List.map(fun x -> 
+                    let hash = x.visited.Substring(0, x.visited.Length - 1) |> Seq.sort |> String.Concat
+                    hash, x)
+                  |> List.groupBy(fun x -> fst x, (snd x).at)
+                  |> List.map(fun (_,x) -> x |> List.minBy(fun (_,y) -> y.travelled))
+                  |> List.map(fun (_,x) -> x)
+
+            printf "%A\n" shortest
+            
+            
+//            printf "%A\n" s
             printn (List.length s)
-            if (s |> List.forall(fun x -> List.isEmpty x.remaining)) then
-                s
+            printn (List.length shortest)
+
+            Console.ReadKey()
+            if (shortest |> List.forall(fun x -> List.isEmpty x.remaining)) then
+                shortest
             else 
-                move s
+                move shortest
 
 
 
         move start
 
+// bhe 21
+
+
+
+
+// hbe 34
 
     let x = traverse first
 
     let min = x |> List.minBy(fun x -> x.travelled)
 
     printf "%A\n" min
-    // printf "\n\n\n\n%A" x
+
+
+//  (("ab", "g"),
+//   [("ab",
+//     { at = "g"
+//       visited = "abg"
+//       travelled = 15
+
+//    ("ab",
+//     { at = "g"
+//       visited = "bag"
+//       travelled = 13
+
+// printf "\n\n\n\n%A" x
 
 
 // ########################
