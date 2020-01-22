@@ -9,7 +9,7 @@ type State = { total:int; map: char[,] }
 
 type Key = { key: char; dist: int; doors: char list }
 
-type Path = { visited: string; dist: int }
+type Path = { visited: string; travelled: int; remaining: Key list }
 
 let day18 = 
     //print "Advent of code - Day 18 - Many-Worlds Interpretation"
@@ -112,24 +112,46 @@ let day18 =
 
     printf "%A\n" keys
 
+
+
     let visited = keys |> List.where(fun x -> List.isEmpty x.doors)
                        |> List.sortBy(fun x -> x.key)
     //printf "%A\n" visited
-       
-    let path = visited
-               |> List.map(fun x -> { visited= x.key.ToString(); dist = x.dist})
-    printf "%A\n" path 
 
 
-    let move = path
-               |> List.fold(fun a c -> 
-                  // Get accessible keys
-                    let accessible = keys 
-                                     |> List.where(fun x -> not (c.visited.Contains x.key))
+    // let move state = 
 
-                    printf "%A\n" accessible
-                    a 
-               ) []
+
+
+    
+    // move keys
+
+
+
+
+
+
+    let first = visited
+               |> List.map(fun x -> { 
+                    visited= x.key.ToString(); 
+                    travelled = x.dist; 
+                    remaining = (keys 
+                                |> List.where(fun x' -> x'.key <> x.key)) 
+                                |> List.map(fun x' -> { x' with doors = x'.doors |> List.where(fun x'' -> x'' <> x.key) }) })
+    
+    
+    printf "%A\n" first 
+
+
+    // let move = path
+    //            |> List.fold(fun a c -> 
+    //               // Get accessible keys - emply doors and collected keys
+    //                 let accessible = keys 
+    //                                  |> List.where(fun x -> not (c.visited.Contains x.key))
+
+    //                 printf "Accessable : %A\n" accessible
+    //                 a 
+    //            ) []
                
 
 
