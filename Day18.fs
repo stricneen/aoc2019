@@ -169,8 +169,8 @@ let day18 =
                     let hash = x.visited.Substring(0, x.visited.Length - 1) |> Seq.sort |> String.Concat
                     hash, x)
                   |> List.groupBy(fun x -> fst x, (snd x).at)
-                  |> List.map(fun (_,x) -> x |> List.minBy(fun (_,y) -> y.travelled))
-                  |> List.map(fun (_,x) -> x)
+                  |> List.map((fun (_,x) -> x |> List.minBy(fun (_,y) -> y.travelled))
+                           >> (fun (_,x) -> x))
 
             printf "%A\n" shortest
             
@@ -179,7 +179,7 @@ let day18 =
             printn (List.length s)
             printn (List.length shortest)
 
-            Console.ReadKey()
+          //  Console.ReadKey()
             if (shortest |> List.forall(fun x -> List.isEmpty x.remaining)) then
                 shortest
             else 
