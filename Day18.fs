@@ -110,7 +110,7 @@ let day18 =
 
     let _, keys = dists |> List.find(fun x-> fst x = '@')
 
-    printf "%A\n" keys
+    //printf "%A\n" keys
 
         // Get the distance between two keys
     let keyToKey k1 k2 =
@@ -123,7 +123,7 @@ let day18 =
     let visited = keys |> List.where(fun x -> List.isEmpty x.doors)
                        |> List.sortBy(fun x -> x.key)
     
-    // move keys
+    // make the first moves
 
     let first = visited
                |> List.map(fun x -> { 
@@ -135,21 +135,50 @@ let day18 =
                                 |> List.map(fun x' -> { x' with doors = x'.doors |> List.where(fun x'' -> x'' <> x.key); dist = keyToKey x.key x'.key  }) }) // Remove door
     
     
-    printf "%A\n" first 
+    //printf "%A\n" first 
+
+    let traverse (start: Path list) = 
+
+        let rec move from =
+            
+            let s = from |> List.fold(fun a c ->
+
+                    let accessible = c.remaining
+                                       |> List.where(fun x -> List.isEmpty x.doors)
+                                       |> List.sortBy(fun x -> x.key)
+
+                    let moves =
+                        accessible |> List.map(fun x -> { 
+                        at = x.key.ToString();
+                        visited = c.visited + x.key.ToString(); 
+                        travelled = x.dist + c.travelled; 
+                        remaining = (c.remaining 
+                                    |> List.where(fun x' -> x'.key <> x.key))  // Remove just visited
+                                    |> List.map(fun x' -> { x' with doors = x'.doors |> List.where(fun x'' -> x'' <> x.key); dist = keyToKey x.key x'.key  }) }) // Remove door
+        
+                    let a' = List.append moves a
+                    //printn (List.length a')
+                    a'        
+                    ) []
+            
+            //printf "%A\n" s
+            printn (List.length s)
+            if (s |> List.forall(fun x -> List.isEmpty x.remaining)) then
+                s
+            else 
+                move s
 
 
-    // let move = path
-    //            |> List.fold(fun a c -> 
-    //               // Get accessible keys - emply doors and collected keys
-    //                 let accessible = keys 
-    //                                  |> List.where(fun x -> not (c.visited.Contains x.key))
 
-    //                 printf "Accessable : %A\n" accessible
-    //                 a 
-    //            ) []
-               
+        move start
 
 
+    let x = traverse first
+
+    let min = x |> List.minBy(fun x -> x.travelled)
+
+    printf "%A\n" min
+    // printf "\n\n\n\n%A" x
 
 
 // ########################
