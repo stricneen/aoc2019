@@ -9,6 +9,8 @@ type State = { total:int; map: char[,] }
 
 type Key = { key: char; dist: int; doors: char list }
 
+type Path = { visited: string; dist: int }
+
 let day18 = 
     //print "Advent of code - Day 18 - Many-Worlds Interpretation"
 
@@ -106,13 +108,6 @@ let day18 =
     let keys = getKeys prog
     let dists = distances prog keys
 
-
-
-
-
-
-
-
     let path dist (iters: int array) =
                 
 
@@ -173,8 +168,7 @@ let day18 =
                 accessible.[index], doors 
                                 |> List.where(fun x -> x <> accessible.[index])
                                 
-                             
-
+                            
         let move doors =
             let keyCollected, remaining = getKey doors  // search here
            // printf "removing key : %A\n" keyCollected.key
@@ -196,41 +190,25 @@ let day18 =
         step keys 0 []
 
 
-
-
     let min = [|0; 0; 0; 0; 1; 0; 3; 2; 0; 0|]
 
-    let generateIters n = 
-        let iter = Array.init n (fun x -> 0)
+//    printf "%A\n" dists
 
-        let rec inc index = 
-          //  printn index
-            if iter.[index] < index then
-               // printn index
-                Array.set iter index (iter.[index] + 1)
-                ()
-            else
-                Array.set iter index 0
-                inc (index - 1)
+    let _, keys = dists |> List.find(fun x-> fst x = '@')
 
-        seq {
-            while iter.[0] = 0 do
-                yield iter
-                inc (n-1)
-        }
+    printf "%A\n" keys
+
+    let visited = keys |> List.where(fun x -> List.isEmpty x.doors)
+    //printf "%A\n" visited
+       
+    let path = visited
+               |> List.map(fun x -> { visited= x.key.ToString(); dist = x.dist})
+    printf "%A\n" path 
+
+//    let next = visited
+               
 
 
-    // for x in (generateIters 10) do
-    //     printf "%A\n"
-    //     let x' = x 
-    //     ()
-        
-           // let iters = [|0; 0; 0; 0; 0; 0; 1; 2; 3; 4|]
-    // let steps, i, order = path dists iters
-    // printf "%A\n" iters
-    //printf "Dist : %A\n" steps
-    // printf "i : %A\n" i
-    
 
 
 // ########################
@@ -244,39 +222,6 @@ let day18 =
 // a, c, f, i, d, g, b, e, h
 
 
-    
-    
-    let keys = List.length dists
-    let mutable iters = Array.init keys (fun x -> 0)
-    print "Starting ..."
-    let mutable min = 1000000000
-    for iters in (generateIters keys) do
-//    iters <-  [|0; 0; 0; 0; 0; 0; 2; 2; 2; 2|]
-
-        //let mutable run = true
-
-        //printf "I : %A\n" iters
-        //Console.ReadKey() |> ignore
-
-        let steps, i, order = path dists iters
-
-        // let sorted = String.Join ("",(order |> List.rev))
-      
-        //              // acfidgbeh
-        // if sorted.StartsWith("acfi") then
-        //     printf "Next : %A\n" iters
-        //     printf "Order : %A\n" sorted
-        //     printf "Stps : %A\n" steps
-        //     printf "Min : %A\n\n\n" min
-        if i.IsSome then
-            printf "%A\n" i.Value
-
-        if steps < min && i.IsNone then
-            min <- steps
-            printf "Itr : %A\n" iters
-            printf "Min : %A\n\n" min
-     
-//        if iters.[0] > Array.length iters then
     
 
     0
