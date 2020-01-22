@@ -9,7 +9,7 @@ type State = { total:int; map: char[,] }
 
 type Key = { key: char; dist: int; doors: char list }
 
-type Path = { visited: string; travelled: int; remaining: Key list }
+type Path = { at: string; visited: string; travelled: int; remaining: Key list }
 
 let day18 = 
     //print "Advent of code - Day 18 - Many-Worlds Interpretation"
@@ -112,32 +112,27 @@ let day18 =
 
     printf "%A\n" keys
 
-
+        // Get the distance between two keys
+    let keyToKey k1 k2 =
+        let k1' = dists
+                  |> List.find(fun (x, _) -> x = k1)   // 'char * Key list' 
+        let k2' = (snd k1')
+                  |> List.find(fun x -> x.key = k2)
+        k2'.dist
 
     let visited = keys |> List.where(fun x -> List.isEmpty x.doors)
                        |> List.sortBy(fun x -> x.key)
-    //printf "%A\n" visited
-
-
-    // let move state = 
-
-
-
     
     // move keys
 
-
-
-
-
-
     let first = visited
                |> List.map(fun x -> { 
-                    visited= x.key.ToString(); 
+                    at = x.key.ToString();
+                    visited = x.key.ToString(); 
                     travelled = x.dist; 
                     remaining = (keys 
-                                |> List.where(fun x' -> x'.key <> x.key)) 
-                                |> List.map(fun x' -> { x' with doors = x'.doors |> List.where(fun x'' -> x'' <> x.key) }) })
+                                |> List.where(fun x' -> x'.key <> x.key))  // Remove just visited
+                                |> List.map(fun x' -> { x' with doors = x'.doors |> List.where(fun x'' -> x'' <> x.key); dist = keyToKey x.key x'.key  }) }) // Remove door
     
     
     printf "%A\n" first 
