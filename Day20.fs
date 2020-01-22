@@ -4,28 +4,44 @@ open Utils
 open IntCode2
 
 let day20 = 
-    print "Advent of code - Day 19 - Tractor Beam"
+    print "Advent of code - Day 20 - Donut Maze"
 
-    let prog = readCSV "./data/day20.txt" 
-
-    let comp = IntCode2("beam")
-    let inq = comp.Initialise prog
-
-
-    let mutable counter = 0L
-    let mutable finished = false
-
-    comp.OutputReady.Add(fun output ->
-
-        counter <- counter + output
-
-    )    
+    //let prog = readCSV "./data/day20.txt" 
     
+    let read2DArray path = 
+        let input = readLines path |> Array.takeWhile (fun x -> x <> "*")
+        let a2d = array2D input
+        a2d
     
+    let donut = read2DArray "./data/day20a.txt" 
     
-    while not finished do
-        async {
-            do! Async.Sleep(100) } |> ignore
+    //printf "%A\n" donut
+
+    let getNodes =
+        let rec loop r res =
+            if r > Array2D.length1 donut - 1 then
+                res
+            else
+                let row = donut.[r, *]
+
+               // let f = row |> Array.tryFindIndex (fun x -> x = chr)
+                
+                let t = "XX"
+                // match f with 
+                // | None -> loop a (c + 1) 
+                // | Some x -> x,c
+
+                loop (r+1) (t :: res)
+        loop 0 []
+
+
+    printf "%A\n" getNodes
+
+
+    // let mutable finished = false
+    // while not finished do
+    //     async {
+    //         do! Async.Sleep(100) } |> ignore
 
 
     0

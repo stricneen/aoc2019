@@ -9,6 +9,8 @@ type State = { total:int; map: char[,] }
 
 type Key = { key: char; dist: int; doors: char list }
 
+type Path = { at: string; visited: string; travelled: int; remaining: Key list }
+
 let day18 = 
     //print "Advent of code - Day 18 - Many-Worlds Interpretation"
 
@@ -42,7 +44,7 @@ let day18 =
     // #########
     
     let doors visitied current = 
-        if System.Char.IsUpper current then //  || System.Char.IsLower current then
+        if System.Char.IsUpper current then // || System.Char.IsLower current then //  || System.Char.IsLower current then
             visitied @ [current]
         else
             visitied
@@ -74,14 +76,14 @@ let day18 =
 
         let start = coordsOf map from
         let locations = traverse [ { x=fst start; y=snd start; pos=from; dist=0; doors= [] }] 0
-        locations |> List.where(fun x -> System.Char.IsLower x.pos)// || Char.IsUpper x.pos)
+        locations |> List.where(fun x -> System.Char.IsLower x.pos)
 
     let printState s = 
         s |> List.iter(fun x -> printf "Total : %A\n" x.total
                                 printmap x.map
         )
 
-    let prog = read2DArray "./data/day18a.txt"
+    let prog = read2DArray "./data/day18.txt"
     // printmap prog
 
     //let startState = { total=0; map=prog }
@@ -95,7 +97,7 @@ let day18 =
 
     let locsToKeys locs = 
         locs 
-        |> List.map(fun x -> { key = x.pos; dist = x.dist; doors = x.doors })
+        |> List.map(fun x -> { key = x.pos; dist = x.dist; doors = x.doors |> List.map Char.ToLower })
         |> List.sortBy (fun x -> List.length x.doors)
 
     let distances map keys =
@@ -106,126 +108,89 @@ let day18 =
     let keys = getKeys prog
     let dists = distances prog keys
 
-    printf "%A\n" dists
+   // printf "%A\n" dists
+    let _, keys = dists |> List.find(fun x-> fst x = '@')
 
-
-
-    let path dist (iters: int array) =
-               
-        // let nextIters = Array.copy iters
-        let _, keys = dist |> List.find(fun x-> fst x = '@')
-        let steps = 0
+    //printf "%A\n" keys
 
         // Get the distance between two keys
-        let keyToKey k1 k2 =
-            let k1' = dists
-                      |> List.find(fun (x, _) -> x = k1)   // 'char * Key list' 
-            let k2' = (snd k1')
-                      |> List.find(fun x -> x.key = k2)
-            k2'.dist
+    let keyToKey k1 k2 =
+        let k1' = dists
+                  |> List.find(fun (x, _) -> x = k1)   // 'char * Key list' 
+        let k2' = (snd k1')
+                  |> List.find(fun x -> x.key = k2)
+        k2'.dist
 
-        let mutable nextIter: option<int array> = None
-
-        let getKey doors = 
-
-            let accessible = doors 
-                             |> List.where(fun x -> List.isEmpty x.doors)
-                             |> List.sortBy(fun x -> (List.length x.doors, x.key))
-
-            let index = iters.[List.length doors]
-
-            if List.length accessible = index then // gone too high
-                // inform next route
-                let cpy = Array.copy iters
-                //zeroTo cpy (List.length doors) 
-                Array.set cpy (List.length doors-1) (cpy.[List.length doors-1]+1)
-                nextIter <- Some cpy
-                accessible.[0], []  // dirty
-            else
-                accessible.[index], doors 
-                                |> List.where(fun x -> x <> accessible.[index])
-                                
-                             
-
-        let move doors =
-            let keyCollected, remaining = getKey doors  // search here
-           // printf "removing key : %A\n" keyCollected.key
-            (remaining |> List.map(fun x ->
-            {
-                key = x.key
-                dist = keyToKey keyCollected.key x.key + steps
-                doors = x.doors |> List.where(fun x -> Char.ToLower x <> keyCollected.key)
-
-            }), keyCollected)
-            
-
-        let rec step keys steps order= 
-            if List.isEmpty keys then // Route complete
-                steps, nextIter, order
-            else
-                let keys', key = move keys 
-
-                step keys' (key.dist + steps) (key.key :: order)
-
-        step keys 0 []
-
-
-
-
-    let min = [|0; 0; 0; 0; 1; 0; 3; 2; 0; 0|]
-
-
-    let iters = [|0; 0; 0; 0; 0; 0; 1; 2; 3; 4|]
-    let steps, i, order = path dists iters
-    // printf "%A\n" iters
-    printf "Dist : %A\n" steps
-    // printf "i : %A\n" i
+    let visited = keys |> List.where(fun x -> List.isEmpty x.doors)
+                       |> List.sortBy(fun x -> x.key)
     
-// ########################
-// #@..............ac.GI.b#
-// ###d#e#f################
-// ###A#B#C################
-// ###g#h#i################
-// ########################
-// *
-// 81
-// a, c, f, i, d, g, b, e, h
+    // make the first moves
+
+    let first = visited
+               |> List.map(fun x -> { 
+                    at = x.key.ToString();
+                    visited = x.key.ToString(); 
+                    travelled = x.dist; 
+                    remaining = (keys 
+                                |> List.where(fun x' -> x'.key <> x.key))  // Remove just visited
+                                |> List.map(fun x' -> { x' with doors = x'.doors |> List.where(fun x'' -> x'' <> x.key); dist = keyToKey x.key x'.key  }) }) // Remove door
     
+    
+    //printf "%A\n" first 
 
-    let mutable iters = Array.init (List.length dists) (fun x -> 0)
-    let mutable min = 1000000000
-    let mutable run = true
-    while run do
+    let traverse (start: Path list) = 
 
-        let steps, i, order = path dists iters
-        if i.IsSome then
-            iters <- i.Value
-        else 
-            Array.set iters (List.length dists - 1) (iters.[ (List.length dists - 1)] + 1)
+        let rec move from =
             
-        let sorted = String.Join ("",(order |> List.rev))
-      
-        //printf "Next : %A\n" iters
-                     // acfidgbeh
-        // if sorted.StartsWith("acf") then
-        //     printf "Next : %A\n" iters
-        //     printf "Order : %A\n" sorted
-        //     printf "Stps : %A\n" steps
-        //     printf "Min : %A\n\n\n" min
-       
-            //Console.ReadKey() |> ignore
-        
-        
-        
-        if steps < min && i.IsNone then
-            min <- steps
+            let s = from |> List.fold(fun a c ->
 
-      
+                    let accessible = c.remaining
+                                       |> List.where(fun x -> List.isEmpty x.doors)
+                                       |> List.sortBy(fun x -> x.key)
 
-   
+                    let moves =
+                        accessible |> List.map(fun x -> { 
+                        at = x.key.ToString();
+                        visited = c.visited + x.key.ToString(); 
+                        travelled = x.dist + c.travelled; 
+                        remaining = (c.remaining 
+                                    |> List.where(fun x' -> x'.key <> x.key))  // Remove just visited
+                                    |> List.map(fun x' -> { x' with doors = x'.doors |> List.where(fun x'' -> x'' <> x.key); dist = keyToKey x.key x'.key  }) }) // Remove door
+        
+                    let a' = List.append moves a
+                    //printn (List.length a')
+                    a'        
+                    ) []
 
-        if iters.[0] > Array.length iters then
-            printf "Min : %A\n" min
-            run <- false
+        //    printf "%A\n" s
+          
+            
+            let shortest = 
+                s |> List.map(fun x -> 
+                    let hash = x.visited.Substring(0, x.visited.Length - 1) |> Seq.sort |> String.Concat
+                    hash, x)
+                  |> List.groupBy(fun x -> fst x, (snd x).at)
+                  |> List.map((fun (_,x) -> x |> List.minBy(fun (_,y) -> y.travelled))
+                           >> (fun (_,x) -> x))
+
+            printn (List.length shortest)
+
+            if (shortest |> List.forall(fun x -> List.isEmpty x.remaining)) then
+                shortest
+            else 
+                move shortest
+
+
+
+        move start
+
+
+    let x = traverse first
+
+    let min = x |> List.minBy(fun x -> x.travelled)
+
+    printf "%A\n" min
+
+  
 
     0
