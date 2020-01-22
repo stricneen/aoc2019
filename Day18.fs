@@ -83,7 +83,7 @@ let day18 =
                                 printmap x.map
         )
 
-    let prog = read2DArray "./data/day18a.txt"
+    let prog = read2DArray "./data/day18.txt"
     // printmap prog
 
     //let startState = { total=0; map=prog }
@@ -172,11 +172,11 @@ let day18 =
                   |> List.map((fun (_,x) -> x |> List.minBy(fun (_,y) -> y.travelled))
                            >> (fun (_,x) -> x))
 
-            printf "%A\n" shortest
+           // printf "%A\n" shortest
             
             
 //            printf "%A\n" s
-            printn (List.length s)
+          //  printn (List.length s)
             printn (List.length shortest)
 
           //  Console.ReadKey()
