@@ -16,7 +16,7 @@ let day20 =
     
     let donut = read2DArray "./data/day20a.txt" 
     
-    printmap donut
+    // printmap donut
 
     let getNodes = // AA, (3,4)   ZZ, (4,5) ....
 
@@ -24,6 +24,9 @@ let day20 =
                          |> Array.windowed 3
                          |> Array.where(fun x -> Char.IsUpper x.[1] && ( Char.IsUpper x.[0] && x.[2] = '.' || Char.IsUpper x.[2] && x.[0] = '.'  ))
                          |> Array.map String.Concat
+
+        let removeDots s = 
+            s |> Seq.where(fun x -> x <> '.') |> String.Concat
 
         let rec loop c res =
             if c > Array2D.length1 donut - 1 then
@@ -37,10 +40,10 @@ let day20 =
 
                 let rowCrds = row |> Array.map(fun x -> let offset = if x.[0] = '.' then 0 else 3
                                                         let ind = (rowC |> String).IndexOf x + offset
-                                                        x, (ind, c))
+                                                        removeDots x, (ind, c))
                 let colCrds = col |> Array.map(fun x -> let offset = if x.[0] = '.' then 0 else 3
                                                         let ind = (colC |> String).IndexOf x + offset
-                                                        x, (c, ind ))
+                                                        removeDots x, (c, ind ))
                 
                 let rc = Array.append rowCrds colCrds
                 loop (c+1) (Array.append res rc)
