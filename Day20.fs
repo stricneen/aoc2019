@@ -16,7 +16,7 @@ let day20 =
     
     let donut = read2DArray "./data/day20a.txt" 
     
-    // printmap donut
+    printmap donut
 
     let getNodes = // AA, (3,4)   ZZ, (4,5) ....
 
@@ -33,56 +33,35 @@ let day20 =
                 res
             else
                 let rowC = donut.[c, *]
-         //       let colC = donut.[*, c]
-                
                 let row = getPairs rowC
-               // let col = getPairs colC
-
-                let rowCrds = row |> Array.map(fun x -> let offset = if x.[0] = '.' then 0 else 3
+                let rowCrds = row |> Array.map(fun x -> let offset = if x.[0] = '.' then 0 else 2
                                                         let ind = (rowC |> String).IndexOf x + offset
                                                         removeDots x, (ind, c))
-                // let colCrds = col |> Array.map(fun x -> let offset = if x.[0] = '.' then 0 else 3
-                //                                         let ind = (colC |> String).IndexOf x + offset
-                //                                         removeDots x, (c, ind ))
-                
-              //   let rc = Array.append rowCrds 
                 rows (c+1) (Array.append res rowCrds)
-
 
         let rec cols c res =
             if c > Array2D.length2 donut - 1 then
                 res
             else
-                //let rowC = donut.[c, *]
                 let colC = donut.[*, c]
-                
-                //let row = getPairs rowC
                 let col = getPairs colC
-
-                // let rowCrds = row |> Array.map(fun x -> let offset = if x.[0] = '.' then 0 else 3
-                //                                         let ind = (rowC |> String).IndexOf x + offset
-                //                                         removeDots x, (ind, c))
-                let colCrds = col |> Array.map(fun x -> let offset = if x.[0] = '.' then 0 else 3
+                let colCrds = col |> Array.map(fun x -> let offset = if x.[0] = '.' then 0 else 2
                                                         let ind = (colC |> String).IndexOf x + offset
                                                         removeDots x, (c, ind ))
-                
-            //    let rc = Array.append rowCrds colCrds
                 cols (c+1) (Array.append res colCrds)
 
         Array.append (rows 0 [||]) (cols 0 [||])
-        
-
-
-
+    
     let nodes = getNodes 
-
     printf "%A\n" nodes
 
+    let test = nodes
+                |> Array.map(fun (_,(x,y)) ->
+                
+                    donut.[y,x]
+                )
 
-    // let mutable finished = false
-    // while not finished do
-    //     async {
-    //         do! Async.Sleep(100) } |> ignore
+    printf "%A\n" test
 
 
     0

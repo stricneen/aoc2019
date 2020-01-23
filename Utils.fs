@@ -14,9 +14,10 @@ let print text = printf  "%s\n" text
 let printn text = printf  "%i\n" text
 
 let rec printmap lst = 
+    printf "\t%A\n" "0123456789012345678901234"
     for x in 0 .. Array2D.length1 lst - 1 do
         let l = lst.[x,*] |> String
-        printf "%A\n" l
+        printf "%A\t%A\n" x l
 
 let intersect (xs:'a seq) (ys: 'a seq) = xs.Intersect(ys)
 
