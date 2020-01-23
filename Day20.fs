@@ -4,8 +4,12 @@ open System
 open Utils
 open IntCode2
 
+type Location = { x:int; y:int; pos:char; dist:int;  }
+
+type Node = { name:string; paths:list<int * string>; coords:int*int }
+
 let day20 = 
-    //print "Advent of code - Day 20 - Donut Maze"
+    print "Advent of code - Day 20 - Donut Maze"
 
     //let prog = readCSV "./data/day20.txt" 
     
@@ -55,13 +59,36 @@ let day20 =
     let nodes = getNodes 
     printf "%A\n" nodes
 
-    let test = nodes
-                |> Array.map(fun (_,(x,y)) ->
-                
-                    donut.[y,x]
-                )
 
-    printf "%A\n" test
+    let traverse nodes =
+        let getSurroundings (map:char[,]) locs =
+            let x = locs
+                    |> List.fold(fun acc loc -> 
+                        let n = { x=loc.x; y=(loc.y)-1; pos=map.[loc.y-1, loc.x]; dist= loc.dist+1 }
+                        let e = { x=loc.x+1; y=loc.y; pos=map.[loc.y, loc.x+1]; dist= loc.dist+1 }
+                        let s = { x=loc.x; y=loc.y+1; pos=map.[loc.y+1, loc.x]; dist= loc.dist+1 }
+                        let w = { x=loc.x-1; y=loc.y; pos=map.[loc.y, loc.x-1]; dist= loc.dist+1 }
+                        [n; e; s ;w] @ acc
+                    ) []
+                    |> List.where(fun x -> x.pos='.')
+            x
 
 
+
+
+        nodes
+        |> Array.map(fun x ->
+            {  name=fst x; paths= []; coords= snd x}
+        )
+
+    
+    let graph = traverse nodes
+    printf "%A\n" graph
+
+    // let test = nodes
+    //             |> Array.map(fun (_,(x,y)) ->
+    //                 donut.[y,x]
+    //             )
+
+    // printf "%A\n" test
     0
