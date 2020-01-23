@@ -1,5 +1,6 @@
 module Day20
 
+open System
 open Utils
 open IntCode2
 
@@ -15,7 +16,7 @@ let day20 =
     
     let donut = read2DArray "./data/day20a.txt" 
     
-    //printf "%A\n" donut
+    printmap donut
 
     let getNodes =
         let rec loop r res =
@@ -23,6 +24,13 @@ let day20 =
                 res
             else
                 let row = donut.[r, *]
+
+                let ltrs = row |> Array.fold(fun a c -> 
+                    if Char.IsUpper c then
+                        a
+                    else
+                        a
+                ) []
 
                // let f = row |> Array.tryFindIndex (fun x -> x = chr)
                 
