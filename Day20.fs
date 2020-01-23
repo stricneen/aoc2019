@@ -35,21 +35,10 @@ let day20 =
                 let row = getPairs rowC
                 let col = getPairs colC
 
-<<<<<<< HEAD
                 let rowCrds = row |> Array.map(fun x -> let ind = (rowC |> String).IndexOf x
                                                         x, (c, ind))
                 let colCrds = col |> Array.map(fun x -> let ind = (colC |> String).IndexOf x
                                                         x, (ind, c))
-=======
-                let ltrs = row |> Array.fold(fun a c -> 
-                    if Char.IsUpper c then
-                        a
-                    else
-                        a
-                ) []
-
-               // let f = row |> Array.tryFindIndex (fun x -> x = chr)
->>>>>>> 2b185a338b9bf3dae0f55dcf8537b85d226cad87
                 
                 let rc = Array.append rowCrds colCrds
                 loop (c+1) (Array.append res rc)
