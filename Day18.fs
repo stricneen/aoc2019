@@ -157,7 +157,6 @@ let day18 =
                                     |> List.map(fun x' -> { x' with doors = x'.doors |> List.where(fun x'' -> x'' <> x.key); dist = keyToKey x.key x'.key  }) }) // Remove door
         
                     let a' = List.append moves a
-                    //printn (List.length a')
                     a'        
                     ) []
 
@@ -172,14 +171,7 @@ let day18 =
                   |> List.map((fun (_,x) -> x |> List.minBy(fun (_,y) -> y.travelled))
                            >> (fun (_,x) -> x))
 
-           // printf "%A\n" shortest
-            
-            
-//            printf "%A\n" s
-          //  printn (List.length s)
             printn (List.length shortest)
-
-          //  Console.ReadKey()
             if (shortest |> List.forall(fun x -> List.isEmpty x.remaining)) then
                 shortest
             else 
@@ -189,45 +181,9 @@ let day18 =
 
         move start
 
-// bhe 21
-
-
-
-
-// hbe 34
 
     let x = traverse first
-
     let min = x |> List.minBy(fun x -> x.travelled)
-
     printf "%A\n" min
-
-
-//  (("ab", "g"),
-//   [("ab",
-//     { at = "g"
-//       visited = "abg"
-//       travelled = 15
-
-//    ("ab",
-//     { at = "g"
-//       visited = "bag"
-//       travelled = 13
-
-// printf "\n\n\n\n%A" x
-
-
-// ########################
-// #@..............ac.GI.b#
-// ###d#e#f################
-// ###A#B#C################
-// ###g#h#i################
-// ########################
-// *
-// 81
-// a, c, f, i, d, g, b, e, h
-
-
-    
 
     0
