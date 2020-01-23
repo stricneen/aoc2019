@@ -35,10 +35,12 @@ let day20 =
                 let row = getPairs rowC
                 let col = getPairs colC
 
-                let rowCrds = row |> Array.map(fun x -> let ind = (rowC |> String).IndexOf x
-                                                        x, (c, ind))
-                let colCrds = col |> Array.map(fun x -> let ind = (colC |> String).IndexOf x
+                let rowCrds = row |> Array.map(fun x -> let offset = if x.[0] = '.' then 0 else 3
+                                                        let ind = (rowC |> String).IndexOf x + offset
                                                         x, (ind, c))
+                let colCrds = col |> Array.map(fun x -> let offset = if x.[0] = '.' then 0 else 3
+                                                        let ind = (colC |> String).IndexOf x + offset
+                                                        x, (c, ind ))
                 
                 let rc = Array.append rowCrds colCrds
                 loop (c+1) (Array.append res rc)
