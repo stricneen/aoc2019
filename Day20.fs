@@ -16,7 +16,7 @@ let day20 =
     
     let donut = read2DArray "./data/day20a.txt" 
     
-    printmap donut
+    // printmap donut
 
     let getNodes = // AA, (3,4)   ZZ, (4,5) ....
 
