@@ -1,10 +1,11 @@
 module Day20
 
+open System
 open Utils
 open IntCode2
 
 let day20 = 
-    print "Advent of code - Day 20 - Donut Maze"
+    //print "Advent of code - Day 20 - Donut Maze"
 
     //let prog = readCSV "./data/day20.txt" 
     
@@ -15,24 +16,39 @@ let day20 =
     
     let donut = read2DArray "./data/day20a.txt" 
     
-    //printf "%A\n" donut
+    printmap donut
 
-    let getNodes =
-        let rec loop r res =
-            if r > Array2D.length1 donut - 1 then
+    let getNodes = // AA, (3,4)   ZZ, (4,5) ....
+
+        let getPairs x = x 
+                         |> Array.windowed 3
+                         |> Array.where(fun x -> Char.IsUpper x.[1] && ( Char.IsUpper x.[0] && x.[2] = '.' || Char.IsUpper x.[2] && x.[0] = '.'  ))
+                         |> Array.map String.Concat
+
+        let rec loop c res =
+            if c > Array2D.length1 donut - 1 then
                 res
             else
-                let row = donut.[r, *]
-
-               // let f = row |> Array.tryFindIndex (fun x -> x = chr)
+                let rowC = donut.[c, *]
+                let colC = donut.[*, c]
                 
-                let t = "XX"
-                // match f with 
-                // | None -> loop a (c + 1) 
-                // | Some x -> x,c
+                let row = getPairs rowC
+                let col = getPairs colC
 
-                loop (r+1) (t :: res)
-        loop 0 []
+                let rowCrds = row |> Array.map(fun x -> let ind = (rowC |> String).IndexOf x
+                                                        x, (c, ind))
+                let colCrds = col |> Array.map(fun x -> let ind = (colC |> String).IndexOf x
+                                                        x, (ind, c))
+                
+                let rc = Array.append rowCrds colCrds
+                loop (c+1) (Array.append res rc)
+
+
+        loop 0 [||]
+        
+
+
+
 
 
     printf "%A\n" getNodes
