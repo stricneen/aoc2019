@@ -12,7 +12,7 @@ type Key = { key: char; dist: int; doors: char list }
 type Path = { at: string; visited: string; travelled: int; remaining: Key list }
 
 let day18 = 
-    //print "Advent of code - Day 18 - Many-Worlds Interpretation"
+    print "Advent of code - Day 18 - Many-Worlds Interpretation"
 
     let read2DArray path = 
         let input = readLines path |> Array.takeWhile (fun x -> x <> "*")
@@ -83,7 +83,7 @@ let day18 =
                                 printmap x.map
         )
 
-    let prog = read2DArray "./data/day18.txt"
+    let prog = read2DArray "./data/day18a.txt"
     // printmap prog
 
     //let startState = { total=0; map=prog }
@@ -108,6 +108,7 @@ let day18 =
     let keys = getKeys prog
     let dists = distances prog keys
 
+    printf "%A\n" dists
     let _, keys = dists |> List.find(fun x-> fst x = '@')
 
     //printf "%A\n" keys
