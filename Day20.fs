@@ -20,7 +20,7 @@ let day20 =
     
     let donut = read2DArray "./data/day20a.txt"
     
-    // printmap donut
+    printmap donut
 
     let getNodes = // Get list of nodes from the input
 
@@ -57,8 +57,7 @@ let day20 =
         (Array.append (rows 0 [||]) (cols 0 [||])) |> Array.toList
     
     let nodes = getNodes 
-    printf "NODES : %A\n" nodes
-
+    //printf "NODES : %A\n" nodes
 
     let traverse nodes = // Get the vertices from each node 
         let getSurroundings (map:char[,]) locs =
@@ -104,13 +103,13 @@ let day20 =
                 
         y
 
-
-//    let one = [List.head nodes]
-
- //   printf "%A\n" one
-
     let graph = traverse nodes
-    printf "GRAPH  : %A\n" graph
+    //printf "GRAPH  : %A\n" graph
 
+    let findNode pos = graph |> List.find(fun x -> (x |> List.head).pos = pos)
+
+    let start = findNode "AA"
+    let start = findNode "ZZ"
+    
 
     0
