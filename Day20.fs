@@ -84,16 +84,25 @@ let day20 =
                 traverse' x (c+1)
 
         let raw = nodes |> List.map(fun x -> traverse' x 0)
-        raw
-        // raw |> List.map(fun x -> 
 
-        //     x |> List.map(fun x' ->
-
-        //         let endpoint = nodes |> List.tryFind(fun x -> x.) 
-
-        //     )
+        let flatnodes = nodes |> List.concat
         
-        // )
+        let y = raw
+                |> List.map(fun x -> 
+                    // printf "%A\n" x
+                    x |> List.map(fun x' -> 
+
+                        let e = flatnodes 
+                                |> List.tryFind(fun n -> n.x = x'.x && n.y = x'.y)
+
+                        match e with
+                        | None -> x'
+                        | Some n -> { x' with pos = n.pos }
+                    )
+                    |> List.where(fun x -> x.pos <> ".")
+                )
+                
+        y
 
 
 //    let one = [List.head nodes]
