@@ -4,7 +4,7 @@ open System
 open Utils
 open IntCode2
 
-type Location = { x:int; y:int; pos:char; dist:int;  }
+type Location = { x:int; y:int; pos:string; dist:int;  }
 
 type Node = { name:string; paths:list<int * string>; coords:int*int }
 
@@ -18,7 +18,7 @@ let day20 =
         let a2d = array2D input
         a2d
     
-    let donut = read2DArray "./data/day20a.txt" 
+    let donut = read2DArray "./data/day20a.txt"
     
     // printmap donut
 
@@ -40,7 +40,7 @@ let day20 =
                 let row = getPairs rowC
                 let rowCrds = row |> Array.map(fun x -> let offset = if x.[0] = '.' then 0 else 2
                                                         let ind = (rowC |> String).IndexOf x + offset
-                                                        removeDots x, (ind, c))
+                                                        [{ x=ind; y=c; pos=removeDots x; dist=0;}])
                 rows (c+1) (Array.append res rowCrds)
 
         let rec cols c res =
@@ -51,10 +51,10 @@ let day20 =
                 let col = getPairs colC
                 let colCrds = col |> Array.map(fun x -> let offset = if x.[0] = '.' then 0 else 2
                                                         let ind = (colC |> String).IndexOf x + offset
-                                                        removeDots x, (c, ind ))
+                                                        [{ x=c; y=ind; pos=removeDots x; dist=0;}])
                 cols (c+1) (Array.append res colCrds)
 
-        Array.append (rows 0 [||]) (cols 0 [||])
+        (Array.append (rows 0 [||]) (cols 0 [||])) |> Array.toList
     
     let nodes = getNodes 
     printf "%A\n" nodes
@@ -64,26 +64,24 @@ let day20 =
         let getSurroundings (map:char[,]) locs =
             let x = locs
                     |> List.fold(fun acc loc -> 
-                        let n = { x=loc.x; y=(loc.y)-1; pos=map.[loc.y-1, loc.x]; dist= loc.dist+1 }
-                        let e = { x=loc.x+1; y=loc.y; pos=map.[loc.y, loc.x+1]; dist= loc.dist+1 }
-                        let s = { x=loc.x; y=loc.y+1; pos=map.[loc.y+1, loc.x]; dist= loc.dist+1 }
-                        let w = { x=loc.x-1; y=loc.y; pos=map.[loc.y, loc.x-1]; dist= loc.dist+1 }
+                        let n = { x=loc.x; y=(loc.y)-1; pos=map.[loc.y-1, loc.x].ToString(); dist= loc.dist+1 }
+                        let e = { x=loc.x+1; y=loc.y; pos=map.[loc.y, loc.x+1].ToString(); dist= loc.dist+1 }
+                        let s = { x=loc.x; y=loc.y+1; pos=map.[loc.y+1, loc.x].ToString(); dist= loc.dist+1 }
+                        let w = { x=loc.x-1; y=loc.y; pos=map.[loc.y, loc.x-1].ToString(); dist= loc.dist+1 }
                         [n; e; s ;w] @ acc
                     ) []
-                    |> List.where(fun x -> x.pos='.')
+                    |> List.where(fun x -> x.pos=".")
             x
 
-
-
-
         nodes
-        |> Array.map(fun x ->
-            {  name=fst x; paths= []; coords= snd x}
+        |> List.map(fun x ->
+            getSurroundings donut x
         )
 
     
     let graph = traverse nodes
     printf "%A\n" graph
+
 
     // let test = nodes
     //             |> Array.map(fun (_,(x,y)) ->
@@ -91,4 +89,6 @@ let day20 =
     //             )
 
     // printf "%A\n" test
+
+
     0
