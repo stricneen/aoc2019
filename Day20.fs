@@ -22,7 +22,7 @@ let day20 =
     
     // printmap donut
 
-    let getNodes = // AA, (3,4)   ZZ, (4,5) ....
+    let getNodes = // Get list of nodes from the input
 
         let getPairs x = x 
                          |> Array.windowed 3
@@ -57,10 +57,10 @@ let day20 =
         (Array.append (rows 0 [||]) (cols 0 [||])) |> Array.toList
     
     let nodes = getNodes 
-    printf "%A\n" nodes
+    printf "NODES : %A\n" nodes
 
 
-    let traverse nodes =
+    let traverse nodes = // Get the vertices from each node 
         let getSurroundings (map:char[,]) locs =
             let x = locs
                     |> List.fold(fun acc loc -> 
@@ -83,7 +83,17 @@ let day20 =
             else 
                 traverse' x (c+1)
 
-        nodes |> List.map(fun x -> traverse' x 0)
+        let raw = nodes |> List.map(fun x -> traverse' x 0)
+        raw
+        // raw |> List.map(fun x -> 
+
+        //     x |> List.map(fun x' ->
+
+        //         let endpoint = nodes |> List.tryFind(fun x -> x.) 
+
+        //     )
+        
+        // )
 
 
 //    let one = [List.head nodes]
@@ -91,7 +101,7 @@ let day20 =
  //   printf "%A\n" one
 
     let graph = traverse nodes
-    printf "%A\n" graph
+    printf "GRAPH  : %A\n" graph
 
 
     0
