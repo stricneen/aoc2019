@@ -73,22 +73,25 @@ let day20 =
                     |> List.where(fun x -> x.pos=".")
             x
 
-        nodes
-        |> List.map(fun x ->
-            getSurroundings donut x
-        )
+        let rec traverse' (points: Location list) c = 
+            let ends = points |> List.where(fun x -> x.dist = c)
+            let x = getSurroundings donut ends @ points
+                    |> List.sortBy(fun x -> x.dist)
+                    |> List.distinctBy(fun x -> x.x * 1000 + x.y)
+            if List.length x = List.length points then
+                x
+            else 
+                traverse' x (c+1)
 
-    
+        nodes |> List.map(fun x -> traverse' x 0)
+
+
+//    let one = [List.head nodes]
+
+ //   printf "%A\n" one
+
     let graph = traverse nodes
     printf "%A\n" graph
-
-
-    // let test = nodes
-    //             |> Array.map(fun (_,(x,y)) ->
-    //                 donut.[y,x]
-    //             )
-
-    // printf "%A\n" test
 
 
     0
