@@ -4,9 +4,10 @@ open System
 open Utils
 open IntCode2
 
-type Location = { x:int; y:int; pos:string; dist:int;  }
+type Location = { x:int; y:int; pos:string; dist:int; visited: bool  }
 
-type Node = { name:string; paths:list<int * string>; coords:int*int }
+// type Node = { name:string; paths:list<int * string>; visited: bool; }
+
 
 let day20 = 
     print "Advent of code - Day 20 - Donut Maze"
@@ -40,7 +41,7 @@ let day20 =
                 let row = getPairs rowC
                 let rowCrds = row |> Array.map(fun x -> let offset = if x.[0] = '.' then 0 else 2
                                                         let ind = (rowC |> String).IndexOf x + offset
-                                                        [{ x=ind; y=c; pos=removeDots x; dist=0;}])
+                                                        [{ x=ind; y=c; pos=removeDots x; dist=0; visited=false}])
                 rows (c+1) (Array.append res rowCrds)
 
         let rec cols c res =
@@ -51,22 +52,22 @@ let day20 =
                 let col = getPairs colC
                 let colCrds = col |> Array.map(fun x -> let offset = if x.[0] = '.' then 0 else 2
                                                         let ind = (colC |> String).IndexOf x + offset
-                                                        [{ x=c; y=ind; pos=removeDots x; dist=0;}])
+                                                        [{ x=c; y=ind; pos=removeDots x; dist=0; visited=false}])
                 cols (c+1) (Array.append res colCrds)
 
         (Array.append (rows 0 [||]) (cols 0 [||])) |> Array.toList
     
-    let nodes = getNodes 
+    let coords = getNodes 
     //printf "NODES : %A\n" nodes
 
     let traverse nodes = // Get the vertices from each node 
         let getSurroundings (map:char[,]) locs =
             let x = locs
                     |> List.fold(fun acc loc -> 
-                        let n = { x=loc.x; y=(loc.y)-1; pos=map.[loc.y-1, loc.x].ToString(); dist= loc.dist+1 }
-                        let e = { x=loc.x+1; y=loc.y; pos=map.[loc.y, loc.x+1].ToString(); dist= loc.dist+1 }
-                        let s = { x=loc.x; y=loc.y+1; pos=map.[loc.y+1, loc.x].ToString(); dist= loc.dist+1 }
-                        let w = { x=loc.x-1; y=loc.y; pos=map.[loc.y, loc.x-1].ToString(); dist= loc.dist+1 }
+                        let n = { x=loc.x; y=(loc.y)-1; pos=map.[loc.y-1, loc.x].ToString(); dist= loc.dist+1; visited=false }
+                        let e = { x=loc.x+1; y=loc.y; pos=map.[loc.y, loc.x+1].ToString(); dist= loc.dist+1; visited=false }
+                        let s = { x=loc.x; y=loc.y+1; pos=map.[loc.y+1, loc.x].ToString(); dist= loc.dist+1; visited=false }
+                        let w = { x=loc.x-1; y=loc.y; pos=map.[loc.y, loc.x-1].ToString(); dist= loc.dist+1; visited=false }
                         [n; e; s ;w] @ acc
                     ) []
                     |> List.where(fun x -> x.pos=".")
@@ -103,13 +104,27 @@ let day20 =
                 
         y
 
-    let graph = traverse nodes
-    //printf "GRAPH  : %A\n" graph
+    let graph = traverse coords
+    printf "GRAPH  : %A\n" graph
 
     let findNode pos = graph |> List.find(fun x -> (x |> List.head).pos = pos)
 
-    let start = findNode "AA"
-    let start = findNode "ZZ"
+
+   // let nodes = 
+
+    // printf "%A\n" start
+    // printf "%A\n" finish
+
+    // let nodes = 
+    //     graph
+    //     |> List.map(fun x -> { name=x.name; paths=x.paths; visited=false;  })
+
     
+    
+       
+//  { name:string;      paths:list<int * string>;   visited: bool; }
+    
+    // let shortest = dijkstra graph
+    // printf "Path : %A\n" shortest
 
     0
