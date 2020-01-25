@@ -6,7 +6,7 @@ open IntCode2
 
 type Location = { x:int; y:int; pos:string; dist:int; visited: bool  }
 
-// type Node = { name:string; paths:list<int * string>; visited: bool; }
+type Node = { name:string; paths:list<int * string>; visited: bool; }
 
 
 let day20 = 

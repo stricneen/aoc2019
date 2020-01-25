@@ -11,10 +11,15 @@ let day21 =
     let comp = IntCode2 ""
     let inq = comp.Initialise prog
     
+    let c (i: int64) :System.Char =
+        char (int i)
+
     let mutable finished = false
 
-    comp.OutputReady.Add(fun output -> ())    
+    comp.OutputReady.Add(fun output -> (
 
+        printf "%A" (c output))
+    )
           
             
 
