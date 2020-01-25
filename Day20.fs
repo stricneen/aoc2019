@@ -121,7 +121,8 @@ let day20 =
             let distanceTo s t =
                 let can = (snd s) |> List.tryFind(fun x -> x.pos = t.pos)
                 match can with
-                | Some x -> x.dist + (fst s).dist
+                | Some x  when (fst s).pos = "AA" -> x.dist + (fst s).dist
+                | Some x -> x.dist + (fst s).dist + 1
                 | None -> 0
                 
             let eq x n = x.pos = (fst n).pos && x.x = (fst n).x && x.y = (fst n).y
@@ -149,7 +150,8 @@ let day20 =
                 let next = remaining
                               |> List.minBy(fun (x,_) -> x.dist)
                 printf "NEXT : %A\n\n\n" next
-                Console.ReadKey() |> ignore
+                print "****************************************************************\n\n"
+                //Console.ReadKey() |> ignore
                 step ng next
 
 
@@ -167,6 +169,6 @@ let day20 =
  
    
     let shortest = dijkstra graph
-    printf "SHORTEST : %A\n" shortest
+    printf "SHORTEST : %A\n" (shortest |> List.find(fun (x,_) -> x.pos = "ZZ" ))
 
     0
