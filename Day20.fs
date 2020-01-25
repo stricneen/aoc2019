@@ -19,7 +19,7 @@ let day20 =
         let a2d = array2D input
         a2d
     
-    let donut = read2DArray "./data/day20a.txt"
+    let donut = read2DArray "./data/day20.txt"
     
     printmap donut
 
