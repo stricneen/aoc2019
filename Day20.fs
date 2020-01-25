@@ -124,12 +124,13 @@ let day20 =
                 | Some x -> x.dist + (fst s).dist
                 | None -> 0
                 
+            let eq x n = x.pos = (fst n).pos && x.x = (fst n).x && x.y = (fst n).y
 
             let ng = g |> List.map(fun x' ->
-                let v = g |> List.find(fun (x,_) -> x.pos = n )
+                let v = g |> List.find(fun (x,_) -> eq x n)
                 let d =  distanceTo v (fst x')
                 match x' with
-                | (x,y) when x.pos = n -> ({ x with visited=true} , y)  // current node
+                | (x,y) when  eq x n -> ({ x with visited=true} , y)  // current node
                 | (x,y) when d > 0 && not x.visited -> ({ x with dist=if d < x.dist then d else x.dist } , y)
                 | _ -> x'
             
@@ -149,7 +150,7 @@ let day20 =
                               |> List.minBy(fun (x,_) -> x.dist)
                 printf "NEXT : %A\n\n\n" next
                 Console.ReadKey() |> ignore
-                step ng (fst next).pos
+                step ng next
 
 
 
@@ -160,7 +161,8 @@ let day20 =
             | (x,y) -> ({ x with dist=1000000} , y)
         )
 
-        step start "AA"
+        let aa = graph |> List.find(fun (x,_) -> x.pos = "AA" )
+        step start aa
 
  
    
