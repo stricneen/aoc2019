@@ -101,30 +101,70 @@ let day20 =
                     )
                     |> List.where(fun x -> x.pos <> ".")
                 )
-                
         y
+        |> List.map(fun (h::t) -> h, t)
 
     let graph = traverse coords
-    printf "GRAPH  : %A\n" graph
 
-    let findNode pos = graph |> List.find(fun x -> (x |> List.head).pos = pos)
+    //let findNode pos = graph |> List.find(fun (x,_) -> x.pos = pos)
 
 
-   // let nodes = 
 
-    // printf "%A\n" start
-    // printf "%A\n" finish
 
-    // let nodes = 
-    //     graph
-    //     |> List.map(fun x -> { name=x.name; paths=x.paths; visited=false;  })
 
-    
-    
-       
-//  { name:string;      paths:list<int * string>;   visited: bool; }
-    
-    // let shortest = dijkstra graph
-    // printf "Path : %A\n" shortest
+    //printf "GRAPH  : %A\n" start
+
+    let dijkstra graph = 
+
+        let rec step g n = 
+
+            let distanceTo s t =
+                let can = (snd s) |> List.tryFind(fun x -> x.pos = t.pos)
+                match can with
+                | Some x -> x.dist + (fst s).dist
+                | None -> 0
+                
+
+            let ng = g |> List.map(fun x' ->
+                let v = g |> List.find(fun (x,_) -> x.pos = n )
+                let d =  distanceTo v (fst x')
+                match x' with
+                | (x,y) when x.pos = n -> ({ x with visited=true} , y)  // current node
+                | (x,y) when d > 0 && not x.visited -> ({ x with dist=if d < x.dist then d else x.dist } , y)
+                | _ -> x'
+            
+            )
+           
+
+            printf "STEP : %A\n\n\n" ng
+
+            let remaining = ng |> List.where(fun (x,_) -> not x.visited)
+
+            if List.isEmpty remaining then
+                g
+            else
+
+            // Get next node
+                let next = remaining
+                              |> List.minBy(fun (x,_) -> x.dist)
+                printf "NEXT : %A\n\n\n" next
+                Console.ReadKey() |> ignore
+                step ng (fst next).pos
+
+
+
+        // Set distances to something big
+        let start = graph |> List.map(fun x -> 
+            match x with
+            | (x,y) when x.pos="AA" -> x,y
+            | (x,y) -> ({ x with dist=1000000} , y)
+        )
+
+        step start "AA"
+
+ 
+   
+    let shortest = dijkstra graph
+    printf "SHORTEST : %A\n" shortest
 
     0
