@@ -3,6 +3,63 @@ module Day21
 open Utils
 open IntCode2
 
+(*
+OR A J      #####.###########
+OR B J      #####...#########
+OR D J      #####..#.########
+            #####.##.########
+            #####.#..########
+
+
+NOT B T
+AND A T
+AND D T
+NOT A J
+OR T J
+WALK
+
+
+
+NOT D T
+NOT T J
+
+NOT A J     #####..#.########
+NOT B J     #####...#########
+NOT C J     #####...#########
+NOT D J     #####.###########
+
+OR A J      #####.###########
+OR B J      #####...#########
+OR C J      #####...#########
+OR D J      #####..#.########
+
+NOT B T     #####..#.########  *
+AND C J
+NOT A T
+OR T J
+
+NOT B T     #####.##.########
+NOT C J
+AND T J
+AND A J
+AND D J
+NOT A T
+OR T J
+
+
+NOT A T     #####...#########
+NOT C J
+OR T J           
+
+NOT A T     #####.###########
+NOT D J
+AND T J
+
+
+*)
+
+
+
 
 let day21 =
     print "Advent of code - Day 21 - Springdroid Adventure"
