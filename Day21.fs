@@ -4,13 +4,24 @@ open Utils
 open IntCode2
 
 (*
+
+ANSWER : 
+Input instructions:
+NOT C T
+AND D T
+NOT A J
+OR T J
+WALK
+
+
+
+
 OR A J      #####.###########
 OR B J      #####...#########
 OR D J      #####..#.########
-            #####.##.########
             #####.#..########
-
-
+            #####.##.########
+            
 NOT B T
 AND A T
 AND D T
@@ -79,6 +90,8 @@ let day21 =
             print buffer
             //print "\n"
             buffer <- ""
+        else if output > 255L then
+            printf "%A\n" output
         else
             buffer <- buffer + (char(output |> int)).ToString()
         )
