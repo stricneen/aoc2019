@@ -26,6 +26,8 @@ let day15 =
     let mutable steps = 0
     inq.Post (int64 dir)
 
+    let maze = Array2D.init 100 100 (fun _ _ -> ' ')
+
     comp.OutputReady.Add(fun output ->
           if output = -99999L then
               finished <- true
@@ -35,15 +37,19 @@ let day15 =
                   match output, location with
                   | 0L, (x,y) when dir =  Direction.North -> printStatus "Can't go N - trying E"
                                                              printAt x (y-1) wall
+                                                             Array2D.set maze x (y-1) '#' 
                                                              Direction.West
                   | 0L, (x,y) when dir =  Direction.East -> printStatus "Can't go E - trying S"
                                                             printAt (x+1) y wall
+                                                            Array2D.set maze (x+1) y '#' 
                                                             Direction.North
                   | 0L, (x,y) when dir =  Direction.South -> printStatus "Can't go S - trying W"
                                                              printAt x (y+1) wall
+                                                             Array2D.set maze x (y+1) '#' 
                                                              Direction.East
                   | 0L, (x,y) when dir =  Direction.West -> printStatus "Can't go W - trying N"
                                                             printAt (x-1) y wall
+                                                            Array2D.set maze (x-1) y '#' 
                                                             Direction.South
                   | 1L, (x,y) when dir =  Direction.North -> printStatus ("Going N                 " +  steps.ToString())
                                                              printAt x y corridor
@@ -102,6 +108,9 @@ let day15 =
               // System.Console.ReadKey() 
               //if dir <> Direction.End then
               inq.Post (int64 dir)
+
+              if steps = 2000 then  
+                printmap maze
 
          )
         
