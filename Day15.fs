@@ -17,6 +17,9 @@ let day15 =
     let printStatus msg = 
         printAt 1 1 msg
 
+    let printAt x y msg =
+        ()
+
     let mutable startpos = 50, 23
     let mutable endpos = 50, 23
     let mutable location = 50, 23
@@ -26,7 +29,7 @@ let day15 =
     let mutable steps = 0
     inq.Post (int64 dir)
 
-    let maze = Array2D.init 100 100 (fun _ _ -> ' ')
+    let maze = Array2D.init 70 45 (fun _ _ -> ' ')
 
     comp.OutputReady.Add(fun output ->
           if output = -99999L then
@@ -100,11 +103,17 @@ let day15 =
                                  Direction.End
                   | _ -> failwith "invalid user"
 
-              printAt 0 3 ("Steps:  " +  steps.ToString())
-              printAt (fst endpos) (snd endpos) "F"
-              printAt (fst startpos) (snd startpos) "S"
+            //   printAt 0 3 ("Steps:  " +  steps.ToString())
+            //   printAt (fst endpos) (snd endpos) "F"
+            //   printAt (fst startpos) (snd startpos) "S"
 
-              printAt (fst location) (snd location) "D"
+            //   printAt (fst location) (snd location) "D"
+
+              Array2D.set maze (fst endpos) (snd endpos) 'F'
+              Array2D.set maze  (fst startpos) (snd startpos) 'S'
+             // Array2D.set maze (fst location) (snd location) "D"
+
+
               // System.Console.ReadKey() 
               //if dir <> Direction.End then
               inq.Post (int64 dir)
