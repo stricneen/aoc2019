@@ -5,10 +5,41 @@ open IntCode2
 
 type Direction = North = 1L | East = 4L | South = 2L | West = 3L | End = 4L
 
+type Location = { x:int; y:int; pos:char; dist:int }
+
 let day15 = 
     print "Advent of code - Day 15 - Oxygen System"
 
     let prog = readCSV "./data/day15.txt" 
+
+    let coordsOf ary chr =
+        let rec loop (a: char[,]) c =
+            if c > Array2D.length1 ary - 1 then
+                -1,-1
+            else
+                let row = a.[c, *]
+                let f = row |> Array.tryFindIndex (fun x -> x = chr)
+                match f with 
+                | None -> loop a (c + 1) 
+                | Some x -> x,c
+        loop ary 0
+
+    let getSurroundings (map:char[,]) locs =
+        let x = locs
+                |> List.fold(fun acc loc -> 
+                    let n = { x=loc.x; y=(loc.y)-1; pos=map.[loc.y-1, loc.x]; dist= loc.dist+1; }
+                    let e = { x=loc.x+1; y=loc.y; pos=map.[loc.y, loc.x+1]; dist= loc.dist+1; }
+                    let s = { x=loc.x; y=loc.y+1; pos=map.[loc.y+1, loc.x]; dist= loc.dist+1; }
+                    let w = { x=loc.x-1; y=loc.y; pos=map.[loc.y, loc.x-1]; dist= loc.dist+1; }
+                    [n; e; s ;w] @ acc
+                ) []
+                |> List.where(fun x -> x.pos='.' || x.pos='@' || System.Char.IsLower x.pos || System.Char.IsUpper x.pos)
+       // printf "acc: %A\n" x
+        //System.Console.ReadKey() x
+        x
+
+    let flood maze =
+        ()
 
     let comp = IntCode2("maze")
     let inq = comp.Initialise prog
@@ -119,6 +150,7 @@ let day15 =
               inq.Post (int64 dir)
 
               if steps = 2000 then  
+                flood maze
                 printmap maze
 
          )
