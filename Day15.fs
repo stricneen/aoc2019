@@ -33,20 +33,31 @@ let day15 =
                     let w = { x=loc.x-1; y=loc.y; pos=map.[loc.y, loc.x-1]; dist= loc.dist+1; }
                     [n; e; s ;w] @ acc
                 ) []
-                |> List.where(fun x -> x.pos='.' || x.pos='@' || System.Char.IsLower x.pos || System.Char.IsUpper x.pos)
+                |> List.where(fun x -> x.pos=' ' )
        // printf "acc: %A\n" x
         //System.Console.ReadKey() x
         x
 
     let flood maze =
-        ()
+        let xx = coordsOf maze 'O'
+        printf "%A\n" xx
+
+        let rec step locs = 
+            let ss = getSurroundings maze locs
+            ss |> List.iter(fun x -> Array2D.set maze x.x x.y 'o')
+            printmap maze
+            step ss
+            ()
+
+        
+        step  [ { x=(fst xx); y=(snd xx); pos='x'; dist = 0} ] 
 
     let comp = IntCode2("maze")
     let inq = comp.Initialise prog
     let mutable finished = false
 
     let printStatus msg = 
-        printAt 1 1 msg
+        () // printAt 1 1 msg
 
     let printAt x y msg =
         ()
@@ -62,6 +73,8 @@ let day15 =
 
     let maze = Array2D.init 70 45 (fun _ _ -> ' ')
 
+   
+
     comp.OutputReady.Add(fun output ->
           if output = -99999L then
               finished <- true
@@ -70,19 +83,19 @@ let day15 =
               dir <-
                   match output, location with
                   | 0L, (x,y) when dir =  Direction.North -> printStatus "Can't go N - trying E"
-                                                             printAt x (y-1) wall
+                                                             printAt (x-29) (y-1) wall
                                                              Array2D.set maze x (y-1) '#' 
                                                              Direction.West
                   | 0L, (x,y) when dir =  Direction.East -> printStatus "Can't go E - trying S"
-                                                            printAt (x+1) y wall
+                                                            printAt (x+30) y wall
                                                             Array2D.set maze (x+1) y '#' 
                                                             Direction.North
                   | 0L, (x,y) when dir =  Direction.South -> printStatus "Can't go S - trying W"
-                                                             printAt x (y+1) wall
+                                                             printAt (x-29) (y+1) wall
                                                              Array2D.set maze x (y+1) '#' 
                                                              Direction.East
                   | 0L, (x,y) when dir =  Direction.West -> printStatus "Can't go W - trying N"
-                                                            printAt (x-1) y wall
+                                                            printAt (x-30) y wall
                                                             Array2D.set maze (x-1) y '#' 
                                                             Direction.South
                   | 1L, (x,y) when dir =  Direction.North -> printStatus ("Going N                 " +  steps.ToString())
@@ -140,7 +153,7 @@ let day15 =
 
             //   printAt (fst location) (snd location) "D"
 
-              Array2D.set maze (fst endpos) (snd endpos) 'F'
+              Array2D.set maze (fst endpos) (snd endpos) 'O'
               Array2D.set maze  (fst startpos) (snd startpos) 'S'
              // Array2D.set maze (fst location) (snd location) "D"
 
