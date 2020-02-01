@@ -40,17 +40,23 @@ let day15 =
 
     let flood maze =
         let xx = coordsOf maze 'O'
-        printf "%A\n" xx
+       
 
         let rec step locs = 
+            printf "%A\n" locs
             let ss = getSurroundings maze locs
-            ss |> List.iter(fun x -> Array2D.set maze x.x x.y 'o')
+            ss |> List.iter(fun x -> Array2D.set maze x.y x.x 'o')
             printmap maze
-            step ss
+            printn (ss |> List.maxBy(fun x -> x.dist)).dist
+           // System.Console.ReadKey()
+            if (List.length ss) = 0 then
+                printn (ss |> List.maxBy(fun x -> x.dist)).dist
+            else
+                step ss
             ()
 
         
-        step  [ { x=(fst xx); y=(snd xx); pos='x'; dist = 0} ] 
+        step  [ { x=(fst xx); y=(snd xx); pos='x'; dist = 0} ]
 
     let comp = IntCode2("maze")
     let inq = comp.Initialise prog
@@ -154,7 +160,7 @@ let day15 =
             //   printAt (fst location) (snd location) "D"
 
               Array2D.set maze (fst endpos) (snd endpos) 'O'
-              Array2D.set maze  (fst startpos) (snd startpos) 'S'
+             // Array2D.set maze  (fst startpos) (snd startpos) 'S'
              // Array2D.set maze (fst location) (snd location) "D"
 
 
@@ -164,7 +170,7 @@ let day15 =
 
               if steps = 2000 then  
                 flood maze
-                printmap maze
+                finished <- true //printmap maze
 
          )
         
