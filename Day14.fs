@@ -2,19 +2,22 @@ module Day14
 
 open Utils
 
-type Chemical = { Name: string; Amount: int }
+type Chemical = { Name: string; Amount: int64 }
 type Reaction = { In: Chemical list; Out: Chemical }
 
 let day14 = 
     print "Advent of code - Day 14 - Space Stoichiometry"
 
-    let reactionsStr = readLines "./data/day14a.txt" |> Array.toList
+    let reactionsStr = readLines "./data/day14.txt" |> Array.toList
     let fuel = "FUEL"
     //let ore = "ORE"
+   
+    let fx fr x = 
+        { In = fr.In |> List.map(fun fr -> { fr with Amount = fr.Amount * x}); Out = { fr.Out with Amount = fr.Out.Amount * x }}
 
     let parseChemical (input:string) =
         { Name = input.Substring(input.IndexOf(" ")).Trim(); 
-          Amount = int(input.Substring(0, input.IndexOf(" ")).Trim()) }
+          Amount = int64(input.Substring(0, input.IndexOf(" ")).Trim()) }
 
     let parseReaction (reaction:string) =
         let inputs = reaction.Substring(0, reaction.IndexOf("=>")).Split(",")
@@ -42,11 +45,11 @@ let day14 =
         |> List.map (fun x -> { x with Amount = x.Amount * factor })
 
     let resolve creator chem =
-        let factor = int(ceil((chem.Amount |> double) / (creator.Out.Amount |> double)))
+        let factor = int64(ceil((chem.Amount |> double) / (creator.Out.Amount |> double)))
         scale creator.In factor
 
     let expandReaction fuel reaction = 
-        printf "t : %A\n\n" reaction
+        // printf "t : %A\n\n" reaction
         let toBeReplaced = fuel.In |> List.find(fun x -> x.Name = reaction.Out.Name)
         let updated = resolve reaction toBeReplaced
         //printf "t : %A\n\n" toBeReplaced
@@ -78,9 +81,9 @@ let day14 =
                 let next = sort |> List.find(fun x -> not(listContains (names x.In) outputs))
                 let remaining = sort |> List.where(fun x -> x.Out.Name <> next.Out.Name)
                 topSort remaining ([next] @ sorted)
-
         topSort lst []
         
+  
 
     let rec loop fuel (lst: list<Reaction>) =
        match lst with 
@@ -91,42 +94,95 @@ let day14 =
          
     let sorted = topological reactions
 
-
-    let fuelR = reactions |> List.find(fun x -> x.Out.Name = fuel)
+    let fuelReaction = reactions |> List.find(fun x -> x.Out.Name = fuel)
     let rest = sorted |> List.where(fun x -> x.Out.Name <> fuel)
     
-    let r = loop fuelR rest // List of reactions
+    let howMuchOre forThisFuel =
+        let fuelx = fx fuelReaction forThisFuel
+        let r = loop fuelx rest
+        r
 
+    //let needFuel x = 
+    //let fuelx = fx fuelReaction 100000
+    //printf "%A\n" fuelx
+    
+    // [1..100]
+    // |> List.iter(fun x-> 
+    //     let r = howMuchOre x
+    //     printf "%A : %A\n" x r
+    // )
+    
+   // let r = howMuchOre 1 // List of reactions
 
-    printf "Done : %A\n" r
+//    printf "Done : %A\n" r
+    
 
+    //  25590 26624
+    //  25590 
 
+    // The 13312 ORE-per-FUEL example could produce 82892753 FUEL.
+    // The 180697 ORE-per-FUEL example could produce 5586022 FUEL.
+    // The 2210736 ORE-per-FUEL example could produce 460664 FUEL.
+
+    let billion = 1000000000L
     let trillion = 1000000000000L
 
-    printf "%A\n" (trillion / 13312L)
+    let getBounds = 
+        let rec l f =
+            let ore = howMuchOre f
+            if (ore.In |> List.head).Amount > trillion then
+                (f/2L),f
+            else
+                l (f*2L)
+        l 1L
 
-   // let top = 
+    let calc = 
+        let rec x (l,u) =
+            let h = l + ((u-l)/2L)
+            let ore = howMuchOre h
+            if l = h then 
+                (l,u)
+            else
+                // printf "t : %A :  %A\n" (l,h) (h,u)
+                if (ore.In |> List.head).Amount > trillion then
+                    x (l,h)
+                else
+                    x (h,u)
 
-   // The 13312 ORE-per-FUEL example could produce 82892753 FUEL.
+        x getBounds
 
-    // let s = 13312L
-    // let mutable x = 0L
-    // let mutable fuel = 0L
-
-    // while x < trillion do
-    //     x <- x + s
-    //     fuel <- fuel + 1L
-
-    // printf "f : %A\n" fuel
-
-       
+    let t = calc
+    printf "Total : %A\n" (fst t)
 
 
 
+    // let l = howMuchOre 1000000L
+    // let u = howMuchOre trillion
+
+
+    // printf "%A\n" l
+    // printf "%A\n" u
+    // let getBounds =
+    //     3,40
+
+    // let onetrillion =
+    //     let rec l c =
+    //         let r = howMuchOre c
+    //         //printf "%A\n" r
+    //         if r.Out.Amount > trillion then    
+    //             print "Done"
+    //         else
+    //             l (c+1L)
+    //         ()
+    //     ()
+       // l 0L
+
+        
+  
+    
+
+// ans : 82892753
+// div : 75120192
 
 
     0
-
-
-    //82892753
-    //75120192
