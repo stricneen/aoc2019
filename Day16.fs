@@ -28,27 +28,16 @@ let day16 =
         |> Seq.map (fun x -> x.[x.Length - 1])
         |> String.Concat
   
-
-    // let input = "69317163492948606335995924319873"
-
+    print "Part 1"
+    let input = "12345678"
+    let input = "80871224585914546619083218645595"
+    let input = "19617804207202209144916044189917"
+    let input = "69317163492948606335995924319873"
     let input =  readLines "./data/day16.txt" |> Array.head
-    
-    
-   //iterate generate input 100
-
- 
+      
+    let o = iterate generate input 99
+    printf "%A\n" (o.Substring(0,8))
 
     print "Part 2"
-
-   // let big = input |> String.replicate 100
-
-   // iterate generate big 100
-
-    // iterate (fun x ->   printf "%A\n" x
-    //                     generate x) input 100
-
-
-
-
 
     0

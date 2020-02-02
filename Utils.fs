@@ -81,12 +81,8 @@ let fst4 t =
 
 let rec iterate func input count =
     let output = func input
-
-    //if count % 10 = 1 then  
-    //print output
-
     match count with
-    | 0 -> ()
+    | 0 -> output
     | _ -> iterate func output (count - 1)
     
 let printAt x y (message: string) = 
