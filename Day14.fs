@@ -102,29 +102,10 @@ let day14 =
         let r = loop fuelx rest
         r
 
-    //let needFuel x = 
-    //let fuelx = fx fuelReaction 100000
-    //printf "%A\n" fuelx
-    
-    // [1..100]
-    // |> List.iter(fun x-> 
-    //     let r = howMuchOre x
-    //     printf "%A : %A\n" x r
-    // )
-    
-   // let r = howMuchOre 1 // List of reactions
-
-//    printf "Done : %A\n" r
-    
-
-    //  25590 26624
-    //  25590 
-
     // The 13312 ORE-per-FUEL example could produce 82892753 FUEL.
     // The 180697 ORE-per-FUEL example could produce 5586022 FUEL.
     // The 2210736 ORE-per-FUEL example could produce 460664 FUEL.
 
-    let billion = 1000000000L
     let trillion = 1000000000000L
 
     let getBounds = 
@@ -148,7 +129,6 @@ let day14 =
                     x (l,h)
                 else
                     x (h,u)
-
         x getBounds
 
     let t = calc
