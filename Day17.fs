@@ -90,8 +90,8 @@ let day17 =
     // Function C:   L,6,L,2
     // (ASCII input: 76, 44, 54, 44, 76, 44, 50, 10)
     Console.ReadKey() |> ignore
-    "A,A" |> toIn
-    "R,6,L,10,R,9,R,8,R,1" |> toIn
+    "A" |> toIn
+    "R,6,L,10,R,8,R,8,R,9" |> toIn
     "R" |> toIn
     "R" |> toIn
     "n" |> toIn
