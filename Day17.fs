@@ -89,15 +89,21 @@ let day17 =
     // (ASCII input: 82, 44, 52, 44, 82, 44, 52, 44, 82, 44, 56, 10)
     // Function C:   L,6,L,2
     // (ASCII input: 76, 44, 54, 44, 76, 44, 50, 10)
+
     Console.ReadKey() |> ignore
-    "A" |> toIn
-    "R,6,L,10,R,8,R,8,R,9" |> toIn
-    "R" |> toIn
-    "R" |> toIn
+    "A,B,C" |> toIn
+    "R,6,L,10,R,8,R,8,R" |> toIn
+//   R,6,L,10,R,8,R,8,R
+    "12,L,8,L,10,R,6,L" |> toIn
+    "10,R,8,R,8,R,12,L" |> toIn   //,10,R,6,L,10,R,12 
+   // "3,L,8,L,10,R,10,R,6" |> toIn
+ //   "R" |> toIn
     "n" |> toIn
 
+//R6 L10 R8 R8 R12 L8 L10 R6 L10 R8 R8 R12 L10 R6 L10 R12
 
-   
+
+//  R,6,L,10,R,8,R,8,R,12,L,8,L,10,R,6,L,10,R,8,R,8,R,12,L
     
     while not finished do
         async {
