@@ -37,6 +37,10 @@ let day17 =
             print buffer
             //print "\n"
             buffer <- ""
+        else if output > 255L then
+            pl output
+            //print "\n"
+            buffer <- ""
         else
             buffer <- buffer + (char(output |> int)).ToString()
         )
@@ -80,31 +84,18 @@ let day17 =
         printf "%A\n" 10L
         inq.Post 10L // newline
 
-    
-    // Main routine: A,B,C,B,A,C
-    // (ASCII input: 65, 44, 66, 44, 67, 44, 66, 44, 65, 44, 67, 10)
-    // Function A:   R,8,R,8
-    // (ASCII input: 82, 44, 56, 44, 82, 44, 56, 10)
-    // Function B:   R,4,R,4,R,8
-    // (ASCII input: 82, 44, 52, 44, 82, 44, 52, 44, 82, 44, 56, 10)
-    // Function C:   L,6,L,2
-    // (ASCII input: 76, 44, 54, 44, 76, 44, 50, 10)
-
     Console.ReadKey() |> ignore
-    "A,B,C" |> toIn
-    "R,6,L,10,R,8,R,8,R" |> toIn
-//   R,6,L,10,R,8,R,8,R
-    "12,L,8,L,10,R,6,L" |> toIn
-    "10,R,8,R,8,R,12,L" |> toIn   //,10,R,6,L,10,R,12 
-   // "3,L,8,L,10,R,10,R,6" |> toIn
- //   "R" |> toIn
+    "A,B,A,C,B,C,A,B,A,C" |> toIn
+    "R,6,L,10,R,8,R,8" |> toIn
+    "R,12,L,8,L,10" |> toIn
+    "R,12,L,10,R,6,L,10" |> toIn   
     "n" |> toIn
 
-//R6 L10 R8 R8 R12 L8 L10 R6 L10 R8 R8 R12 L10 R6 L10 R12
+// R6 L10 R8 R8 R12 L8 L10 R6 L10 R8 R8 R12 L10 R6 L10 R12 L8 L10 R12 L10 R6 L10 R6 L10 R8 R8 R12 L8 L10 R6
+// R6 L10 R8 R8            R6 L10 R8 R8                                          R6 L10 R8 R8   
+//              R12 L8 L10                            R12 L8 L10                              R12 L8 L10
+//                                     R12 L10 R6 L10             R12 L10 R6 L10
 
-
-//  R,6,L,10,R,8,R,8,R,12,L,8,L,10,R,6,L,10,R,8,R,8,R,12,L
-    
     while not finished do
         async {
             do! Async.Sleep(100) } |> ignore

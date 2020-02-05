@@ -13,6 +13,8 @@ let print text = printf  "%s\n" text
 
 let printn text = printf  "%i\n" text
 
+let pl lg = printf "%A\n" lg
+
 let rec printmap lst = 
     printf "\t%A\n" "0123456789012345678901234"
     for x in 0 .. Array2D.length1 lst - 1 do
