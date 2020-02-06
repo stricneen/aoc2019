@@ -25,8 +25,8 @@ let day19 =
                     counter <- counter + output
                  //   print ("Counter : " + counter.ToString())
                 else 
-                   // finished <- true
-                    //printf "Count : %A\n" counter
+                    finished <- true
+                    printf "Count : %A\n" counter
                     //System.Console.ReadKey() |> ignore
                 ()
             )    
