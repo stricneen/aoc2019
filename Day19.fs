@@ -8,33 +8,29 @@ let day19 =
 
     let mutable counter = 0L
     let mutable finished = false
+    let prog = readCSV "./data/day19.txt" 
     
+    let isInField x y =
+        let comp = IntCode3("")
+        let inq = comp.Initialise (prog |> Array.copy)
+        let aut = new System.Threading.AutoResetEvent(false);
+        inq.Post x
+        inq.Post y
+        let mutable out = 0L
+        comp.OutputReady.Add(fun output ->
+            if output <> -99999L then 
+                aut.Set() |> ignore
+                out <- output
+        )    
+        aut.WaitOne() |> ignore
+        (x,y), out
+
+        
+
     for x in 0L .. 49L do
         for y in 0L .. 49L do
-            let comp = IntCode3("")
-            let prog = readCSV "./data/day19.txt" 
-            let inq = comp.Initialise prog
-
-            comp.OutputReady.Add(fun output ->
-
-               // let output, tag = opt
-                if output <> -99999L then 
-                 //   printAt x y (output.ToString())
-                    let x,y = comp.GetTag
-                    printAt (int y) (int x) (if output = 0L then "." else "#")
-                    counter <- counter + output
-                 //   print ("Counter : " + counter.ToString())
-                else 
-                    finished <- true
-                    printf "Count : %A\n" counter
-                    //System.Console.ReadKey() |> ignore
-                ()
-            )    
-
-            comp.SetTag (x,y)
-            inq.Post x
-            inq.Post y
-            
+            let (x,y), drone = isInField x y
+            printAt (int y) (int x) (if drone = 0L then "." else "#")           
 
 
     while not finished do
