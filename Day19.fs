@@ -26,11 +26,15 @@ let day19 =
         (x,y), out
 
         
-
+    let mutable count = 0
     for x in 0L .. 49L do
         for y in 0L .. 49L do
             let (x,y), drone = isInField x y
-            printAt (int y) (int x) (if drone = 0L then "." else "#")           
+            if drone = 1L then
+                count <- count + 1
+            //printAt (int y) (int x) (if drone = 0L then "." else "#")     
+    print "Part 1"
+    pl count      
 
 
     while not finished do
