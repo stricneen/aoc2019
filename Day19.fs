@@ -25,17 +25,42 @@ let day19 =
         aut.WaitOne() |> ignore
         (x,y), out
 
-        
-    let mutable count = 0
-    for x in 0L .. 49L do
-        for y in 0L .. 49L do
-            let (x,y), drone = isInField x y
-            if drone = 1L then
-                count <- count + 1
-            //printAt (int y) (int x) (if drone = 0L then "." else "#")     
-    print "Part 1"
-    pl count      
+    let inField x y =
+        let (x', y'), o = isInField x y
+        o = 1L
 
+
+    // let mutable count = 0
+    // for y in 0L .. 49L do
+    //     for x in 0L .. 49L do
+    //         let (x,y), drone = isInField x y
+    //         if drone = 1L then
+    //             count <- count + 1
+    //         //printAt (int x) (int y) (if drone = 0L then "." else "#")     
+    // print "Part 1"
+    // pl count      
+
+    let hasOppositeCorner x y s =
+        inField (x-s) (y+s)
+        
+    let start x y s =
+
+        let rec loop x y =
+            if not (inField x y) then
+                //printf "Not in field %A %A\n" x y
+                loop x (y+1L)
+            else
+                if hasOppositeCorner x y s then
+                    printf "Found %A @ %A,%A\n" s (x-s) y
+                    s
+                else 
+                    loop (x+1L) y
+                    
+            
+
+        loop x y
+
+    start 10L 10L 100L
 
     while not finished do
         async { do! Async.Sleep(100) } |> ignore
