@@ -3,6 +3,9 @@ module Day19
 open Utils
 open IntCode3
 
+// 9761057 too hight
+// 8771057
+
 let day19 = 
     print "Advent of code - Day 19 - Tractor Beam"
 
@@ -30,39 +33,43 @@ let day19 =
         o = 1L
 
 
-    let mutable count = 0
-    for y in 0L .. 49L do
-        for x in 0L .. 49L do
-            let (x,y), drone = isInField x y
-            if drone = 1L then
-                count <- count + 1
-            printAt (int x) (int y) (if drone = 0L then "." else "#")     
-    print "Part 1"
-    pl count      
+    // let mutable count = 0
+    // for y in 0L .. 49L do
+    //     for x in 0L .. 49L do
+    //         let (x,y), drone = isInField x y
+    //         if drone = 1L then
+    //             count <- count + 1
+    //         printAt (int x) (int y) (if drone = 0L then "." else "#")     
+    // print "Part 1"
+    // pl count      
 
     let hasOppositeCorner x y s =
         let delta = s - 1L
         inField (x-delta) (y+delta)
         
-    let start x y s =
-
-        let rec loop x y =
+    let start x y =
+       
+        let rec loop x y s =
             if not (inField x y) then
                // printf "Not in field %A %A\n" x y
-                loop x (y+1L)
+                loop x (y+1L) s
             else
                 if hasOppositeCorner x y s then
-                    printf "Found %A @ %A,%A\n" s x y
-                    s
+                    printf "Found %A @ %A,%A\n" s (x-s+1L) y
+                    loop x y (s+1L)
                 else 
-                    loop (x+1L) y
-        loop x y
+                    loop (x+1L) y s
+        loop 10L 10L 1L
+    
+    start 10L 10L 
 
-    start 10L 10L 1L |> ignore
-    start 10L 10L 2L |> ignore
-    start 10L 10L 3L |> ignore
-    start 10L 10L 4L |> ignore
-    start 10L 10L 5L |> ignore
+    // let loop100 =
+    //     let rec inner c =
+    //         start 10L 10L c |> ignore
+    //         inner (c+1L)
+    //     inner 1L
+
+    // loop100
 
     while not finished do
         async { do! Async.Sleep(100) } |> ignore
