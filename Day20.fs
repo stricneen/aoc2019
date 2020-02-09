@@ -4,7 +4,7 @@ open System
 open Utils
 open IntCode2
 
-type Location = { x:int; y:int; pos:string; dist:int; visited: bool  }
+type Location = { x:int; y:int; pos:string; direction:int; dist:int; visited: bool  }
 
 type Node = { name:string; paths:list<int * string>; visited: bool; }
 
@@ -19,9 +19,9 @@ let day20 =
         let a2d = array2D input
         a2d
     
-    let donut = read2DArray "./data/day20.txt"
+    let donut = read2DArray "./data/day20a.txt"
     
-    printmap donut
+    // printmap donut
 
     let getNodes = // Get list of nodes from the input
 
@@ -41,7 +41,7 @@ let day20 =
                 let row = getPairs rowC
                 let rowCrds = row |> Array.map(fun x -> let offset = if x.[0] = '.' then 0 else 2
                                                         let ind = (rowC |> String).IndexOf x + offset
-                                                        [{ x=ind; y=c; pos=removeDots x; dist=0; visited=false}])
+                                                        [{ x=ind; y=c; direction=0; pos=removeDots x; dist=0; visited=false}])
                 rows (c+1) (Array.append res rowCrds)
 
         let rec cols c res =
@@ -52,22 +52,44 @@ let day20 =
                 let col = getPairs colC
                 let colCrds = col |> Array.map(fun x -> let offset = if x.[0] = '.' then 0 else 2
                                                         let ind = (colC |> String).IndexOf x + offset
-                                                        [{ x=c; y=ind; pos=removeDots x; dist=0; visited=false}])
+                                                        [{ x=c; y=ind; direction=0; pos=removeDots x; dist=0; visited=false}])
                 cols (c+1) (Array.append res colCrds)
 
-        (Array.append (rows 0 [||]) (cols 0 [||])) |> Array.toList
+        let r = rows 0 [||]
+               
+        let c = cols 0 [||]
+               
+        let outerX1 = ((r |> Array.minBy(fun x' -> (x' |> List.head).x)) |> List.head).x
+        let outerX2 = ((r |> Array.maxBy(fun x' -> (x' |> List.head).x)) |> List.head).x
+        let outerY1 = ((c |> Array.minBy(fun x' -> (x' |> List.head).y)) |> List.head).y
+        let outerY2 = ((c |> Array.maxBy(fun x' -> (x' |> List.head).y)) |> List.head).y
+
+        let r' = r  |> Array.map(fun x -> let x' = (x |> List.head) 
+                                          let d = if x'.x = outerX1 || x'.x = outerX2 then -1 else 1
+                                          [ { x' with direction = d } ] )
+                        
+        let c' = c  |> Array.map(fun x -> let x' = (x |> List.head) 
+                                          let d = if x'.y = outerY1 || x'.y = outerY2 then -1 else 1
+                                          [ { x' with direction = d } ] )
+
+        let nodes = Array.append r' c' |> Array.toList
+        nodes 
+
     
     let coords = getNodes 
-    //printf "NODES : %A\n" nodes
+                 
+    printf "NODES : %A\n" coords
+
+
 
     let traverse nodes = // Get the vertices from each node 
         let getSurroundings (map:char[,]) locs =
             let x = locs
                     |> List.fold(fun acc loc -> 
-                        let n = { x=loc.x; y=(loc.y)-1; pos=map.[loc.y-1, loc.x].ToString(); dist= loc.dist+1; visited=false }
-                        let e = { x=loc.x+1; y=loc.y; pos=map.[loc.y, loc.x+1].ToString(); dist= loc.dist+1; visited=false }
-                        let s = { x=loc.x; y=loc.y+1; pos=map.[loc.y+1, loc.x].ToString(); dist= loc.dist+1; visited=false }
-                        let w = { x=loc.x-1; y=loc.y; pos=map.[loc.y, loc.x-1].ToString(); dist= loc.dist+1; visited=false }
+                        let n = { x=loc.x; y=(loc.y)-1;direction=0;  pos=map.[loc.y-1, loc.x].ToString(); dist= loc.dist+1; visited=false }
+                        let e = { x=loc.x+1; y=loc.y; direction=0; pos=map.[loc.y, loc.x+1].ToString(); dist= loc.dist+1; visited=false }
+                        let s = { x=loc.x; y=loc.y+1; direction=0; pos=map.[loc.y+1, loc.x].ToString(); dist= loc.dist+1; visited=false }
+                        let w = { x=loc.x-1; y=loc.y; direction=0; pos=map.[loc.y, loc.x-1].ToString(); dist= loc.dist+1; visited=false }
                         [n; e; s ;w] @ acc
                     ) []
                     |> List.where(fun x -> x.pos=".")
@@ -106,12 +128,6 @@ let day20 =
 
     let graph = traverse coords
 
-    //let findNode pos = graph |> List.find(fun (x,_) -> x.pos = pos)
-
-
-
-
-
     //printf "GRAPH  : %A\n" start
 
     let dijkstra graph = 
@@ -136,22 +152,15 @@ let day20 =
                 | _ -> x'
             
             )
-           
-
-            printf "STEP : %A\n\n\n" ng
+            //printf "STEP : %A\n\n\n" ng
 
             let remaining = ng |> List.where(fun (x,_) -> not x.visited)
 
             if List.isEmpty remaining then
                 g
-            else
-
-            // Get next node
+            else // Get next node
                 let next = remaining
                               |> List.minBy(fun (x,_) -> x.dist)
-                printf "NEXT : %A\n\n\n" next
-                print "****************************************************************\n\n"
-                //Console.ReadKey() |> ignore
                 step ng next
 
 
@@ -169,6 +178,7 @@ let day20 =
  
    
     let shortest = dijkstra graph
-    printf "SHORTEST : %A\n" (shortest |> List.find(fun (x,_) -> x.pos = "ZZ" ))
+                    |> List.find(fun (x,_) -> x.pos = "ZZ" )
+    printf "SHORTEST : %A\n" (fst shortest).dist
 
     0
