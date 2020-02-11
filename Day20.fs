@@ -6,6 +6,8 @@ open IntCode2
 
 type Location = { x:int; y:int; pos:string; direction:int; dist:int; visited: bool  }
 
+type Bot = { location: string; depth: int; travelled: int }
+
 type Node = { name:string; paths:list<int * string>; visited: bool; }
 
 
@@ -78,9 +80,7 @@ let day20 =
     
     let coords = getNodes 
                  
-    printf "NODES : %A\n" coords
-
-
+    //printf "NODES : %A\n" coords
 
     let traverse nodes = // Get the vertices from each node 
         let getSurroundings (map:char[,]) locs =
@@ -123,8 +123,21 @@ let day20 =
                     )
                     |> List.where(fun x -> x.pos <> ".")
                 )
-        y
-        |> List.map(fun (h::t) -> h, t)
+       // printf "%A\n" y
+
+        let y' = y
+                 |> List.map(fun (h::t) -> h, t)
+
+        let y'' = y'
+                  |> List.map(fun (h,t) -> h, (t |> List.map(fun x -> 
+                        let mtch = y' |> List.find(fun m -> (fst m).x = x.x && (fst m).y = x.y)
+                        { x with direction = (fst mtch).direction }
+                    // let d = mtch.direction
+                    //  )
+                 )))
+        
+        y''
+        
 
     let graph = traverse coords
 
@@ -174,11 +187,96 @@ let day20 =
 
         let aa = graph |> List.find(fun (x,_) -> x.pos = "AA" )
         step start aa
-
- 
    
-    let shortest = dijkstra graph
-                    |> List.find(fun (x,_) -> x.pos = "ZZ" )
+    // let shortest = dijkstra graph
+    //                 |> List.find(fun (x,_) -> x.pos = "ZZ" )
+    // printf "Part 1 : %A\n" (fst shortest).dist
+
+    let dijkstra3D graph = 
+
+
+        let rec step graph location = 
+    
+            printf "Graph : %A\n\n\nLocation : %A\n" graph location 
+
+
+
+
+
+            // let distanceTo s t =
+            //     let can = (snd s) |> List.tryFind(fun x -> x.pos = t.pos)
+            //     match can with
+            //     | Some x  when (fst s).pos = "AA" -> x.dist + (fst s).dist
+            //     | Some x -> x.dist + (fst s).dist + 1
+            //     | None -> 0
+                
+            // let eq x n = x.pos = (fst n).pos && x.x = (fst n).x && x.y = (fst n).y
+
+            // let ng = graph |> List.map(fun x' ->
+            //     let v = graph |> List.find(fun (x,_) -> eq x location)
+            //     let d =  distanceTo v (fst x')
+            //     match x' with
+            //     | (x,y) when  eq x location -> ({ x with visited = true }, y)  // current node
+            //     | (x,y) when d > 0 && not x.visited -> ({ x with dist=if d < x.dist then d else x.dist } , y)
+            //     | _ -> x'
+            // )
+            // //printf "STEP : %A\n\n\n" ng
+
+            // let remaining = ng |> List.where(fun (x,_) -> not x.visited)
+
+            // if List.isEmpty remaining then
+            //     graph
+            // else // Get next node
+            //     let next = remaining
+            //                   |> List.minBy(fun (x,_) -> x.dist)
+            //     step ng next
+            graph
+
+
+        // Set distances to something big
+        let start = graph |> List.map(fun x -> 
+            match x with
+            | (x,y) when x.pos="AA" -> x,y
+            | (x,y) -> ({ x with dist=1000000 } , y)
+        )
+
+        let aa = graph |> List.find(fun (x,_) -> x.pos = "AA" )
+        step start aa
+
+
+
+
+
+
+    let shortest = dijkstra3D graph |> List.find(fun (x,_) -> x.pos = "ZZ" )
     printf "SHORTEST : %A\n" (fst shortest).dist
 
+
     0
+
+// Bot
+//  travelled
+//  depth
+//  at
+
+
+
+//  Location : ({
+//    pos = "AA"
+//    direction = -1
+//    dist = 0
+//  },
+//  [{ 
+//     pos = "BC"
+//     direction = 1
+//     dist = 4
+//     }; { 
+//                          pos = "ZZ"
+//                          direction = -1
+//                          dist = 26
+//               }; { 
+//                                               pos = "FG"
+//                                               direction = 1
+//                                               dist = 30
+//                                               }])
+// SHORTEST : 1000000
