@@ -1,0 +1,41 @@
+<html>
+
+<head>
+  <link href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css" rel="stylesheet">
+  <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <style>
+       .container {
+          width: 500px;
+      } 
+  </style>
+</head>
+<body>
+
+ <div style="height:200px"></div>
+ <div class="container">
+ <div data-mdc-auto-init="MDCSlider" class="mdc-slider mdc-slider--discrete loc" tabindex="0" role="slider"
+     aria-valuemin="40" aria-valuemax="170" aria-valuenow="0"
+     aria-label="Select Value">
+  <div class="mdc-slider__track-container">
+    <div class="mdc-slider__track"></div>
+  </div>
+  <div class="mdc-slider__thumb-container">
+    <div class="mdc-slider__pin">
+      <span class="mdc-slider__pin-value-marker"></span>
+    </div>
+    <svg class="mdc-slider__thumb" width="21" height="21">
+      <circle cx="10.5" cy="10.5" r="7.875"></circle>
+    </svg>
+    <div class="mdc-slider__focus-ring"></div>
+  </div>
+</div>
+</div>
+<script>
+
+    mdc.autoInit();
+</script>
+
+</body>
+
+</html>
