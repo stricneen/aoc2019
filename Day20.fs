@@ -192,64 +192,32 @@ let day20 =
     //                 |> List.find(fun (x,_) -> x.pos = "ZZ" )
     // printf "Part 1 : %A\n" (fst shortest).dist
 
-    let dijkstra3D graph = 
+    let dijkstra3D (graph:list<Location * list<Location>>) = 
 
 
-        let rec step graph location = 
-    
-            printf "Graph : %A\n\n\nLocation : %A\n" graph location 
+        let rec step bots = 
+            // printf "Graph : %A\n\n\nLocation : %A\n" graph bots 
+            printf "Bots : %A\n" bots 
+            Console.ReadKey()
+            let move = bots
+                       |> List.fold(fun a e -> 
+                            let paths = graph |> List.find(fun (x,_) -> x.pos = e.location)
+                            let moves = (snd paths)
+                                        |> List.map(fun x -> 
+                                            { location = x.pos; depth = 0; travelled = e.travelled + x.dist }
+                                        )
+                            a @ moves 
+                       ) []
+            
+            step move
 
 
+        let bot = [ { location = "AA"; depth = 0; travelled = 0; } ]
+        step bot
 
 
-
-            // let distanceTo s t =
-            //     let can = (snd s) |> List.tryFind(fun x -> x.pos = t.pos)
-            //     match can with
-            //     | Some x  when (fst s).pos = "AA" -> x.dist + (fst s).dist
-            //     | Some x -> x.dist + (fst s).dist + 1
-            //     | None -> 0
-                
-            // let eq x n = x.pos = (fst n).pos && x.x = (fst n).x && x.y = (fst n).y
-
-            // let ng = graph |> List.map(fun x' ->
-            //     let v = graph |> List.find(fun (x,_) -> eq x location)
-            //     let d =  distanceTo v (fst x')
-            //     match x' with
-            //     | (x,y) when  eq x location -> ({ x with visited = true }, y)  // current node
-            //     | (x,y) when d > 0 && not x.visited -> ({ x with dist=if d < x.dist then d else x.dist } , y)
-            //     | _ -> x'
-            // )
-            // //printf "STEP : %A\n\n\n" ng
-
-            // let remaining = ng |> List.where(fun (x,_) -> not x.visited)
-
-            // if List.isEmpty remaining then
-            //     graph
-            // else // Get next node
-            //     let next = remaining
-            //                   |> List.minBy(fun (x,_) -> x.dist)
-            //     step ng next
-            graph
-
-
-        // Set distances to something big
-        let start = graph |> List.map(fun x -> 
-            match x with
-            | (x,y) when x.pos="AA" -> x,y
-            | (x,y) -> ({ x with dist=1000000 } , y)
-        )
-
-        let aa = graph |> List.find(fun (x,_) -> x.pos = "AA" )
-        step start aa
-
-
-
-
-
-
-    let shortest = dijkstra3D graph |> List.find(fun (x,_) -> x.pos = "ZZ" )
-    printf "SHORTEST : %A\n" (fst shortest).dist
+    let shortest = dijkstra3D graph 
+    //printf "SHORTEST : %A\n" (fst shortest).dist
 
 
     0
