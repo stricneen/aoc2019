@@ -6,7 +6,7 @@ open IntCode2
 
 type Location = { x:int; y:int; pos:string; direction:int; dist:int; visited: bool  }
 
-type Bot = { location: string; depth: int; travelled: int }
+type Bot = { location: string; depth: int; travelled: int; direction: int }
 
 type Node = { name:string; paths:list<int * string>; visited: bool; }
 
@@ -194,30 +194,37 @@ let day20 =
 
     let dijkstra3D (graph:list<Location * list<Location>>) = 
 
+        //printf "Graph : %A\n\n\n" graph 
 
         let rec step bots = 
-            // printf "Graph : %A\n\n\nLocation : %A\n" graph bots 
             printf "Bots : %A\n" bots 
+            printf "%A\n" (List.length bots)
+            
             Console.ReadKey()
             let move = bots
                        |> List.fold(fun a e -> 
-                            let paths = graph |> List.find(fun (x,_) -> x.pos = e.location)
-                            let moves = (snd paths)
-                                        |> List.map(fun x -> 
-                                            { location = x.pos; depth = 0; travelled = e.travelled + x.dist }
-                                        )
-                            a @ moves 
+                            let paths = graph |> List.tryFind(fun (x,_) -> x.pos = e.location  && x.direction = e.direction * -1 )
+                            match paths with
+                            | Some x -> let moves = (snd x)
+                                                        |> List.map(fun x -> 
+                                                            { location = x.pos; depth = e.depth + x.direction; travelled = e.travelled + x.dist + 1; direction = x.direction }
+                                                        )
+                                        a @ moves 
+                            | None -> a
                        ) []
-            
-            step move
+
+            let exit = move |> List.tryFind(fun x -> x.location = "ZZ" && x.depth = 0 && x.direction = -1)
+            match exit with 
+            | Some x -> exit
+            | None -> step (move |> List.filter(fun x -> x.depth > 0))
 
 
-        let bot = [ { location = "AA"; depth = 0; travelled = 0; } ]
+        let bot = [ { location = "AA"; depth = 0; travelled = 0; direction = -1; } ]
         step bot
 
 
     let shortest = dijkstra3D graph 
-    //printf "SHORTEST : %A\n" (fst shortest).dist
+    printf "SHORTEST : %A\n" shortest.Value
 
 
     0
