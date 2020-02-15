@@ -83,7 +83,7 @@ let day18 =
                                 printmap x.map
         )
 
-    let prog = read2DArray "./data/day18a.txt"
+    let prog = read2DArray "./data/day18.txt"
     // printmap prog
 
     //let startState = { total=0; map=prog }
@@ -108,12 +108,10 @@ let day18 =
     let keys = getKeys prog
     let dists = distances prog keys
 
-    printf "%A\n" dists
+    //printf "%A\n" dists
     let _, keys = dists |> List.find(fun x-> fst x = '@')
 
-    //printf "%A\n" keys
-
-        // Get the distance between two keys
+    // Get the distance between two keys
     let keyToKey k1 k2 =
         let k1' = dists
                   |> List.find(fun (x, _) -> x = k1)   // 'char * Key list' 
