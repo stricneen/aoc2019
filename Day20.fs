@@ -124,8 +124,7 @@ let day20 =
                     )
                     |> List.where(fun x -> x.pos <> ".")
                 )
-       // printf "%A\n" y
-
+    
         let y' = y
                  |> List.map(fun (h::t) -> h, t)
 
@@ -133,8 +132,6 @@ let day20 =
                   |> List.map(fun (h,t) -> h, (t |> List.map(fun x -> 
                         let mtch = y' |> List.find(fun m -> (fst m).x = x.x && (fst m).y = x.y)
                         { x with direction =  (fst mtch).direction }
-                    // let d = mtch.direction
-                    //  )
                  )))
         
         y''
@@ -198,12 +195,17 @@ let day20 =
         // printf "Graph : %A\n\n\n" graph 
         let exit x = x.pos = "ZZZZ"
 
+        let fltr moves = 
+            moves
+            |> List.distinct 
+            |> List.filter(fun x -> x.depth >= 0)
+            |> List.groupBy(fun x -> x.location + x.depth.ToString() + x.direction.ToString()) 
+            |> List.map(fun (_,y) -> (y |> List.minBy(fun x -> x.travelled)))
+                   
+
         let rec step bots = 
-            let inter = bots |> List.where(fun x -> ["ZZ"; "XQ"; "FD"] |> List.contains x.location && x.depth < 3)
-            let exits = bots |> List.where(fun x -> x.location = "ZZ" && x.depth < 1)
-            let ord = bots |> List.sortBy(fun x -> x.depth)
-            
-            printf "%A Bots : %A\n" (List.length bots) ()
+           
+            printf " Bots : %A\n" (List.length bots)
                         
             //Console.ReadKey() |> ignore
             let move = bots
@@ -221,13 +223,10 @@ let day20 =
                             | None -> a
                        ) []
 
-            //print "-----------------------------------------"
-            //printf "%A\n" (move |> List.where(fun x -> x.location = "ZZ") |> List.sortBy(fun x -> x.depth))
-
             let exit = move |> List.tryFind(fun x -> x.location = "ZZ" && x.depth = 0)
             match exit with 
             | Some x -> exit
-            | None -> step (move |> List.distinct |> List.filter(fun x -> x.depth >= 0))
+            | None -> step (fltr move)
 
         let bot = [ { location = "AA"; depth = 0; travelled = 0; direction = 0; } ]
         step bot
@@ -237,30 +236,3 @@ let day20 =
 
 
     0
-
-// Bot
-//  travelled
-//  depth
-//  at
-
-
-
-//  Location : ({
-//    pos = "AA"
-//    direction = -1
-//    dist = 0
-//  },
-//  [{ 
-//     pos = "BC"
-//     direction = 1
-//     dist = 4
-//     }; { 
-//                          pos = "ZZ"
-//                          direction = -1
-//                          dist = 26
-//               }; { 
-//                                               pos = "FG"
-//                                               direction = 1
-//                                               dist = 30
-//                                               }])
-// SHORTEST : 1000000
