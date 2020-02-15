@@ -196,13 +196,14 @@ let day20 =
     let dijkstra3D (graph:list<Location * list<Location>>) = 
 
         // printf "Graph : %A\n\n\n" graph 
-        let exit x = x.pos = "ZZ"
+        let exit x = x.pos = "ZZZZ"
 
         let rec step bots = 
+            let inter = bots |> List.where(fun x -> ["ZZ"; "XQ"; "FD"] |> List.contains x.location && x.depth < 3)
             let exits = bots |> List.where(fun x -> x.location = "ZZ" && x.depth < 1)
             let ord = bots |> List.sortBy(fun x -> x.depth)
             
-            printf "%A Bots : %A\n" (List.length bots) ord
+           // printf "%A Bots : %A\n" (List.length bots) inter
                         
             Console.ReadKey() |> ignore
             let move = bots
@@ -220,10 +221,13 @@ let day20 =
                             | None -> a
                        ) []
 
+            print "-----------------------------------------"
+            printf "%A\n" (move |> List.where(fun x -> x.location = "ZZ") |> List.sortBy(fun x -> x.depth))
+
             let exit = move |> List.tryFind(fun x -> x.location = "ZZ" && x.depth = 0)
             match exit with 
             | Some x -> exit
-            | None -> step (move |> List.filter(fun x -> x.depth > 0))
+            | None -> step (move |> List.distinct |> List.filter(fun x -> x.depth >= 0))
 
         let bot = [ { location = "AA"; depth = 0; travelled = 0; direction = 0; } ]
         step bot
