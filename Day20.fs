@@ -68,13 +68,14 @@ let day20 =
 
         let r' = r  |> Array.map(fun x -> let x' = (x |> List.head) 
                                           let d = if x'.x = outerX1 || x'.x = outerX2 then -1 else 1
-                                          [ { x' with direction = d } ] )
+                                          [ { x' with direction = if x'.pos = "AA" || x'.pos = "ZZ" then 0 else d } ] )
                         
         let c' = c  |> Array.map(fun x -> let x' = (x |> List.head) 
                                           let d = if x'.y = outerY1 || x'.y = outerY2 then -1 else 1
-                                          [ { x' with direction = d } ] )
+                                          [ { x' with direction = if x'.pos = "AA" || x'.pos = "ZZ" then 0 else d } ] )
 
-        let nodes = Array.append r' c' |> Array.toList
+        let nodes = Array.append r' c' 
+                    |> Array.toList 
         nodes 
 
     
@@ -131,7 +132,7 @@ let day20 =
         let y'' = y'
                   |> List.map(fun (h,t) -> h, (t |> List.map(fun x -> 
                         let mtch = y' |> List.find(fun m -> (fst m).x = x.x && (fst m).y = x.y)
-                        { x with direction = (fst mtch).direction }
+                        { x with direction =  (fst mtch).direction }
                     // let d = mtch.direction
                     //  )
                  )))
@@ -194,37 +195,38 @@ let day20 =
 
     let dijkstra3D (graph:list<Location * list<Location>>) = 
 
-        //printf "Graph : %A\n\n\n" graph 
+        printf "Graph : %A\n\n\n" graph 
+        let exit x = x.pos = "ZZ"
 
         let rec step bots = 
-            printf "Bots : %A\n" bots 
-            printf "%A\n" (List.length bots)
-            
+            printf "%A Bots : %A\n" (List.length bots) bots 
+                        
             Console.ReadKey()
             let move = bots
                        |> List.fold(fun a e -> 
-                            let paths = graph |> List.tryFind(fun (x,_) -> x.pos = e.location  && x.direction = e.direction * -1 )
+                            let paths = graph |> List.tryFind(fun (x,_) -> x.pos = e.location && x.direction = e.direction * -1 )
                             match paths with
                             | Some x -> let moves = (snd x)
-                                                        |> List.map(fun x -> 
-                                                            { location = x.pos; depth = e.depth + x.direction; travelled = e.travelled + x.dist + 1; direction = x.direction }
+                                                        |> List.map(fun x -> { 
+                                                            location = x.pos; 
+                                                            depth = if exit x then 0 else e.depth + x.direction; 
+                                                            travelled = e.travelled + x.dist + 1; 
+                                                            direction = if exit x then 0 else x.direction }
                                                         )
                                         a @ moves 
                             | None -> a
                        ) []
 
-            let exit = move |> List.tryFind(fun x -> x.location = "ZZ" && x.depth = 0 && x.direction = -1)
+            let exit = move |> List.tryFind(fun x -> x.location = "ZZ" && x.depth = 0)
             match exit with 
             | Some x -> exit
             | None -> step (move |> List.filter(fun x -> x.depth > 0))
 
-
-        let bot = [ { location = "AA"; depth = 0; travelled = 0; direction = -1; } ]
+        let bot = [ { location = "AA"; depth = 0; travelled = 0; direction = 0; } ]
         step bot
 
-
     let shortest = dijkstra3D graph 
-    printf "SHORTEST : %A\n" shortest.Value
+    printf "SHORTEST : %A\n"  { shortest.Value with travelled = shortest.Value.travelled - 1 }
 
 
     0
