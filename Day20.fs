@@ -195,13 +195,16 @@ let day20 =
 
     let dijkstra3D (graph:list<Location * list<Location>>) = 
 
-        printf "Graph : %A\n\n\n" graph 
+        // printf "Graph : %A\n\n\n" graph 
         let exit x = x.pos = "ZZ"
 
         let rec step bots = 
-            printf "%A Bots : %A\n" (List.length bots) bots 
+            let exits = bots |> List.where(fun x -> x.location = "ZZ" && x.depth < 1)
+            let ord = bots |> List.sortBy(fun x -> x.depth)
+            
+            printf "%A Bots : %A\n" (List.length bots) ord
                         
-            Console.ReadKey()
+            Console.ReadKey() |> ignore
             let move = bots
                        |> List.fold(fun a e -> 
                             let paths = graph |> List.tryFind(fun (x,_) -> x.pos = e.location && x.direction = e.direction * -1 )
@@ -209,7 +212,7 @@ let day20 =
                             | Some x -> let moves = (snd x)
                                                         |> List.map(fun x -> { 
                                                             location = x.pos; 
-                                                            depth = if exit x then 0 else e.depth + x.direction; 
+                                                            depth = e.depth + x.direction; 
                                                             travelled = e.travelled + x.dist + 1; 
                                                             direction = if exit x then 0 else x.direction }
                                                         )
