@@ -21,7 +21,7 @@ let day20 =
         let a2d = array2D input
         a2d
     
-    let donut = read2DArray "./data/day20a.txt"
+    let donut = read2DArray "./data/day20.txt"
     
     // printmap donut
 
@@ -203,9 +203,9 @@ let day20 =
             let exits = bots |> List.where(fun x -> x.location = "ZZ" && x.depth < 1)
             let ord = bots |> List.sortBy(fun x -> x.depth)
             
-           // printf "%A Bots : %A\n" (List.length bots) inter
+            printf "%A Bots : %A\n" (List.length bots) ()
                         
-            Console.ReadKey() |> ignore
+            //Console.ReadKey() |> ignore
             let move = bots
                        |> List.fold(fun a e -> 
                             let paths = graph |> List.tryFind(fun (x,_) -> x.pos = e.location && x.direction = e.direction * -1 )
@@ -221,8 +221,8 @@ let day20 =
                             | None -> a
                        ) []
 
-            print "-----------------------------------------"
-            printf "%A\n" (move |> List.where(fun x -> x.location = "ZZ") |> List.sortBy(fun x -> x.depth))
+            //print "-----------------------------------------"
+            //printf "%A\n" (move |> List.where(fun x -> x.location = "ZZ") |> List.sortBy(fun x -> x.depth))
 
             let exit = move |> List.tryFind(fun x -> x.location = "ZZ" && x.depth = 0)
             match exit with 
