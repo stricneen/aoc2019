@@ -14,22 +14,29 @@ type Path = { at: string; visited: string; travelled: int; remaining: Key list }
 let day18 = 
     print "Advent of code - Day 18 - Many-Worlds Interpretation"
 
+    let inline pt x = printf "%A\n" x
+
     let read2DArray path = 
         let input = readLines path |> Array.takeWhile (fun x -> x <> "*")
         let a2d = array2D input
         a2d
         
     let coordsOf ary chr =
-        let rec loop (a: char[,]) c =
-            if c > Array2D.length1 ary - 1 then
-                -1,-1
+        let rec loop (a: char[]) acc =
+            let f = a |> Array.tryFindIndex (fun x -> x = chr)
+            match f with 
+            | None -> acc 
+            | Some x -> acc @ loop a.[(x+1)..]  acc
+
+        let rec loopRows ary r acc =
+            if r > Array2D.length1 ary - 1 then
+                acc
             else
-                let row = a.[c, *]
-                let f = row |> Array.tryFindIndex (fun x -> x = chr)
-                match f with 
-                | None -> loop a (c + 1) 
-                | Some x -> x,c
-        loop ary 0
+                let row = ary.[r, *]
+                let found = loop row []
+                loopRows ary (r+1) (acc @ found)
+
+        loopRows ary 0 []
 
     let rec printmap lst = 
         for x in 0 .. Array2D.length1 lst - 1 do
@@ -75,25 +82,30 @@ let day18 =
                 traverse x (c+1)
 
         let start = coordsOf map from
-        let locations = traverse [ { x=fst start; y=snd start; pos=from; dist=0; doors= [] }] 0
-        locations |> List.where(fun x -> System.Char.IsLower x.pos)
+
+        //pt start
+
+       // let locations = traverse [ { x=fst start; y=snd start; pos=from; dist=0; doors= [] }] 0
+        //locations |> List.where(fun x -> System.Char.IsLower x.pos)
+        []
 
     let printState s = 
         s |> List.iter(fun x -> printf "Total : %A\n" x.total
                                 printmap x.map
         )
 
-    let prog = read2DArray "./data/day18.txt"
-    // printmap prog
+    let prog = read2DArray "./data/day18a.txt"
+    printmap prog
 
     //let startState = { total=0; map=prog }
     // let t = loop [ startState ]
    
     // Get all keys and coords
     let getKeys map =   
-        [ 'a' .. 'z' ] @ [ '@' ]
-        |> List.map (fun x -> x, coordsOf map x)
-        |> List.filter (fun (_,c) -> snd c > -1 )
+        let x = [ 'a' .. 'z' ] @ ['@']
+                |> List.fold (fun a x -> a @ (coordsOf map x )) []
+        pt x
+        x // |> List.filter (fun (_,c) -> snd c > -1 )
 
     let locsToKeys locs = 
         locs 
@@ -106,12 +118,17 @@ let day18 =
                 >> (fun (key, _, locs) -> key, locsToKeys locs))      
 
     let keys = getKeys prog
+   // let bots = getBots prog
+
+    pt prog
+
     let dists = distances prog keys
+    
+    // printf "%A\n" keys
+    // printf "%A\n" dists
+    // let _, keys = dists |> List.find(fun x-> fst x = '@')
 
-    //printf "%A\n" dists
-    let _, keys = dists |> List.find(fun x-> fst x = '@')
-
-    // Get the distance between two keys
+    // // Get the distance between two keys
     let keyToKey k1 k2 =
         let k1' = dists
                   |> List.find(fun (x, _) -> x = k1)   // 'char * Key list' 
@@ -119,19 +136,21 @@ let day18 =
                   |> List.find(fun x -> x.key = k2)
         k2'.dist
 
-    let visited = keys |> List.where(fun x -> List.isEmpty x.doors)
-                       |> List.sortBy(fun x -> x.key)
+    // let visited = keys |> List.where(fun x -> List.isEmpty x.doors)
+    //                    |> List.sortBy(fun x -> x.key)
     
-    // make the first moves
+    // printf "%A\n" visited
 
-    let first = visited
-               |> List.map(fun x -> { 
-                    at = x.key.ToString();
-                    visited = x.key.ToString(); 
-                    travelled = x.dist; 
-                    remaining = (keys 
-                                |> List.where(fun x' -> x'.key <> x.key))  // Remove just visited
-                                |> List.map(fun x' -> { x' with doors = x'.doors |> List.where(fun x'' -> x'' <> x.key); dist = keyToKey x.key x'.key  }) }) // Remove door
+    // // make the first moves
+
+    // let first = visited
+    //            |> List.map(fun x -> { 
+    //                 at = x.key.ToString();
+    //                 visited = x.key.ToString(); 
+    //                 travelled = x.dist; 
+    //                 remaining = (keys 
+    //                             |> List.where(fun x' -> x'.key <> x.key))  // Remove just visited
+    //                             |> List.map(fun x' -> { x' with doors = x'.doors |> List.where(fun x'' -> x'' <> x.key); dist = keyToKey x.key x'.key  }) }) // Remove door
     
     
     //printf "%A\n" first 
@@ -181,8 +200,8 @@ let day18 =
         move start
 
 
-    let x = traverse first
-    let min = x |> List.minBy(fun x -> x.travelled)
-    printf "%A\n" min
+    //let x = traverse first // collect all the keys
+    //let min = x |> List.minBy(fun x -> x.travelled)  // get shortest route
+    //printf "%A\n" min
 
     0
