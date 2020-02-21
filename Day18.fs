@@ -24,19 +24,31 @@ let day18 =
     let coordsOf ary chr =
         let rec loop (a: char[]) acc =
             let f = a |> Array.tryFindIndex (fun x -> x = chr)
-            match f with 
-            | None -> acc 
-            | Some x -> acc @ loop a.[(x+1)..]  acc
+            //pt f
+            //pt acc
+            let x = match f with 
+                    | None -> acc 
+                    | Some x -> let ext = a.[(x+1)..]
+                                pt ext
+                                let next = loop ext [x,x] @ acc
+                                pt next
+                                pt x
+                                acc @ next
+            
+            x
 
         let rec loopRows ary r acc =
             if r > Array2D.length1 ary - 1 then
                 acc
             else
                 let row = ary.[r, *]
+                // pt row
                 let found = loop row []
+                // pt found
                 loopRows ary (r+1) (acc @ found)
 
-        loopRows ary 0 []
+        let coords = loopRows ary 0 []
+        [chr, (coords)]
 
     let rec printmap lst = 
         for x in 0 .. Array2D.length1 lst - 1 do
@@ -83,7 +95,7 @@ let day18 =
 
         let start = coordsOf map from
 
-        //pt start
+        pt start
 
        // let locations = traverse [ { x=fst start; y=snd start; pos=from; dist=0; doors= [] }] 0
         //locations |> List.where(fun x -> System.Char.IsLower x.pos)
@@ -104,7 +116,7 @@ let day18 =
     let getKeys map =   
         let x = [ 'a' .. 'z' ] @ ['@']
                 |> List.fold (fun a x -> a @ (coordsOf map x )) []
-        pt x
+        //pt x
         x // |> List.filter (fun (_,c) -> snd c > -1 )
 
     let locsToKeys locs = 
@@ -120,21 +132,15 @@ let day18 =
     let keys = getKeys prog
    // let bots = getBots prog
 
-    pt prog
+    pt keys
 
-    let dists = distances prog keys
+    // let dists = distances prog keys
     
-    // printf "%A\n" keys
-    // printf "%A\n" dists
-    // let _, keys = dists |> List.find(fun x-> fst x = '@')
+    // // printf "%A\n" keys
+    // // printf "%A\n" dists
+    // // let _, keys = dists |> List.find(fun x-> fst x = '@')
 
-    // // Get the distance between two keys
-    let keyToKey k1 k2 =
-        let k1' = dists
-                  |> List.find(fun (x, _) -> x = k1)   // 'char * Key list' 
-        let k2' = (snd k1')
-                  |> List.find(fun x -> x.key = k2)
-        k2'.dist
+
 
     // let visited = keys |> List.where(fun x -> List.isEmpty x.doors)
     //                    |> List.sortBy(fun x -> x.key)
@@ -155,7 +161,15 @@ let day18 =
     
     //printf "%A\n" first 
 
-    let traverse (start: Path list) = 
+    let traverse (start: Path list) dists = 
+
+        // Get the distance between two keys
+        let keyToKey k1 k2 =
+            let k1' = dists
+                      |> List.find(fun (x, _) -> x = k1)   // 'char * Key list' 
+            let k2' = (snd k1')
+                      |> List.find(fun x -> x.key = k2)
+            k2'.dist
 
         let rec move from =
             
