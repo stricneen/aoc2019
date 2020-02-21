@@ -18,21 +18,16 @@ let day18 =
 
     let read2DArray path = 
         let input = readLines path |> Array.takeWhile (fun x -> x <> "*")
-        let a2d = array2D input
+        let a2d = array2D input 
         a2d
         
     let coordsOf ary chr =
-        let rec loop (a: char[]) acc =
+        let rec loop (a: char[]) acc r c =
             let f = a |> Array.tryFindIndex (fun x -> x = chr)
-            //pt f
-            //pt acc
             let x = match f with 
                     | None -> acc 
                     | Some x -> let ext = a.[(x+1)..]
-                                pt ext
-                                let next = loop ext [x,x] @ acc
-                                pt next
-                                pt x
+                                let next = loop ext [x+c,r] r (x+c+1) @ acc
                                 acc @ next
             
             x
@@ -42,13 +37,12 @@ let day18 =
                 acc
             else
                 let row = ary.[r, *]
-                // pt row
-                let found = loop row []
-                // pt found
+                let found = loop row [] r 0
                 loopRows ary (r+1) (acc @ found)
 
         let coords = loopRows ary 0 []
         [chr, (coords)]
+ 
 
     let rec printmap lst = 
         for x in 0 .. Array2D.length1 lst - 1 do
@@ -116,6 +110,8 @@ let day18 =
     let getKeys map =   
         let x = [ 'a' .. 'z' ] @ ['@']
                 |> List.fold (fun a x -> a @ (coordsOf map x )) []
+                |> List.where (fun x -> not (List.isEmpty (snd x)))
+                |> List.map (fun (x,y) -> x, y|>List.distinct)
         //pt x
         x // |> List.filter (fun (_,c) -> snd c > -1 )
 
