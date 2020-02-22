@@ -102,7 +102,7 @@ let day18 =
         )
 
     let prog = read2DArray "./data/day18a.txt"
-    printmap prog
+    // printmap prog
 
     //let startState = { total=0; map=prog }
     // let t = loop [ startState ]
@@ -128,21 +128,21 @@ let day18 =
     let keys = getKeys prog
 
 
-    pt keys
+    //pt keys
 
     let dists = distances prog keys
     
     // // printf "%A\n" keys
     
-    pt dists
+   // pt dists
 
-    pt ""
-    pt ""
+    pt 
+    pt 
 
     let bots = dists |> List.where(fun (x,_)-> fst x = '@')
 
 
-    pt bots
+    //pt bots
 
     // let visited = keys |> List.where(fun x -> List.isEmpty x.doors)
     //                    |> List.sortBy(fun x -> x.key)
