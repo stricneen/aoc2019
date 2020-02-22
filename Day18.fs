@@ -29,7 +29,6 @@ let day18 =
                     | Some x -> let ext = a.[(x+1)..]
                                 let next = loop ext [x+c,r] r (x+c+1) @ acc
                                 acc @ next
-            
             x
 
         let rec loopRows ary r acc =
@@ -41,7 +40,8 @@ let day18 =
                 loopRows ary (r+1) (acc @ found)
 
         let coords = loopRows ary 0 []
-        [chr, (coords)]
+        // [chr, (coords)]
+        coords |> List.distinct |> List.map(fun x -> chr, x)
  
 
     let rec printmap lst = 
@@ -87,13 +87,14 @@ let day18 =
             else 
                 traverse x (c+1)
 
-        let start = coordsOf map from
+        let key = fst from
+        let start = snd from
 
-        pt start
 
-       // let locations = traverse [ { x=fst start; y=snd start; pos=from; dist=0; doors= [] }] 0
-        //locations |> List.where(fun x -> System.Char.IsLower x.pos)
-        []
+        let locations = traverse [ { x=fst start; y=snd start; pos=key; dist=0; doors= [] }] 0
+        //pt locations
+        locations |> List.where(fun x -> System.Char.IsLower x.pos)
+        
 
     let printState s = 
         s |> List.iter(fun x -> printf "Total : %A\n" x.total
@@ -110,9 +111,8 @@ let day18 =
     let getKeys map =   
         let x = [ 'a' .. 'z' ] @ ['@']
                 |> List.fold (fun a x -> a @ (coordsOf map x )) []
-                |> List.where (fun x -> not (List.isEmpty (snd x)))
-                |> List.map (fun (x,y) -> x, y|>List.distinct)
-        //pt x
+               // |> List.where (fun x -> not (List.isEmpty (snd x)))
+                //|> List.map (fun (x,y) -> x, y|>List.distinct)
         x // |> List.filter (fun (_,c) -> snd c > -1 )
 
     let locsToKeys locs = 
@@ -122,18 +122,18 @@ let day18 =
 
     let distances map keys =
         keys 
-        |> List.map(fun (key, (x,y)) -> (key, (x,y), availableKeys map key )
-                >> (fun (key, _, locs) -> key, locsToKeys locs))      
+        |> List.map(fun x -> (x, availableKeys map x ))
+               // >> (fun (key, _, locs) -> key, locsToKeys locs))      
 
     let keys = getKeys prog
-   // let bots = getBots prog
+
 
     pt keys
 
-    // let dists = distances prog keys
+    let dists = distances prog keys
     
     // // printf "%A\n" keys
-    // // printf "%A\n" dists
+    pt dists
     // // let _, keys = dists |> List.find(fun x-> fst x = '@')
 
 
