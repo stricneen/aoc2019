@@ -122,8 +122,8 @@ let day18 =
 
     let distances map keys =
         keys 
-        |> List.map(fun x -> (x, availableKeys map x ))
-               // >> (fun (key, _, locs) -> key, locsToKeys locs))      
+        |> List.map(fun x -> (x, availableKeys map x )
+               >> (fun (key, locs) -> key, locsToKeys locs))      
 
     let keys = getKeys prog
 
@@ -133,10 +133,16 @@ let day18 =
     let dists = distances prog keys
     
     // // printf "%A\n" keys
+    
     pt dists
-    // // let _, keys = dists |> List.find(fun x-> fst x = '@')
+
+    pt ""
+    pt ""
+
+    let bots = dists |> List.where(fun (x,_)-> fst x = '@')
 
 
+    pt bots
 
     // let visited = keys |> List.where(fun x -> List.isEmpty x.doors)
     //                    |> List.sortBy(fun x -> x.key)
@@ -145,17 +151,19 @@ let day18 =
 
     // // make the first moves
 
-    // let first = visited
-    //            |> List.map(fun x -> { 
-    //                 at = x.key.ToString();
-    //                 visited = x.key.ToString(); 
-    //                 travelled = x.dist; 
-    //                 remaining = (keys 
-    //                             |> List.where(fun x' -> x'.key <> x.key))  // Remove just visited
-    //                             |> List.map(fun x' -> { x' with doors = x'.doors |> List.where(fun x'' -> x'' <> x.key); dist = keyToKey x.key x'.key  }) }) // Remove door
+    let first = bots
+                |> List.map(fun (x, keys ) -> 
+                    let chr, coords = x
+                    { 
+                    at = chr.ToString();
+                    visited = ""; //x.key.ToString(); 
+                    travelled = 0;  //x.dist; 
+                    remaining = (keys)
+                                //|> List.where(fun x' -> x'.key <> x.key))  // Remove just visited
+                                //|> List.map(fun x' -> { x' with doors = x'.doors |> List.where(fun x'' -> x'' <> x.key); dist = keyToKey x.key x'.key  }) }) // Remove door
+                    })
     
-    
-    //printf "%A\n" first 
+    pt first 
 
     let traverse (start: Path list) dists = 
 
