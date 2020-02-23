@@ -16,6 +16,9 @@ let day18 =
 
     let inline pt x = printf "%A\n" x
 
+    let inline ptc x = printf "%A\n" x
+                       Console.ReadKey() |> ignore
+
     let read2DArray path = 
         let input = readLines path |> Array.takeWhile (fun x -> x <> "*")
         let a2d = array2D input 
@@ -131,15 +134,13 @@ let day18 =
     //pt keys
 
     let dists = distances prog keys
+                |> List.map(fun (x,y) -> fst x, y)
     
-    // // printf "%A\n" keys
+    // printf "%A\n" keys
     
-   // pt dists
+    // pt dists
 
-    pt 
-    pt 
-
-    let bots = dists |> List.where(fun (x,_)-> fst x = '@')
+    let bots = dists |> List.where(fun (x,_)-> x = '@')
 
 
     //pt bots
@@ -153,9 +154,8 @@ let day18 =
 
     let first = bots
                 |> List.map(fun (x, keys ) -> 
-                    let chr, coords = x
                     { 
-                    at = chr.ToString();
+                    at = x.ToString();
                     visited = ""; //x.key.ToString(); 
                     travelled = 0;  //x.dist; 
                     remaining = (keys)
@@ -175,51 +175,64 @@ let day18 =
                       |> List.find(fun x -> x.key = k2)
             k2'.dist
 
+        let botMove state bot =
+
+            let others = state |> List.where(fun x -> x <> bot)
+
+            let canMove = bot.remaining
+                               |> List.where(fun x -> List.isEmpty x.doors)
+                               |> List.sortBy(fun x -> x.key)
+
+            let moves =
+                canMove |> List.map(fun x -> { 
+                at = x.key.ToString();
+                visited = bot.visited + x.key.ToString(); 
+                travelled = x.dist + bot.travelled; 
+                remaining = (bot.remaining 
+                            |> List.where(fun x' -> x'.key <> x.key))  // Remove just visited
+                            |> List.map(fun x' -> { x' with doors = x'.doors |> List.where(fun x'' -> x'' <> x.key); dist = keyToKey x.key x'.key  }) }) // Remove door
+
+            let newStates = 
+                moves
+                |> List.map(fun m -> [m] @ others)
+
+            newStates
+
         let rec move from =
             
-            let s = from |> List.fold(fun a c ->
+            let s = from 
+                    |> List.fold (fun acc state -> 
+                    
+                        let bot = List.head state
 
-                    let accessible = c.remaining
-                                       |> List.where(fun x -> List.isEmpty x.doors)
-                                       |> List.sortBy(fun x -> x.key)
-
-                    let moves =
-                        accessible |> List.map(fun x -> { 
-                        at = x.key.ToString();
-                        visited = c.visited + x.key.ToString(); 
-                        travelled = x.dist + c.travelled; 
-                        remaining = (c.remaining 
-                                    |> List.where(fun x' -> x'.key <> x.key))  // Remove just visited
-                                    |> List.map(fun x' -> { x' with doors = x'.doors |> List.where(fun x'' -> x'' <> x.key); dist = keyToKey x.key x'.key  }) }) // Remove door
-        
-                    let a' = List.append moves a
-                    a'        
-                    ) []
-
-        //    printf "%A\n" s
-          
+                        let afterMoves = botMove state bot
+                        afterMoves @ acc
+                        
+                        ) []
+                    
             
-            let shortest = 
-                s |> List.map(fun x -> 
-                    let hash = x.visited.Substring(0, x.visited.Length - 1) |> Seq.sort |> String.Concat
-                    hash, x)
-                  |> List.groupBy(fun x -> fst x, (snd x).at)
-                  |> List.map((fun (_,x) -> x |> List.minBy(fun (_,y) -> y.travelled))
-                           >> (fun (_,x) -> x))
+            let shortest = s
+            ptc s
+            
+                // s |> List.map(fun x -> 
+                //     let hash = x.visited.Substring(0, x.visited.Length - 1) |> Seq.sort |> String.Concat
+                //     hash, x)
+                //   |> List.groupBy(fun x -> fst x, (snd x).at)
+                //   |> List.map((fun (_,x) -> x |> List.minBy(fun (_,y) -> y.travelled))
+                //            >> (fun (_,x) -> x))
 
             printn (List.length shortest)
-            if (shortest |> List.forall(fun x -> List.isEmpty x.remaining)) then
+            if (shortest |> List.concat |> List.forall(fun x -> List.isEmpty x.remaining)) then
                 shortest
             else 
                 move shortest
 
+        move [start]
 
 
-        move start
-
-
-    //let x = traverse first // collect all the keys
+    let x = traverse first dists// collect all the keys
+    pt x
     //let min = x |> List.minBy(fun x -> x.travelled)  // get shortest route
-    //printf "%A\n" min
+    //printf "Shortest  : %A\n" min
 
     0
