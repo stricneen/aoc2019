@@ -46,15 +46,11 @@ let day18 =
         // [chr, (coords)]
         coords |> List.distinct |> List.map(fun x -> chr, x)
  
-
     let rec printmap lst = 
         for x in 0 .. Array2D.length1 lst - 1 do
             let l = lst.[x,*] |> String
             printf "%A\n" l
-   
-
-    
-
+  
     // #########
     // #b.A.@.a#
     // #########
@@ -202,18 +198,30 @@ let day18 =
                         newState @ acc
                         ) []
                     
-            
-            let shortest = s
-            //ptc s
-            
-                // s |> List.map(fun x -> 
-                //     let hash = x.visited.Substring(0, x.visited.Length - 1) |> Seq.sort |> String.Concat
-                //     hash, x)
-                //   |> List.groupBy(fun x -> fst x, (snd x).at)
-                //   |> List.map((fun (_,x) -> x |> List.minBy(fun (_,y) -> y.travelled))
-                //            >> (fun (_,x) -> x))
+            let optimize bot =
+                //pt bot
+                let start = bot |> List.where(fun x -> x.visited.Length = 0)
+                let moved = bot |> List.where(fun x -> x.visited.Length > 0)
+                
+                let m = moved |> List.map(fun x -> 
+                        let hash = x.visited.Substring(0, x.visited.Length - 1) |> Seq.sort |> String.Concat
+                        //pt hash
+                        hash, x
+                        )
+                        |> List.groupBy(fun x -> fst x, (snd x).at)
+                        |> List.map((fun (_,x) -> x |> List.minBy(fun (_,y) -> y.travelled))
+                                >> (fun (_,x) -> x))
+        
+                m @ start
 
+            
+            let shortest = s //|> List.map optimize
+
+            ptc shortest
+
+            printn (s |> List.concat |> List.length)
             printn (shortest |> List.concat |> List.length)
+            // pt shortest
             if (shortest |> List.concat |> List.forall(fun x -> List.isEmpty x.remaining)) then
                 shortest
             else 
@@ -221,15 +229,15 @@ let day18 =
 
         move [start]
 
-
     let x = traverse first dists// collect all the keys
     //pt x
 
-    
     let distances = x |> List.map(fun y -> y |> List.sumBy(fun y' -> y'.travelled))
 
-    let shortest = distances |> List.min
-    pt shortest
+    //let shortest = distances |> List.min
+    pt distances
+
+
     //let min = x |> List.minBy(fun x -> x.travelled)  // get shortest route
     //printf "Shortest  : %A\n" min
 
@@ -245,3 +253,11 @@ let day18 =
 // 31732
 // 207264
 // 1244648
+
+// 36
+// 304
+// 2416
+// 18080
+// 126928
+// 829056
+// 4978592
