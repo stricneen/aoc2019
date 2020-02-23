@@ -104,7 +104,7 @@ let day18 =
                                 printmap x.map
         )
 
-    let prog = read2DArray "./data/day18a.txt"
+    let prog = read2DArray "./data/day18_2.txt"
     // printmap prog
 
     //let startState = { total=0; map=prog }
@@ -237,7 +237,7 @@ let day18 =
                     
             
             let shortest = s
-            ptc s
+            //ptc s
             
                 // s |> List.map(fun x -> 
                 //     let hash = x.visited.Substring(0, x.visited.Length - 1) |> Seq.sort |> String.Concat
@@ -246,7 +246,7 @@ let day18 =
                 //   |> List.map((fun (_,x) -> x |> List.minBy(fun (_,y) -> y.travelled))
                 //            >> (fun (_,x) -> x))
 
-            printn (List.length shortest)
+            printn (shortest |> List.concat |> List.length)
             if (shortest |> List.concat |> List.forall(fun x -> List.isEmpty x.remaining)) then
                 shortest
             else 
@@ -256,7 +256,7 @@ let day18 =
 
 
     let x = traverse first dists// collect all the keys
-    pt x
+    //pt x
 
     
     let distances = x |> List.map(fun y -> y |> List.sumBy(fun y' -> y'.travelled))
@@ -267,3 +267,14 @@ let day18 =
     //printf "Shortest  : %A\n" min
 
     0
+
+
+
+
+// 9
+// 76
+// 604
+// 4520
+// 31732
+// 207264
+// 1244648
