@@ -203,10 +203,23 @@ let day18 =
             let s = from 
                     |> List.fold (fun acc state -> 
                     
-                        let bot = List.head state
+                        
+                        let newState = state
+                                        |> List.fold(fun a s -> 
 
-                        let afterMoves = botMove state bot
-                        afterMoves @ acc
+                                            a @ (botMove state s)
+                                            
+                                        ) []
+
+
+                       // let bot = List.head state
+
+                        //let afterMoves = botMove state bot
+
+
+                        newState @ acc
+                        
+                        
                         
                         ) []
                     
