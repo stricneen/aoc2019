@@ -192,9 +192,21 @@ let day18 =
                             |> List.where(fun x' -> x'.key <> x.key))  // Remove just visited
                             |> List.map(fun x' -> { x' with doors = x'.doors |> List.where(fun x'' -> x'' <> x.key); dist = keyToKey x.key x'.key  }) }) // Remove door
 
+            let removeKey key remaining = 
+                remaining
+                |> List.map (fun r ->
+                    { r with doors = r.doors |> List.where(fun d -> d.ToString() <> key)}
+                )
+
+
             let newStates = 
                 moves
-                |> List.map(fun m -> [m] @ others)
+                |> List.map(fun m -> 
+                    let removeKeys = others
+                                     |> List.map(fun k -> { k with remaining = removeKey m.at k.remaining })
+
+                    [m] @ removeKeys
+                )
 
             newStates
 
@@ -245,6 +257,12 @@ let day18 =
 
     let x = traverse first dists// collect all the keys
     pt x
+
+    
+    let distances = x |> List.map(fun y -> y |> List.sumBy(fun y' -> y'.travelled))
+
+    let shortest = distances |> List.min
+    pt shortest
     //let min = x |> List.minBy(fun x -> x.travelled)  // get shortest route
     //printf "Shortest  : %A\n" min
 
