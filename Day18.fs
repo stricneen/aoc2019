@@ -105,18 +105,12 @@ let day18 =
         )
 
     let prog = read2DArray "./data/day18_2.txt"
-    // printmap prog
-
-    //let startState = { total=0; map=prog }
-    // let t = loop [ startState ]
-   
+    
     // Get all keys and coords
     let getKeys map =   
         let x = [ 'a' .. 'z' ] @ ['@']
                 |> List.fold (fun a x -> a @ (coordsOf map x )) []
-               // |> List.where (fun x -> not (List.isEmpty (snd x)))
-                //|> List.map (fun (x,y) -> x, y|>List.distinct)
-        x // |> List.filter (fun (_,c) -> snd c > -1 )
+        x 
 
     let locsToKeys locs = 
         locs 
@@ -135,22 +129,10 @@ let day18 =
 
     let dists = distances prog keys
                 |> List.map(fun (x,y) -> fst x, y)
-    
-    // printf "%A\n" keys
-    
-    // pt dists
 
     let bots = dists |> List.where(fun (x,_)-> x = '@')
 
-
-    //pt bots
-
-    // let visited = keys |> List.where(fun x -> List.isEmpty x.doors)
-    //                    |> List.sortBy(fun x -> x.key)
-    
-    // printf "%A\n" visited
-
-    // // make the first moves
+    // make the first moves
 
     let first = bots
                 |> List.map(fun (x, keys ) -> 
@@ -198,7 +180,6 @@ let day18 =
                     { r with doors = r.doors |> List.where(fun d -> d.ToString() <> key)}
                 )
 
-
             let newStates = 
                 moves
                 |> List.map(fun m -> 
@@ -207,32 +188,18 @@ let day18 =
 
                     [m] @ removeKeys
                 )
-
             newStates
 
+        
         let rec move from =
             
             let s = from 
                     |> List.fold (fun acc state -> 
-                    
-                        
                         let newState = state
                                         |> List.fold(fun a s -> 
-
                                             a @ (botMove state s)
-                                            
                                         ) []
-
-
-                       // let bot = List.head state
-
-                        //let afterMoves = botMove state bot
-
-
                         newState @ acc
-                        
-                        
-                        
                         ) []
                     
             
