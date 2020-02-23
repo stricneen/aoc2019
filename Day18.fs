@@ -9,7 +9,7 @@ type State = { total:int; map: char[,] }
 
 type Key = { key: char; dist: int; doors: char list }
 
-type Path = { at: string; visited: string; travelled: int; remaining: Key list }
+type Path = { id: int; at: string; visited: string; travelled: int; remaining: Key list }
 
 let day18 = 
     print "Advent of code - Day 18 - Many-Worlds Interpretation"
@@ -131,8 +131,9 @@ let day18 =
     // make the first moves
 
     let first = bots
-                |> List.map(fun (x, keys ) -> 
+                |> List.mapi(fun i (x, keys) -> 
                     { 
+                    id = i;
                     at = x.ToString();
                     visited = ""; //x.key.ToString(); 
                     travelled = 0;  //x.dist; 
@@ -141,7 +142,7 @@ let day18 =
                                 //|> List.map(fun x' -> { x' with doors = x'.doors |> List.where(fun x'' -> x'' <> x.key); dist = keyToKey x.key x'.key  }) }) // Remove door
                     })
     
-    pt first 
+    // pt first 
 
     let traverse (start: Path list) dists = 
 
@@ -163,6 +164,7 @@ let day18 =
 
             let moves =
                 canMove |> List.map(fun x -> { 
+                id = bot.id;
                 at = x.key.ToString();
                 visited = bot.visited + x.key.ToString(); 
                 travelled = x.dist + bot.travelled; 
@@ -211,15 +213,50 @@ let day18 =
                         |> List.groupBy(fun x -> fst x, (snd x).at)
                         |> List.map((fun (_,x) -> x |> List.minBy(fun (_,y) -> y.travelled))
                                 >> (fun (_,x) -> x))
-        
                 m @ start
 
+            let getHash s =
+                s
+                |> List.sortBy(fun x -> x.id)
+                |> List.fold(fun a x ->
+                    a + x.at + (x.visited |> Seq.sort |> String.Concat)
+                 ) ""
+
+            let getTravelled s =
+                s |> List.sumBy(fun x -> x.travelled) 
+                 
+
+            let optimize2 state =
+                let x = state
+                        |> List.map(fun x -> getHash x, getTravelled x , x)
+                        |> List.groupBy fst3
+                        |> List.map(fun (_,x) -> x |> List.minBy snd3)
+                        |> List.map(fun (_,_,x) -> x)
+                
+                
+                
+                //ptc x
+                x
+                
+
+                      
+           
+// list<string * list<string * int * list<Path>>>
+
+                
+
+
+            //let s' = s |> List.map optimize
+
+            let shortest = optimize2 s
+
             
-            let shortest = s //|> List.map optimize
 
-            ptc shortest
+            //ptc shortest
+            //Console.ReadKey()
 
-            printn (s |> List.concat |> List.length)
+
+           // printn (s |> List.concat |> List.length)
             printn (shortest |> List.concat |> List.length)
             // pt shortest
             if (shortest |> List.concat |> List.forall(fun x -> List.isEmpty x.remaining)) then
@@ -234,12 +271,12 @@ let day18 =
 
     let distances = x |> List.map(fun y -> y |> List.sumBy(fun y' -> y'.travelled))
 
-    //let shortest = distances |> List.min
+    let shortest = distances |> List.min
     pt distances
 
 
     //let min = x |> List.minBy(fun x -> x.travelled)  // get shortest route
-    //printf "Shortest  : %A\n" min
+    printf "Shortest  : %A\n" shortest
 
     0
 
