@@ -16,56 +16,72 @@ WALK
 
 
 
-OR A J      #####.###########
-OR B J      #####...#########
-OR D J      #####..#.########
-            #####.#..########
+            #####.###########
+            #####...#########
+
+
+              ABCDEFGHI
+             #####.#.#.##..###  
+
+                ABCDEFGHI
+             #####.#.#.##..###     
+                #####..#.########
+      
+                ABCDEFGHI
+           #####.#.#...#.###
+            #####..#.########
+             #####.#..########
             #####.##.########
-            #####.#.#...#.###
-            
-NOT B T
-AND A T
-AND D T
+
+.................
+.................
+@................
+#####.#.#.##..###
+ ABCDEFGHI
+
+
+
+ NOT I J
+ and a T
+ AND J T
+ 
+
+ 
+
+  not e J
+  and d J
+  and h J
+
+
+OR J T
+
 NOT A J
 OR T J
-WALK
 
+ ABCDE
+J##.#.
+J#.##.
 
+NOT C J
+NOT E T
+AND D T
+AND J T
 
-NOT D T
-NOT T J
-
-NOT A J     #####..#.########
-NOT B J     #####...#########
-NOT C J     #####...#########
-NOT D J     #####.###########
-
-OR A J      #####.###########
-OR B J      #####...#########
-OR C J      #####...#########
-OR D J      #####..#.########
-
-NOT B T     #####..#.########  *
-AND C J
-NOT A T
+NOT A J
 OR T J
 
-NOT B T     #####.##.########
-NOT C J
-AND T J
-AND A J
-AND D J
-NOT A T
-OR T J
+RUN
 
 
-NOT A T     #####...#########
-NOT C J
-OR T J           
 
-NOT A T     #####.###########
-NOT D J
-AND T J
+
+
+
+
+
+
+
+
 
 
 *)
@@ -98,20 +114,57 @@ let day21 =
         )
           
             
+    let instructions1 = [
+        "NOT C T";
+        "AND D T";
+        "NOT A J";
+        "OR T J";
+        "WALK";
+    ]
+
+    let instructions2 = [
+        // "OR I J";
+        // "OR E J";
+        // "OR J T";
+
+        "NOT I J";
+        "AND A T";
+        "AND J T";
+
+        "NOT E J";
+        "AND D J";
+        "AND H J";
+
+        "OR J T";
 
 
-    while not finished do
-        let command = System.Console.ReadLine()
-        //print command
-        for x in command do
-            let i = (int64 x)
-            //let i' = if i = 13L then 10L else i
-            //printf "%A\n" i'
-            inq.Post i
-        inq.Post 10L
-        async { 
-            
-            do! Async.Sleep(100) } |> ignore
+        "NOT A J";
+        "OR T J";
+
+        "RUN"
+    ]
+    
+     instructions2
+        |> List.iter(fun command ->
+            for x in command do
+                let i = (int64 x)
+                inq.Post i
+            inq.Post 10L
+        
+        )
+
+    //while not finished do
+        // manual
+        // let command = System.Console.ReadLine()
+        // for x in command do
+        //     let i = (int64 x)
+        //     inq.Post i
+        // inq.Post 10L
+        
+        
+    System.Console.ReadKey() |> ignore
+    async {
+        do! Async.Sleep(100) } |> ignore
 
 
     0
