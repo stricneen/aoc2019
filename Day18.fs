@@ -250,6 +250,8 @@ let day18 =
 
             let shortest = optimize2 s
 
+            // printf " > %A\n" (List.length s)
+            // printf " > > > %A\n" (List.length shortest)
             
 
             //ptc shortest
