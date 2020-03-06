@@ -31,6 +31,20 @@ let day21 =
             buffer <- buffer + (char(output |> int)).ToString()
         )
           
+
+    let p1 = [
+        "NOT A T";
+        "AND D T";
+        "OR T J";
+        "NOT B T"; 
+        "AND D T"; 
+        "OR T J"; 
+        "NOT C T"; 
+        "AND D T";
+        "AND H T"; 
+        "OR T J"; 
+        "RUN"
+    ]
             
     let part1 = [
         "NOT C T";
@@ -44,20 +58,37 @@ let day21 =
 
         "NOT C J";
         "AND D J";
-        "AND H J";
+
+        "OR H T";
+        "OR I T";
+        "AND T J";
 
         "NOT A T"; //JUMP IF HOLE NEXT
         "OR T J";
 
-        // "NOT E T";
-        // "AND F T";
-        // "AND T J";
+        "NOT F T";
+        //"AND C T";
+        "AND D T";
+        //"AND G T";
+        "AND H T";
+        //"AND I T";
+        "OR T J";
 
-        //"AND D J";
+        "NOT B T";
+        "AND C T";
+        "AND D T";
+
+        "OR T J";
+       
 
         "RUN"
     ]
+
 (*
+........@........
+#####..###.##.###
+         ABCDEFGHI
+
 @................
 #####.#.#.##..###
  ABCDEFGHI
@@ -72,9 +103,16 @@ let day21 =
              #####.X#.########
              #####.X.#.##..###
            #####.#.X...#.###
-               
+             #####.X#...#..###
+         #####.J#.##..####
+                ABCDEFGHI
 
--E D H
+........@........
+#####..###.##.###
+         ABCDEFGHI
+
+
+(-C D HvI) v (c d g h i)
 
              ABCDEFGHI
             #####.###########
@@ -85,10 +123,12 @@ let day21 =
             #####.#.#.##..###
             #####.#.#...#.###
             #####.##...#..###      
- 
+            #####.##.##..####
+            #####.#.#..######
+            #####..###.##.###
 *)
     
-     part2
+     p1
         |> List.iter(fun command ->
             for x in command do
                 let i = (int64 x)
