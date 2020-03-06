@@ -3,88 +3,6 @@ module Day21
 open Utils
 open IntCode2
 
-(*
-
-ANSWER : 
-Input instructions:
-NOT C T
-AND D T
-NOT A J
-OR T J
-WALK
-
-
-
-
-            #####.###########
-            #####...#########
-
-
-              ABCDEFGHI
-             #####.#.#.##..###  
-
-                ABCDEFGHI
-             #####.#.#.##..###     
-                #####..#.########
-      
-                ABCDEFGHI
-           #####.#.#...#.###
-            #####..#.########
-             #####.#..########
-            #####.##.########
-
-.................
-.................
-@................
-#####.#.#.##..###
- ABCDEFGHI
-
-
-
- NOT I J
- and a T
- AND J T
- 
-
- 
-
-  not e J
-  and d J
-  and h J
-
-
-OR J T
-
-NOT A J
-OR T J
-
- ABCDE
-J##.#.
-J#.##.
-
-NOT C J
-NOT E T
-AND D T
-AND J T
-
-NOT A J
-OR T J
-
-RUN
-
-
-
-
-
-
-
-
-
-
-
-
-
-*)
 
 
 
@@ -114,7 +32,7 @@ let day21 =
         )
           
             
-    let instructions1 = [
+    let part1 = [
         "NOT C T";
         "AND D T";
         "NOT A J";
@@ -122,29 +40,125 @@ let day21 =
         "WALK";
     ]
 
-    let instructions2 = [
-        // "OR I J";
-        // "OR E J";
-        // "OR J T";
+    let part2 = [
 
-        "NOT I J";
-        "AND A T";
-        "AND J T";
+// A B F -G
+
+// E v F v G
+        // "OR A T";
+        // "AND B T";
+        // "AND C T";
+        // "AND D T";
+        // "NOT T J";
 
         "NOT E J";
         "AND D J";
         "AND H J";
+      //  "AND I J";
+       // "";
+       // "";
+       //  "AND T J";
 
-        "OR J T";
-
-
-        "NOT A J";
+        "NOT C T";
+        "AND D T";
         "OR T J";
+
+        "NOT A T"; //JUMP IF HOLE NEXT
+        "OR T J";
+
+        "AND D J"; // DONT JUMP IF HOLE +4
+        // "NOT E T";
+        // "AND H T";
+
+        // //EGI
+        // "OR E J";
+        // "AND G J";
+        // "AND I J";
+        // "OR J T";
+       
+        // "NOT A J";
+        // "OR T J";
+
+        // "AND D J";
+
+      
+        
 
         "RUN"
     ]
+(*
+..@..............
+#####.#.#...#.###
+   ABCDEFGHI
+
+
+..@..............
+#####.#.#...#.###
+   ABCDEFGHI
+
+..@..............
+#####.#.#...#.###
+
+              #####.###########
+            #####...#########
+             #####..#.########
+              #####.#..########
+             #####.##.########
+              #####.#.#.##..###
+            #####.#.#...#.###
+
+
     
-     instructions2
+
+@................
+#####.#.#.##..###
+ ABCDEFGHI
+
+            #####.###########
+            #####...#########
+            #####..#.########
+            #####.#..########
+            #####.##.########
+            #####.#.#.##..###
+            #####.#.#...#.###
+            
+              ABCDEFGHI
+             #####.#.#.##..###  
+
+                ABCDEFGHI
+             #####.#.#.##..###     
+                #####..#.########
+      #####..#.########
+
+
+                ABCDEFGHI
+             #####.X.#.##..###
+           #####.#.X...#.###
+        
+A B F -G
+
+D -E H  AND I 
+
+            #####..X.########
+             #####.X..########
+            #####.#X.########
+             #####.X.#.##..###
+           ..@..............
+              ABCDEFGHI
+           #####.#.X...#.###
+
+
+                    I  I
+
+#####..#.########
+#####.#..########
+#####.##.########
+ ABCDEFGHI
+#####.#.#.##..###
+
+*)
+    
+     part2
         |> List.iter(fun command ->
             for x in command do
                 let i = (int64 x)
@@ -153,6 +167,7 @@ let day21 =
         
         )
 
+    // Manual entry
     //while not finished do
         // manual
         // let command = System.Console.ReadLine()
