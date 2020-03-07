@@ -89,10 +89,10 @@ let day24 =
        List.append s [emptyGrid]
 
     let above (grid:char[,]) x y = 
-        let u = if x = 0 && grid.[2,1] = '#' then 1 else 0
-        let d = if x = 4 && grid.[2,3] = '#' then 1 else 0
-        let l = if y = 0 && grid.[1,2] = '#' then 1 else 0
-        let r = if y = 4 && grid.[3,2] = '#' then 1 else 0
+        let u = if y = 0 && grid.[2,1] = '#' then 1 else 0
+        let d = if y = 4 && grid.[2,3] = '#' then 1 else 0
+        let l = if x = 0 && grid.[1,2] = '#' then 1 else 0
+        let r = if x = 4 && grid.[3,2] = '#' then 1 else 0
         u + d + l + r
 
 
@@ -104,10 +104,10 @@ let day24 =
             //printf "%A\n" nums
             nums |> Array.sum
 
-        let u = if x = 2 && y = 1 then sum grid.[0,*] else 0
-        let d = if x = 2 && y = 3 then sum grid.[4,*] else 0
-        let l = if x = 1 && y = 2 then sum grid.[*,0] else 0
-        let r = if x = 3 && y = 2 then sum grid.[*,4] else 0
+        let u = if x = 2 && y = 1 then sum grid.[*,0] else 0
+        let d = if x = 2 && y = 3 then sum grid.[*,4] else 0
+        let l = if x = 1 && y = 2 then sum grid.[0,*] else 0
+        let r = if x = 3 && y = 2 then sum grid.[4,*] else 0
         u + d + l + r
 
     let neighbourCount grids x y = 
@@ -128,7 +128,7 @@ let day24 =
         |> Array2D.mapi(fun x y e -> 
             let neighbours =  neighbourCount grids x y
 
-            if x = 2 && y =2 then 
+            if x = 2 && y = 2 then 
                 '.'
             else
                 match neighbours with
@@ -136,9 +136,7 @@ let day24 =
                 | 1 when not (isBug level x y) -> '#'
                 | 2 when not (isBug level x y) -> '#'
                 | _ -> '.'
-            //printf "%A %A %A %A\n" x y e neighbours
-
-            
+            //printf "%A %A %A %A\n" x y e neighbour
         )
 
         
@@ -146,17 +144,33 @@ let day24 =
         let extended = extend state
                        |> List.windowed 3
                        |> List.map tick
+        // printf "%A\n" extended
+        // printf "%A\n" ""
+        // printf "%A\n" c
+        // printf "%A\n" ""
+        
+       // System.Console.ReadKey()
         match c with
-        | 9 -> extended
+        | 200 -> extended
         | _ -> iterate2 (extend extended) (c+1)
 
+    let bugsInLevel grid = 
+        grid
+        |> Array2D.map(fun x -> if x = '#' then 1 else 0)
+        |> Seq.cast<int>
+        |> Seq.sum
+        
 
     let init = extend [prog]
-    let output = iterate2 init 0
-    printf "%A\n" output
+   // printf "%A\n" init
 
+    let output = iterate2 init 1
+  //  printf "%A\n" output
+
+    let total = output
+                |> List.sumBy bugsInLevel
     
-
+    printf "%A\n" total
     0
 
 
