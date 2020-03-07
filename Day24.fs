@@ -88,13 +88,71 @@ let day24 =
        let s = List.append [emptyGrid] grids
        List.append s [emptyGrid]
 
-    let iterate2 state = 
+    let above (grid:char[,]) x y = 
+        let u = if x = 0 && grid.[2,1] = '#' then 1 else 0
+        let d = if x = 4 && grid.[2,3] = '#' then 1 else 0
+        let l = if y = 0 && grid.[1,2] = '#' then 1 else 0
+        let r = if y = 4 && grid.[3,2] = '#' then 1 else 0
+        u + d + l + r
+
+
+    let below (grid:char[,]) x y =
+
+        let sum line =
+            let nums = line
+                        |> Array.map(fun x -> if x = '#' then 1 else 0)
+            //printf "%A\n" nums
+            nums |> Array.sum
+
+        let u = if x = 2 && y = 1 then sum grid.[0,*] else 0
+        let d = if x = 2 && y = 3 then sum grid.[4,*] else 0
+        let l = if x = 1 && y = 2 then sum grid.[*,0] else 0
+        let r = if x = 3 && y = 2 then sum grid.[*,4] else 0
+        u + d + l + r
+
+    let neighbourCount grids x y = 
+        let aboveGrid = grids |> List.head
+        let level = grids |> List.skip 1 |> List.head
+        let belowGrid = grids |> List.skip 2 |> List.head
+
+        let local = adjCount level x y // bugs on this level
+        
+        let a = above aboveGrid x y
+        let b = below belowGrid x y
+
+        local + a + b
+
+    let tick grids =  
+        let level = grids |> List.skip 1 |> List.head
+        level
+        |> Array2D.mapi(fun x y e -> 
+            let neighbours =  neighbourCount grids x y
+
+            if x = 2 && y =2 then 
+                '.'
+            else
+                match neighbours with
+                | 1 when isBug level x y -> '#'
+                | 1 when not (isBug level x y) -> '#'
+                | 2 when not (isBug level x y) -> '#'
+                | _ -> '.'
+            //printf "%A %A %A %A\n" x y e neighbours
+
+            
+        )
+
+        
+    let rec iterate2 state c = 
         let extended = extend state
-        extended
+                       |> List.windowed 3
+                       |> List.map tick
+        match c with
+        | 9 -> extended
+        | _ -> iterate2 (extend extended) (c+1)
 
 
-    
-    let output = iterate2 [ prog ]
+    let init = extend [prog]
+    let output = iterate2 init 0
     printf "%A\n" output
 
     
