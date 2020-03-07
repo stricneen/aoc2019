@@ -13,7 +13,7 @@ let day22 =
 
     let startDeck = [ 0 .. 10006 ]
 
-    printf "%A\n" startDeck
+    //printf "%A\n" startDeck
 
     let getNumber (line:string) =
         int(line.Split(' ') |> Array.last)
@@ -30,10 +30,11 @@ let day22 =
         lst.[0..index - 1] @ [ itm ] @ lst.[index + 1 ..]
 
     let increment (deck:list<int>) (pos:int) =
+        
         let len = List.length deck
         let mutable nw = List.init len (fun x -> 0)
-        for x in 0 .. (List.length deck) - 1 do
-            let pos = (x * pos) % (List.length deck)
+        for x in 0 .. len - 1 do
+            let pos = (x * pos) % len
             //printf "%A\n" pos
             nw <- updateEle nw pos deck.[x] 
         nw              
@@ -55,6 +56,7 @@ let day22 =
             deck
         else
             let instr = ins.[c]
+            print instr
             let shuf = shuffle deck instr
             shf shuf (c + 1)
 
